@@ -95,6 +95,7 @@ namespace Skaters_MusicPlayer
                     spotify.UnMute();           //Turn on sound again
                 }
                 SpotifyUpdateTrack(spotify.GetStatus().Track);
+                spotify.ListenForEvents = true;
             }
         }
 
@@ -120,7 +121,6 @@ namespace Skaters_MusicPlayer
                 buttonSpotifyStop.Visible = true;
                 groupBoxSpotifyMusic.Enabled = true;
 
-                spotify.ListenForEvents = true;
             }
             else
             {
