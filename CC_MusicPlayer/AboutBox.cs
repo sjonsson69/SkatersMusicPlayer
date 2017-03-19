@@ -22,7 +22,7 @@ namespace AboutBox
             this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription;
+            this.textBoxDescription.Text = AssemblyDescription+"\n\n"+AssemblyTrademark;
         }
 
         #region Assembly Attribute Accessors
@@ -108,6 +108,20 @@ namespace AboutBox
                     return "";
                 // If there is a Company attribute, return its value
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
+            }
+        }
+
+        public string AssemblyTrademark
+        {
+            get
+            {
+                // Get all Company attributes on this assembly
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
+                // If there aren't any Trademark attributes, return an empty string
+                if (attributes.Length == 0)
+                    return "";
+                // If there is a Trademark attribute, return its value
+                return ((AssemblyTrademarkAttribute)attributes[0]).Trademark;
             }
         }
         #endregion

@@ -44,11 +44,36 @@ namespace Skaters_MusicPlayer
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            // Save changes to config-file
             ConfigurationManager.AppSettings["PauseMusicEnabled"] = (checkBoxAutoPauseMusic.Checked ? "true" : "false");
             ConfigurationManager.AppSettings["PauseMusicDelay"] = numericUpDownPause.Value.ToString();
             ConfigurationManager.AppSettings["PauseVolume"] = volumeSliderPause.Volume.ToString();
 
+            ConfigurationManager.AppSettings["WarmupMusicDirectory"] = tbWarmupDir.Text;
+            ConfigurationManager.AppSettings["BreakMusicDirectory"] = tbBreakDir.Text;
+
+            ConfigurationManager.AppSettings["SpotifyURI"] = tbSpotifyURI.Text;
+
+            // Return OK to main window
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void btnWarmupDir_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.SelectedPath = tbWarmupDir.Text;
+            if (folderBrowserDialog1.ShowDialog()==DialogResult.OK)
+            {
+                tbWarmupDir.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void btnBreakDir_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.SelectedPath = tbBreakDir.Text;
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbBreakDir.Text = folderBrowserDialog1.SelectedPath;
+            }
         }
     }
 }

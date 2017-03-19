@@ -44,8 +44,9 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tbSpotifyURI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnWarmupDir = new System.Windows.Forms.Button();
+            this.btnBreakDir = new System.Windows.Forms.Button();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
             this.groupBoxDirectories.SuspendLayout();
@@ -58,7 +59,7 @@
             this.buttonSave.Location = new System.Drawing.Point(906, 260);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(90, 29);
-            this.buttonSave.TabIndex = 0;
+            this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "&Save";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
@@ -70,7 +71,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(12, 260);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(90, 29);
-            this.buttonCancel.TabIndex = 4;
+            this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "&Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -86,7 +87,7 @@
             this.groupBoxAutoPauseMusic.Location = new System.Drawing.Point(12, 12);
             this.groupBoxAutoPauseMusic.Name = "groupBoxAutoPauseMusic";
             this.groupBoxAutoPauseMusic.Size = new System.Drawing.Size(984, 62);
-            this.groupBoxAutoPauseMusic.TabIndex = 1;
+            this.groupBoxAutoPauseMusic.TabIndex = 0;
             this.groupBoxAutoPauseMusic.TabStop = false;
             this.groupBoxAutoPauseMusic.Text = "Automatic pause music (replay skaters music)";
             // 
@@ -140,8 +141,8 @@
             // 
             this.groupBoxDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxDirectories.Controls.Add(this.button2);
-            this.groupBoxDirectories.Controls.Add(this.button1);
+            this.groupBoxDirectories.Controls.Add(this.btnBreakDir);
+            this.groupBoxDirectories.Controls.Add(this.btnWarmupDir);
             this.groupBoxDirectories.Controls.Add(this.tbBreakDir);
             this.groupBoxDirectories.Controls.Add(this.label3);
             this.groupBoxDirectories.Controls.Add(this.tbWarmupDir);
@@ -149,9 +150,9 @@
             this.groupBoxDirectories.Location = new System.Drawing.Point(12, 81);
             this.groupBoxDirectories.Name = "groupBoxDirectories";
             this.groupBoxDirectories.Size = new System.Drawing.Size(984, 96);
-            this.groupBoxDirectories.TabIndex = 2;
+            this.groupBoxDirectories.TabIndex = 1;
             this.groupBoxDirectories.TabStop = false;
-            this.groupBoxDirectories.Text = "Direcories";
+            this.groupBoxDirectories.Text = "Directories (normally, don\'t change these!)";
             // 
             // label2
             // 
@@ -198,7 +199,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 184);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(984, 70);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Spotify playlist";
             // 
@@ -220,23 +221,29 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "URI (empty for no playlist)";
             // 
-            // button1
+            // btnWarmupDir
             // 
-            this.button1.Location = new System.Drawing.Point(947, 26);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(31, 26);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "...";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnWarmupDir.Location = new System.Drawing.Point(947, 26);
+            this.btnWarmupDir.Name = "btnWarmupDir";
+            this.btnWarmupDir.Size = new System.Drawing.Size(31, 26);
+            this.btnWarmupDir.TabIndex = 2;
+            this.btnWarmupDir.Text = "...";
+            this.btnWarmupDir.UseVisualStyleBackColor = true;
+            this.btnWarmupDir.Click += new System.EventHandler(this.btnWarmupDir_Click);
             // 
-            // button2
+            // btnBreakDir
             // 
-            this.button2.Location = new System.Drawing.Point(947, 58);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(31, 26);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "...";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnBreakDir.Location = new System.Drawing.Point(947, 58);
+            this.btnBreakDir.Name = "btnBreakDir";
+            this.btnBreakDir.Size = new System.Drawing.Size(31, 26);
+            this.btnBreakDir.TabIndex = 5;
+            this.btnBreakDir.Text = "...";
+            this.btnBreakDir.UseVisualStyleBackColor = true;
+            this.btnBreakDir.Click += new System.EventHandler(this.btnBreakDir_Click);
+            // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
             // FormOptions
             // 
@@ -281,10 +288,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbBreakDir;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnBreakDir;
+        private System.Windows.Forms.Button btnWarmupDir;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox tbSpotifyURI;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }

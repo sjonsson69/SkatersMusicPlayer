@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Skaters MusicPlayer")]
-[assembly: AssemblyDescription("A music player specific for figure skating")]
+[assembly: AssemblyDescription("A music player specific for figure skating.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Skaters_MusicPlayer")]
 [assembly: AssemblyCopyright("Copyright © 2015-2017 Stefan Jonsson")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Using NAudio by Mark Heath from https://naudio.codeplex.com/ and Newtonsoft.Json by James Newton-King from http://www.newtonsoft.com/json and SpotifyAPI-NET by JohnnyCrazy from https://github.com/JohnnyCrazy/SpotifyAPI-NET/")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -32,5 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0.1")]
-[assembly: AssemblyFileVersion("2.0.0")]
+[assembly: AssemblyVersion("2017.1.*")]
