@@ -194,9 +194,9 @@ namespace Skaters_MusicPlayer
         {
             XmlNode node = fmp.doc.CreateElement(name);
             string v = (string)dataGridViewSkaters[col, row].Value;
-            if (v != string.Empty)
+            if (v !=null && v != string.Empty)
             {   // Spara bara om det finns ett värde
-                if (col==0 || col==10)
+                if (col == 0 || col == 10)
                 {// if it is startno, rightjustify value
                     v = v.PadLeft(3, ' ');
                 }

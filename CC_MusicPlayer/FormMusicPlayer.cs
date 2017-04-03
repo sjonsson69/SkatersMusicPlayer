@@ -45,12 +45,19 @@ namespace Skaters_MusicPlayer
             labelCurrentTime.Text = "";
             labelTotalTime.Text = "";
 
-            // Do we have Spotify?
-            spotify = new SpotifyLocalAPI();
-            spotifyConnected = false;
-            spotify.OnTrackChange += spotify_OnTrackChange;
-            spotify.OnPlayStateChange += spotify_OnPlayStateChange;
-            SpotifyConnect();
+            try
+            {
+                // Do we have Spotify?
+                spotify = new SpotifyLocalAPI();
+                spotifyConnected = false;
+                spotify.OnTrackChange += spotify_OnTrackChange;
+                spotify.OnPlayStateChange += spotify_OnPlayStateChange;
+                SpotifyConnect();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Can't connect to Spotify!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             LoadSettings();
 
@@ -83,19 +90,27 @@ namespace Skaters_MusicPlayer
             LoadMusicFolder(GetConfigurationValue("WarmupMusicDirectory", ""), true, listViewWarmupMusic);
             LoadMusicFolder(GetConfigurationValue("BreakMusicDirectory", ""), true, listViewBreakMusic);
 
-            // Connected to Spotify? Load playlist
-            if (spotifyConnected)
+            try
             {
-                string URI = GetConfigurationValue("SpotifyURI", "");
-                if (URI != String.Empty)
+                // Connected to Spotify? Load playlist
+                if (spotifyConnected)
                 {
-                    spotify.Mute();             //Turn off sound (will sometimes make a small "click" when loading a URI
-                    spotify.PlayURL(URI, "");   //Loading will also start playing
-                    spotify.Pause();            //So we stop it directly
-                    spotify.UnMute();           //Turn on sound again
+                    string URI = GetConfigurationValue("SpotifyURI", "");
+                    if (URI != String.Empty)
+                    {
+                        spotify.Mute();             //Turn off sound (will sometimes make a small "click" when loading a URI
+                        spotify.PlayURL(URI, "");   //Loading will also start playing
+                        spotify.Pause();            //So we stop it directly
+                        spotify.UnMute();           //Turn on sound again
+                    }
+                    SpotifyUpdateTrack(spotify.GetStatus().Track);
+                    spotify.ListenForEvents = true;
+                    EnableButtons();
                 }
-                SpotifyUpdateTrack(spotify.GetStatus().Track);
-                spotify.ListenForEvents = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Can't load playlist!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -851,17 +866,24 @@ namespace Skaters_MusicPlayer
         {
             if (listViewWarmupMusic.SelectedItems.Count == 1)
             {
-                CreateWaveOutWarmup();
+                try
+                {
+                    CreateWaveOutWarmup();
 
-                audioFileReaderWarmup = new AudioFileReader(listViewWarmupMusic.SelectedItems[0].SubItems[1].Text);
-                var sampleChannel = new SampleChannel(audioFileReaderWarmup, true);
-                this.setVolumeDelegateWarmup = (vol) => sampleChannel.Volume = vol;
-                var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-                postVolumeMeter.StreamVolume += OnPostVolumeMeter;
+                    audioFileReaderWarmup = new AudioFileReader(listViewWarmupMusic.SelectedItems[0].SubItems[1].Text);
+                    var sampleChannel = new SampleChannel(audioFileReaderWarmup, true);
+                    this.setVolumeDelegateWarmup = (vol) => sampleChannel.Volume = vol;
+                    var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
+                    postVolumeMeter.StreamVolume += OnPostVolumeMeter;
 
-                //waveOutDevice.Init(postVolumeMeter);
-                waveOutDeviceWarmup.Init(postVolumeMeter);
-                volumeSlider1.Volume = 1.0f;
+                    //waveOutDevice.Init(postVolumeMeter);
+                    waveOutDeviceWarmup.Init(postVolumeMeter);
+                    volumeSlider1.Volume = 1.0f;
+                }
+                catch (Exception)
+                {
+                    //Do nothing!
+                }
 
                 listViewWarmupMusic.SelectedItems[0].EnsureVisible();
 
@@ -873,17 +895,24 @@ namespace Skaters_MusicPlayer
         {
             if (listViewBreakMusic.SelectedItems.Count == 1)
             {
-                CreateWaveOutBreak();
+                try
+                {
+                    CreateWaveOutBreak();
 
-                audioFileReaderBreak = new AudioFileReader(listViewBreakMusic.SelectedItems[0].SubItems[1].Text);
-                var sampleChannel = new SampleChannel(audioFileReaderBreak, true);
-                this.setVolumeDelegateBreak = (vol) => sampleChannel.Volume = vol;
-                var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-                postVolumeMeter.StreamVolume += OnPostVolumeMeter;
+                    audioFileReaderBreak = new AudioFileReader(listViewBreakMusic.SelectedItems[0].SubItems[1].Text);
+                    var sampleChannel = new SampleChannel(audioFileReaderBreak, true);
+                    this.setVolumeDelegateBreak = (vol) => sampleChannel.Volume = vol;
+                    var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
+                    postVolumeMeter.StreamVolume += OnPostVolumeMeter;
 
-                //waveOutDevice.Init(postVolumeMeter);
-                waveOutDeviceBreak.Init(postVolumeMeter);
-                volumeSlider1.Volume = 1.0f;
+                    //waveOutDevice.Init(postVolumeMeter);
+                    waveOutDeviceBreak.Init(postVolumeMeter);
+                    volumeSlider1.Volume = 1.0f;
+                }
+                catch (Exception)
+                {
+                    //Do nothing!
+                }
 
                 listViewBreakMusic.SelectedItems[0].EnsureVisible();
 
@@ -921,7 +950,6 @@ namespace Skaters_MusicPlayer
                 LoadXMLfile();
             }
         }
-        #endregion
 
         private void editSkatersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -966,7 +994,6 @@ namespace Skaters_MusicPlayer
                 editClassesMenuItem_Click(sender, e);
             }
         }
-
 
         private void importFromIndTA2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1014,7 +1041,6 @@ namespace Skaters_MusicPlayer
             catch (Exception)
             {
             }
-
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1031,6 +1057,7 @@ namespace Skaters_MusicPlayer
             AboutBox.AboutBox ab = new AboutBox.AboutBox();
             ab.ShowDialog();
         }
+        #endregion
 
     }
 }

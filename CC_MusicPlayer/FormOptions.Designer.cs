@@ -37,15 +37,15 @@
             this.numericUpDownPause = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAutoPauseMusic = new System.Windows.Forms.CheckBox();
             this.groupBoxDirectories = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tbWarmupDir = new System.Windows.Forms.TextBox();
+            this.btnBreakDir = new System.Windows.Forms.Button();
+            this.btnWarmupDir = new System.Windows.Forms.Button();
             this.tbBreakDir = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tbWarmupDir = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tbSpotifyURI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnWarmupDir = new System.Windows.Forms.Button();
-            this.btnBreakDir = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -154,23 +154,25 @@
             this.groupBoxDirectories.TabStop = false;
             this.groupBoxDirectories.Text = "Directories (normally, don\'t change these!)";
             // 
-            // label2
+            // btnBreakDir
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 29);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(181, 20);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Warmup Music Directory";
+            this.btnBreakDir.Location = new System.Drawing.Point(947, 58);
+            this.btnBreakDir.Name = "btnBreakDir";
+            this.btnBreakDir.Size = new System.Drawing.Size(31, 26);
+            this.btnBreakDir.TabIndex = 5;
+            this.btnBreakDir.Text = "...";
+            this.btnBreakDir.UseVisualStyleBackColor = true;
+            this.btnBreakDir.Click += new System.EventHandler(this.btnBreakDir_Click);
             // 
-            // tbWarmupDir
+            // btnWarmupDir
             // 
-            this.tbWarmupDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbWarmupDir.Location = new System.Drawing.Point(223, 26);
-            this.tbWarmupDir.Name = "tbWarmupDir";
-            this.tbWarmupDir.Size = new System.Drawing.Size(718, 26);
-            this.tbWarmupDir.TabIndex = 1;
+            this.btnWarmupDir.Location = new System.Drawing.Point(947, 26);
+            this.btnWarmupDir.Name = "btnWarmupDir";
+            this.btnWarmupDir.Size = new System.Drawing.Size(31, 26);
+            this.btnWarmupDir.TabIndex = 2;
+            this.btnWarmupDir.Text = "...";
+            this.btnWarmupDir.UseVisualStyleBackColor = true;
+            this.btnWarmupDir.Click += new System.EventHandler(this.btnWarmupDir_Click);
             // 
             // tbBreakDir
             // 
@@ -189,6 +191,24 @@
             this.label3.Size = new System.Drawing.Size(163, 20);
             this.label3.TabIndex = 3;
             this.label3.Text = "Break Music Directory";
+            // 
+            // tbWarmupDir
+            // 
+            this.tbWarmupDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbWarmupDir.Location = new System.Drawing.Point(223, 26);
+            this.tbWarmupDir.Name = "tbWarmupDir";
+            this.tbWarmupDir.Size = new System.Drawing.Size(718, 26);
+            this.tbWarmupDir.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(181, 20);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Warmup Music Directory";
             // 
             // groupBox1
             // 
@@ -221,26 +241,6 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "URI (empty for no playlist)";
             // 
-            // btnWarmupDir
-            // 
-            this.btnWarmupDir.Location = new System.Drawing.Point(947, 26);
-            this.btnWarmupDir.Name = "btnWarmupDir";
-            this.btnWarmupDir.Size = new System.Drawing.Size(31, 26);
-            this.btnWarmupDir.TabIndex = 2;
-            this.btnWarmupDir.Text = "...";
-            this.btnWarmupDir.UseVisualStyleBackColor = true;
-            this.btnWarmupDir.Click += new System.EventHandler(this.btnWarmupDir_Click);
-            // 
-            // btnBreakDir
-            // 
-            this.btnBreakDir.Location = new System.Drawing.Point(947, 58);
-            this.btnBreakDir.Name = "btnBreakDir";
-            this.btnBreakDir.Size = new System.Drawing.Size(31, 26);
-            this.btnBreakDir.TabIndex = 5;
-            this.btnBreakDir.Text = "...";
-            this.btnBreakDir.UseVisualStyleBackColor = true;
-            this.btnBreakDir.Click += new System.EventHandler(this.btnBreakDir_Click);
-            // 
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.ShowNewFolderButton = false;
@@ -261,6 +261,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FormOptions";
+            this.ShowInTaskbar = false;
             this.Text = "Options";
             this.groupBoxAutoPauseMusic.ResumeLayout(false);
             this.groupBoxAutoPauseMusic.PerformLayout();

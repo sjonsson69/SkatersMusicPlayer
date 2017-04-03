@@ -35,7 +35,6 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.dataGridViewSkaters = new System.Windows.Forms.DataGridView();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.ColumnStartNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnLName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,6 +48,7 @@
             this.ColumnStartNoSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMusicFileSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnChecksumSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSkaters)).BeginInit();
             this.SuspendLayout();
             // 
@@ -114,12 +114,6 @@
             this.dataGridViewSkaters.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewSkaters_CellContentClick);
             this.dataGridViewSkaters.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.RestoreDirectory = true;
-            this.openFileDialog1.Title = "Select music file";
-            // 
             // ColumnStartNo
             // 
             this.ColumnStartNo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -158,7 +152,6 @@
             this.ColumnID.Name = "ColumnID";
             this.ColumnID.ReadOnly = true;
             this.ColumnID.Visible = false;
-            this.ColumnID.Width = 60;
             // 
             // ColumnBirthDate
             // 
@@ -167,7 +160,6 @@
             this.ColumnBirthDate.Name = "ColumnBirthDate";
             this.ColumnBirthDate.ReadOnly = true;
             this.ColumnBirthDate.Visible = false;
-            this.ColumnBirthDate.Width = 102;
             // 
             // ColumnSelectFile
             // 
@@ -206,7 +198,6 @@
             this.ColumnChecksum.Name = "ColumnChecksum";
             this.ColumnChecksum.ReadOnly = true;
             this.ColumnChecksum.Visible = false;
-            this.ColumnChecksum.Width = 109;
             // 
             // ColumnStartNoSecond
             // 
@@ -229,6 +220,12 @@
             this.ColumnChecksumSecond.ReadOnly = true;
             this.ColumnChecksumSecond.Visible = false;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.RestoreDirectory = true;
+            this.openFileDialog1.Title = "Select music file";
+            // 
             // FormEditSkaters
             // 
             this.AcceptButton = this.buttonSave;
@@ -244,6 +241,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FormEditSkaters";
+            this.ShowInTaskbar = false;
             this.Text = "Edit Skaters";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSkaters)).EndInit();
             this.ResumeLayout(false);
