@@ -754,51 +754,57 @@ namespace Skaters_MusicPlayer
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
+            try
             {
-                //TimeSpan currentTime = (waveOutDevice.PlaybackState == PlaybackState.Stopped) ? TimeSpan.Zero : audioFileReader.CurrentTime;
-                TimeSpan currentTime = audioFileReaderSkater.CurrentTime;
-                trackBarPosition.Value = Math.Min(trackBarPosition.Maximum, (int)(100 * currentTime.TotalSeconds / audioFileReaderSkater.TotalTime.TotalSeconds));
-                labelCurrentTime.Text = String.Format("{0:00}:{1:00}", (int)currentTime.TotalMinutes, currentTime.Seconds);
-            }
-            else
-            {
-                trackBarPosition.Value = 0;
-                //toolStripStatusLabel1.Text = "";
-            }
+                if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
+                {
+                    //TimeSpan currentTime = (waveOutDevice.PlaybackState == PlaybackState.Stopped) ? TimeSpan.Zero : audioFileReader.CurrentTime;
+                    TimeSpan currentTime = audioFileReaderSkater.CurrentTime;
+                    trackBarPosition.Value = Math.Min(trackBarPosition.Maximum, (int)(100 * currentTime.TotalSeconds / audioFileReaderSkater.TotalTime.TotalSeconds));
+                    labelCurrentTime.Text = String.Format("{0:00}:{1:00}", (int)currentTime.TotalMinutes, currentTime.Seconds);
+                }
+                else
+                {
+                    trackBarPosition.Value = 0;
+                    //toolStripStatusLabel1.Text = "";
+                }
 
-            // Update statuslabel
-            if (toolStripStatusLabel1.Text == "")
-            {
-                if (waveOutDeviceSkater != null && waveOutDeviceSkater.PlaybackState == PlaybackState.Playing)
-                {// We're playing skaters music
-                    if (PausePlaying)
-                    {//Playing pausemusic
-                        toolStripStatusLabel1.Text = "Playing pause music...";
+                // Update statuslabel
+                if (toolStripStatusLabel1.Text == "")
+                {
+                    if (waveOutDeviceSkater != null && waveOutDeviceSkater.PlaybackState == PlaybackState.Playing)
+                    {// We're playing skaters music
+                        if (PausePlaying)
+                        {//Playing pausemusic
+                            toolStripStatusLabel1.Text = "Playing pause music...";
+                        }
+                        else
+                        {//Playing skaters music
+                            toolStripStatusLabel1.Text = "Playing skaters music...";
+                        }
                     }
-                    else
-                    {//Playing skaters music
-                        toolStripStatusLabel1.Text = "Playing skaters music...";
+                    else if (waveOutDeviceWarmup != null && waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
+                    {
+                        toolStripStatusLabel1.Text = "Playing warmup music...";
+                    }
+                    else if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
+                    {
+                        toolStripStatusLabel1.Text = "Playing break music...";
+                    }
+                    else if (spotifyConnected && spotify.GetStatus().Playing)
+                    {
+                        toolStripStatusLabel1.Text = "Playing spotify music...";
                     }
                 }
-                else if (waveOutDeviceWarmup != null && waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
+                else
                 {
-                    toolStripStatusLabel1.Text = "Playing warmup music...";
-                }
-                else if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
-                {
-                    toolStripStatusLabel1.Text = "Playing break music...";
-                }
-                else if (spotifyConnected && spotify.GetStatus().Playing)
-                {
-                    toolStripStatusLabel1.Text = "Playing spotify music...";
+                    toolStripStatusLabel1.Text = "";
                 }
             }
-            else
+            catch (Exception)
             {
-                toolStripStatusLabel1.Text = "";
+                //Do nothing
             }
-
         }
 
         private void trackBarPosition_Scroll(object sender, EventArgs e)
