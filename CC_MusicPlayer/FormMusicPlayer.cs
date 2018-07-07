@@ -12,7 +12,7 @@ using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Local.Models;
 using AboutBox;
 
-namespace Skaters_MusicPlayer
+namespace SkatersMusicPlayer
 {
     public partial class FormMusicPlayer : Form
     {

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.IO;
 
-namespace Skaters_MusicPlayer
+namespace SkatersMusicPlayer
 {
     public partial class FormEditClasses : Form
     {

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Security.Cryptography;
 
-namespace Skaters_MusicPlayer
+namespace SkatersMusicPlayer
 {
     public partial class FormMusicPlayer : Form
     {

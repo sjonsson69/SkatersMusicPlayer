@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Skaters_MusicPlayer
+namespace SkatersMusicPlayer
 {
     public partial class FormOptions : Form
     {

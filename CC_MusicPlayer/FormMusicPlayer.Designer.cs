@@ -1,4 +1,4 @@
-﻿namespace Skaters_MusicPlayer
+﻿namespace SkatersMusicPlayer
 {
     partial class FormMusicPlayer
     {

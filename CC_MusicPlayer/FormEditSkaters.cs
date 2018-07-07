@@ -11,7 +11,7 @@ using System.Xml;
 using NAudio;
 using NAudio.Wave;
 
-namespace Skaters_MusicPlayer
+namespace SkatersMusicPlayer
 {
     public partial class FormEditSkaters : Form
     {
