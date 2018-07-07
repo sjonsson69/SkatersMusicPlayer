@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("A music player specific for figure skating.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Skaters_MusicPlayer")]
-[assembly: AssemblyCopyright("Copyright © 2015-2017 Stefan Jonsson")]
+[assembly: AssemblyProduct("SkatersMusicPlayer")]
+[assembly: AssemblyCopyright("Copyright © 2015-2018 Stefan Jonsson")]
 [assembly: AssemblyTrademark("Using NAudio by Mark Heath from https://naudio.codeplex.com/ and Newtonsoft.Json by James Newton-King from http://www.newtonsoft.com/json and SpotifyAPI-NET by JohnnyCrazy from https://github.com/JohnnyCrazy/SpotifyAPI-NET/")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2017.1.*")]
+[assembly: AssemblyVersion("2018.1.*")]

@@ -769,9 +769,13 @@ namespace Skaters_MusicPlayer
                             className = GetXMLElementAttribute(tableNode["IndTA"], "", "IndTAClass", "");
 
                             // if we didn't find a classname from IndTA, get Clubcomp/Starcomp classname
-                            if (className=="")
+                            if (className == "")
                             {
                                 className = GetXMLElement(tableNode["Category"], "", "");
+                                //Try to find subcategory
+                                className = (className + " " + GetXMLElement(tableNode["SubCategory"], "", "")).Trim();
+                                //Add Group if it exists
+                                className = (className + " " + GetXMLElement(tableNode["GroupNo"], "", "")).Trim();
                             }
                         }
 
@@ -814,7 +818,7 @@ namespace Skaters_MusicPlayer
                             string LastName = GetXMLElementAttribute(personNodeIndTA["Skater"], "", "Surname", "");
                             string Club = GetXMLElementAttribute(personNodeIndTA["Skater"], "", "Club", "");  //Startcomp
 
-                            if (Club=="")
+                            if (Club == "")
                             {// If we didn't get a Clubname, it's probably a Clubcomp file, read values from other places
                                 StartNo1 = GetXMLElementAttribute(personNodeIndTA["Startno"], "", "Seg1", "");
                                 StartNo2 = GetXMLElementAttribute(personNodeIndTA["Startno"], "", "Seg2", "");
@@ -912,7 +916,7 @@ namespace Skaters_MusicPlayer
                 try
                 {
                     //fiArray = new DirectoryInfo(@"CompetitionMusic\" + skaterNode.ParentNode.Attributes.GetNamedItem("Name").Value.ToString().Replace(" ", "_") + @"\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "") + "_" + GetXMLElement(skaterNode["LastName"], "", "") + "_" + GetXMLElement(skaterNode["Club"], "", "") + "_Free*.*");
-                    fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ","_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Friåkning.*");
+                    fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Friåkning.*");
                 }
                 catch (Exception)
                 {
