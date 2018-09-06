@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -513,16 +513,16 @@
             // 
             this.importFromClubcompOLDToolStripMenuItem.Enabled = false;
             this.importFromClubcompOLDToolStripMenuItem.Name = "importFromClubcompOLDToolStripMenuItem";
-            this.importFromClubcompOLDToolStripMenuItem.Size = new System.Drawing.Size(356, 24);
-            this.importFromClubcompOLDToolStripMenuItem.Text = "Import from C&lubcomp / Starcomp";
+            this.importFromClubcompOLDToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
+            this.importFromClubcompOLDToolStripMenuItem.Text = "OLD-Import from C&lubcomp / Starcomp";
             this.importFromClubcompOLDToolStripMenuItem.Visible = false;
             this.importFromClubcompOLDToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcompOldToolStripMenuItem_Click);
             // 
             // importFromClubcompToolStripMenuItem
             // 
             this.importFromClubcompToolStripMenuItem.Name = "importFromClubcompToolStripMenuItem";
-            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(356, 24);
-            this.importFromClubcompToolStripMenuItem.Text = "Import from C&lubcomp / Starcomp 2016";
+            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
+            this.importFromClubcompToolStripMenuItem.Text = "Import from C&lubcomp / Starcomp";
             this.importFromClubcompToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcomp2016ToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
@@ -548,7 +548,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -633,7 +633,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem7});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -719,7 +719,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem8});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";

@@ -146,6 +146,7 @@ namespace SkatersMusicPlayer
                 buttonSpotifyNext.Visible = false;
                 buttonSpotifyStop.Visible = false;
                 groupBoxSpotifyMusic.Enabled = false;
+                groupBoxSpotifyMusic.Visible = false; // Don't show the Spotifybox at all for now
 
                 //Shrink spotify box and expand Warmup/Break boxes
                 groupBoxSpotifyMusic.Height = groupBoxSpotifyMusic.Height - 162;
@@ -1015,7 +1016,7 @@ namespace SkatersMusicPlayer
         {
             if (folderBrowserDialogCC.ShowDialog() == DialogResult.OK)
             {
-                LoadClubStarComp(doc, folderBrowserDialogCC.SelectedPath);
+                LoadClubStarCompOld(doc, folderBrowserDialogCC.SelectedPath);
                 MessageBox.Show("Classes and Skaters loaded from Clubcomp/Starcomp\n\nEdit Classes will now open to verify if classes", "Clubcomp/Starcomp imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 editClassesMenuItem_Click(sender, e);
             }

@@ -443,6 +443,9 @@ namespace SkatersMusicPlayer
 
                         // Locate skater for update or create a skater
                         string ID = personNodeIndTA.Attributes.GetNamedItem("Id").Value;
+                        string FirstName = GetXMLElement(personNodeIndTA["Firstname"], "", "");
+                        string LastName = GetXMLElement(personNodeIndTA["SurName"], "", "");
+                        string Club = GetXMLElement(personNodeIndTA["Organization"], "OrganizationName", "");
 
                         // Try to find if skater already present using ID numer från indTA and match with ID from Competition
                         XmlNode personNode = null;
@@ -456,6 +459,24 @@ namespace SkatersMusicPlayer
                                 }
                             }
 
+                        }
+
+                        // If we didn't find skater with ID, try to find if skater already present using First-, Lastname and Club to match from Competition
+                        if (personNode == null)
+                        {
+                            if (classNode.HasChildNodes)
+                            {
+                                foreach (XmlNode personNodeDoc in classNode)
+                                {
+                                    if (GetXMLElement(personNodeDoc["FirstName"], "", "") == FirstName &&
+                                        GetXMLElement(personNodeDoc["LastName"], "", "") == LastName &&
+                                        GetXMLElement(personNodeDoc["Club"], "", "") == Club)
+                                    {
+                                        personNode = personNodeDoc;
+                                    }
+                                }
+
+                            }
                         }
 
                         // If person not found, create a new person
@@ -475,9 +496,9 @@ namespace SkatersMusicPlayer
                         if (personNode["Club"] == null) personNode.AppendChild(doc.CreateElement("Club"));
 
                         // Update 
-                        personNode["FirstName"].InnerText = GetXMLElement(personNodeIndTA["Firstname"], "", "");
-                        personNode["LastName"].InnerText = GetXMLElement(personNodeIndTA["Lastname"], "", "");
-                        personNode["Club"].InnerText = GetXMLElement(personNodeIndTA["Organization"], "", "");
+                        personNode["FirstName"].InnerText = FirstName;
+                        personNode["LastName"].InnerText = LastName;
+                        personNode["Club"].InnerText = Club;
                     }
 
                     doc.Save("competition.xml");
@@ -616,7 +637,7 @@ namespace SkatersMusicPlayer
 
         }
 
-        private void LoadClubStarComp(XmlDocument doc, string p)
+        private void LoadClubStarCompOld(XmlDocument doc, string p)
         {
             //Try to find all XML files in the folder
             FileInfo[] fiArray = null;
