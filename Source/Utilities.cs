@@ -793,11 +793,12 @@ namespace SkatersMusicPlayer
                             if (className == "")
                             {
                                 className = GetXMLElement(tableNode["Category"], "", "");
-                                //Try to find subcategory
-                                className = (className + " " + GetXMLElement(tableNode["SubCategory"], "", "")).Trim();
-                                //Add Group if it exists
-                                className = (className + " " + GetXMLElement(tableNode["GroupNo"], "", "")).Trim();
                             }
+                            //Try to find subcategory
+                            className = (className + " " + GetXMLElement(tableNode["SubCategory"], "", "")).Trim();
+                            className = (className + " " + GetXMLElement(tableNode["Subcategory"], "", "")).Trim();
+                            //Add Group if it exists
+                            className = (className + " " + GetXMLElement(tableNode["GroupNo"], "", "")).Trim();
                         }
 
 
