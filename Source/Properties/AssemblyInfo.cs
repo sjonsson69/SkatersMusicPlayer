@@ -10,8 +10,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SkatersMusicPlayer")]
-[assembly: AssemblyCopyright("Copyright © 2015-2018 Stefan Jonsson")]
-[assembly: AssemblyTrademark("Using NAudio by Mark Heath from https://naudio.codeplex.com/ and Newtonsoft.Json by James Newton-King from http://www.newtonsoft.com/json and SpotifyAPI-NET by JohnnyCrazy from https://github.com/JohnnyCrazy/SpotifyAPI-NET/")]
+[assembly: AssemblyCopyright("Copyright © 2015-2019 Stefan Jonsson")]
+[assembly: AssemblyTrademark("Using NAudio by Mark Heath from https://naudio.codeplex.com/")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2018.2.*")]
+[assembly: AssemblyVersion("2019.1.*")]

@@ -37,9 +37,6 @@ namespace SkatersMusicPlayer
             // Load music folders for Warmup music and Break music
             tbWarmupDir.Text=parent.GetConfigurationValue("WarmupMusicDirectory", "");
             tbBreakDir.Text = parent.GetConfigurationValue("BreakMusicDirectory", "");
-
-            // Load SpotifiURI
-            tbSpotifyURI.Text = parent.GetConfigurationValue("SpotifyURI", "");
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -51,8 +48,6 @@ namespace SkatersMusicPlayer
 
             ConfigurationManager.AppSettings["WarmupMusicDirectory"] = tbWarmupDir.Text;
             ConfigurationManager.AppSettings["BreakMusicDirectory"] = tbBreakDir.Text;
-
-            ConfigurationManager.AppSettings["SpotifyURI"] = tbSpotifyURI.Text;
 
             // Return OK to main window
             this.DialogResult = DialogResult.OK;

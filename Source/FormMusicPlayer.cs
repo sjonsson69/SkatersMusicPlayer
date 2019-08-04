@@ -6,10 +6,6 @@ using System.Xml;
 using NAudio;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-//using NAudio.Gui;
-using SpotifyAPI.Local;
-using SpotifyAPI.Local.Enums;
-using SpotifyAPI.Local.Models;
 using AboutBox;
 
 namespace SkatersMusicPlayer
@@ -34,9 +30,6 @@ namespace SkatersMusicPlayer
         private AudioFileReader audioFileReaderBreak = null;
         private Action<float> setVolumeDelegateBreak;
 
-        private readonly SpotifyLocalAPI spotify;
-        private bool spotifyConnected;
-
 
         public FormMusicPlayer()
         {
@@ -44,20 +37,6 @@ namespace SkatersMusicPlayer
 
             labelCurrentTime.Text = "";
             labelTotalTime.Text = "";
-
-            try
-            {
-                // Do we have Spotify?
-                spotify = new SpotifyLocalAPI();
-                spotifyConnected = false;
-                spotify.OnTrackChange += spotify_OnTrackChange;
-                spotify.OnPlayStateChange += spotify_OnPlayStateChange;
-                SpotifyConnect();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Can't connect to Spotify!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
 
             LoadSettings();
 
@@ -90,109 +69,10 @@ namespace SkatersMusicPlayer
             LoadMusicFolder(GetConfigurationValue("WarmupMusicDirectory", ""), true, listViewWarmupMusic);
             LoadMusicFolder(GetConfigurationValue("BreakMusicDirectory", ""), true, listViewBreakMusic);
 
-            try
-            {
-                // Connected to Spotify? Load playlist
-                if (spotifyConnected)
-                {
-                    string URI = GetConfigurationValue("SpotifyURI", "");
-                    if (URI != String.Empty)
-                    {
-                        spotify.Mute();             //Turn off sound (will sometimes make a small "click" when loading a URI
-                        spotify.PlayURL(URI, "");   //Loading will also start playing
-                        spotify.Pause();            //So we stop it directly
-                        spotify.UnMute();           //Turn on sound again
-                    }
-                    SpotifyUpdateTrack(spotify.GetStatus().Track);
-                    spotify.ListenForEvents = true;
-                    EnableButtons();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Can't load playlist!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            EnableButtons();
         }
 
 
-        #region Spotify
-        private void SpotifyConnect()
-        {
-            if (SpotifyLocalAPI.IsSpotifyRunning() && SpotifyLocalAPI.IsSpotifyWebHelperRunning())
-            {
-                // Try to connect to Spotify client
-                spotifyConnected = spotify.Connect();
-                if (!spotifyConnected)
-                {
-                    MessageBox.Show("Couldn't connect to the spotify client", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-
-            if (spotifyConnected)
-            {
-                buttonSpotifyPlay.Visible = true;
-                buttonSpotifyPrevious.Visible = true;
-                buttonSpotifyNext.Visible = true;
-                buttonSpotifyStop.Visible = true;
-                groupBoxSpotifyMusic.Enabled = true;
-
-            }
-            else
-            {
-                groupBoxSpotifyMusic.Text = "Spotify not running!";
-                tbTitle.Text = "Spotify not running!";
-                buttonSpotifyPlay.Visible = false;
-                buttonSpotifyPrevious.Visible = false;
-                buttonSpotifyNext.Visible = false;
-                buttonSpotifyStop.Visible = false;
-                groupBoxSpotifyMusic.Enabled = false;
-                groupBoxSpotifyMusic.Visible = false; // Don't show the Spotifybox at all for now
-
-                //Shrink spotify box and expand Warmup/Break boxes
-                groupBoxSpotifyMusic.Height = groupBoxSpotifyMusic.Height - 162;
-                groupBoxSpotifyMusic.Top = groupBoxSpotifyMusic.Top + 162;
-                groupBoxWarmupMusic.Height = groupBoxWarmupMusic.Height + 162;
-                groupBoxBreakMusic.Height = groupBoxBreakMusic.Height + 162;
-            }
-        }
-
-        public async void SpotifyUpdateTrack(Track track)
-        {
-            if (track == null)
-            {
-                return;  // Doesn't have track info
-            }
-
-            if (track.IsAd())
-            {
-                tbTitle.Text = "ADVERT";
-                tbArtist.Text = string.Empty;
-                tbAlbum.Text = string.Empty;
-                pbWarmup.Hide();
-                return; // Don't process. maybe null values
-            }
-
-            //createdLabel.Invoke((Action)delegate { createdLabel.Text = text; });
-            tbTitle.Text = track.TrackResource.Name;
-            tbArtist.Text = track.ArtistResource.Name;
-            tbAlbum.Text = track.AlbumResource.Name;
-
-            pbWarmup.Image = await track.GetAlbumArtAsync(AlbumArtSize.Size160);
-            pbWarmup.Show();
-        }
-
-        void spotify_OnTrackChange(object sender, TrackChangeEventArgs e)
-        {
-            tbAlbum.Invoke((Action)delegate { SpotifyUpdateTrack(e.NewTrack); });
-        }
-        void spotify_OnPlayStateChange(object sender, PlayStateEventArgs e)
-        {
-            tbAlbum.Invoke((Action)delegate { EnableButtons(); });
-        }
-
-
-
-        #endregion
         #region CreateWaveOut
         private void CreateWaveOutSkater()
         {
@@ -440,14 +320,6 @@ namespace SkatersMusicPlayer
                     PlayerState = waveOutDeviceBreak.PlaybackState;
                 }
             }
-            if (spotifyConnected)
-            {
-                if (spotify.GetStatus().Playing)
-                {
-                    WhatsPlaying = Player.Spotify;
-                    PlayerState = PlaybackState.Playing;
-                }
-            }
             if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
             {
                 if (waveOutDeviceSkater.PlaybackState != PlaybackState.Stopped)
@@ -461,7 +333,6 @@ namespace SkatersMusicPlayer
             //Enable/Disable  group boxes if they are active or if nothing else is playing
             groupBoxWarmupMusic.Enabled = (WhatsPlaying == Player.Nothing || WhatsPlaying == Player.Warmup);
             groupBoxBreakMusic.Enabled = (WhatsPlaying == Player.Nothing || WhatsPlaying == Player.Break);
-            groupBoxSpotifyMusic.Enabled = (WhatsPlaying == Player.Nothing || WhatsPlaying == Player.Spotify);
 
 
             // Do we have a warmup music loaded?
@@ -524,33 +395,6 @@ namespace SkatersMusicPlayer
                 }
             }
 
-            // Do we have a Spotify?
-            if (!spotifyConnected)
-            {//No music ready
-                //Disable all buttons
-                buttonSpotifyPlay.Enabled = false;
-                buttonSpotifyPrevious.Enabled = false;
-                buttonSpotifyNext.Enabled = false;
-                buttonSpotifyStop.Enabled = false;
-            }
-            else
-            {//Yes!
-                if (spotify.GetStatus().Playing)
-                {
-                    buttonSpotifyPlay.Enabled = false;
-                    buttonSpotifyPrevious.Enabled = true;
-                    buttonSpotifyNext.Enabled = true;
-                    buttonSpotifyStop.Enabled = true;
-                }
-                else
-                {
-                    buttonSpotifyPlay.Enabled = true;
-                    buttonSpotifyPrevious.Enabled = false;
-                    buttonSpotifyNext.Enabled = false;
-                    buttonSpotifyStop.Enabled = false;
-                }
-            }
-
 
             // Do we have a skaters music loaded?
             if (waveOutDeviceSkater == null || audioFileReaderSkater == null)
@@ -599,10 +443,6 @@ namespace SkatersMusicPlayer
                 {
                     StopPressed = true;  // Mark that we manually stopped the playback
                     waveOutDeviceBreak.Stop();
-                }
-                if (spotifyConnected && spotify.GetStatus().Playing)
-                {
-                    spotify.Pause();
                 }
 
                 // Start skaters music
@@ -705,30 +545,6 @@ namespace SkatersMusicPlayer
             }
         }
 
-        private void buttonSpotifyPlay_Click(object sender, EventArgs e)
-        {
-            spotify.Play();
-            EnableButtons();
-        }
-
-        private void buttonSpotifyPrevious_Click(object sender, EventArgs e)
-        {
-            spotify.Previous();
-            EnableButtons();
-        }
-
-        private void buttonSpotifyNext_Click(object sender, EventArgs e)
-        {
-            spotify.Skip();
-            EnableButtons();
-        }
-
-        private void buttonSpotifyStop_Click(object sender, EventArgs e)
-        {
-            spotify.Pause();
-            EnableButtons();
-        }
-
         #endregion
         void OnPostVolumeMeter(object sender, StreamVolumeEventArgs e)
         {
@@ -791,10 +607,6 @@ namespace SkatersMusicPlayer
                     else if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
                     {
                         toolStripStatusLabel1.Text = "Playing break music...";
-                    }
-                    else if (spotifyConnected && spotify.GetStatus().Playing)
-                    {
-                        toolStripStatusLabel1.Text = "Playing spotify music...";
                     }
                 }
                 else
@@ -1066,5 +878,14 @@ namespace SkatersMusicPlayer
         }
         #endregion
 
+        private void ImportFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
+            {
+                LoadISUCalcXML(doc, openFileDialogIndTA.FileName);
+                MessageBox.Show("Classes and Skaters loaded from file\n\nEdit Classes will now open to verify if class has Short", "IndTA imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                editClassesMenuItem_Click(sender, e);
+            }
+        }
     }
 }

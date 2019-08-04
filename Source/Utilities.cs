@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Security.Cryptography;
+using System.Data.Odbc;
+using System.Data.OleDb;
 
 namespace SkatersMusicPlayer
 {
@@ -666,7 +668,7 @@ namespace SkatersMusicPlayer
                         // Set competition name från EventHeader
                         foreach (XmlNode tableNode in CCXML.DocumentElement.GetElementsByTagName("CompetitionHeader"))
                         {// Set competition name
-                            doc.DocumentElement.SetAttribute("CompetitionName", GetXMLElement(tableNode["EventName"], "", ""));
+                            doc.DocumentElement.SetAttribute("Name", GetXMLElement(tableNode["EventName"], "", ""));
                             className = GetXMLElement(tableNode["Category"], "", "");
                         }
 
@@ -785,7 +787,7 @@ namespace SkatersMusicPlayer
                         // Set competition name från EventHeader
                         foreach (XmlNode tableNode in CCXML.DocumentElement.GetElementsByTagName("CompetitionHeader"))
                         {// Set competition name
-                            doc.DocumentElement.SetAttribute("CompetitionName", GetXMLElementAttribute(tableNode["Competition"], "", "Name", ""));
+                            doc.DocumentElement.SetAttribute("Name", GetXMLElementAttribute(tableNode["Competition"], "", "Name", ""));
                             // try to get the class name from IndTA
                             className = GetXMLElementAttribute(tableNode["IndTA"], "", "IndTAClass", "");
 
@@ -920,6 +922,188 @@ namespace SkatersMusicPlayer
 
             }
         }
+        
+        private void LoadISUCalcXML(XmlDocument doc, string p)
+        {
+            XmlDocument ISUXML = new XmlDocument();
+
+            //Load XmlFile
+            try
+            {
+
+                ISUXML.Load(p);
+
+                if (ISUXML.DocumentElement != null)
+                {
+                    // Loop for events
+                    foreach (XmlNode eventNode in ISUXML.DocumentElement.GetElementsByTagName("Event"))
+                    {// Set competition name
+                        string compName = GetXMLElementAttribute(eventNode["Event"], "", "EVT_LNAME", "");
+                        compName = eventNode.Attributes.GetNamedItem("EVT_LNAME").Value;
+                        doc.DocumentElement.SetAttribute("Name", compName);
+
+
+                        foreach (XmlElement personNodeISU in ISUXML.DocumentElement.GetElementsByTagName("Person_Couple_Team"))
+                        {
+                            // Locate skater for update or create a skater
+                            string ID = GetXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], "", "PCT_EXTDT", "");  //External ID - IdrottonlineID?
+                            string Birthdate = GetXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], "", "PCT_BDAY", "");  //Birthdate - Used to find music
+                            string FirstName = GetXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], "", "PCT_GNAME", "");
+                            string LastName = GetXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], "", "PCT_FNAME", "");
+                            string Club = GetXMLElementAttribute(personNodeISU["Club"], "", "PCT_CNAME", "");
+                            string PARID = personNodeISU.ParentNode.Attributes.GetNamedItem("PAR_ID").Value;  //ParticipandID. Used to find startno
+                            string StartNo1 = "";
+                            string StartNo2 = "";
+                            bool hasShort = false;
+
+                            string className = personNodeISU.ParentNode.ParentNode.ParentNode.ParentNode.ParentNode.Attributes.GetNamedItem("CAT_NAME").Value;
+
+                            // Loop throu segments to find segments types and startno
+                            foreach (XmlElement segmentNode in personNodeISU.ParentNode.ParentNode.ParentNode.ParentNode)
+                            {
+                                string type = "";
+                                if (segmentNode.Attributes.GetNamedItem("SCP_TYPE") != null)
+                                {
+                                    type = segmentNode.Attributes.GetNamedItem("SCP_TYPE").Value;
+                                }
+                                if (type == "S")
+                                {
+                                    hasShort = true;
+                                }
+
+                                // Loop throu performmace to find participant and startno
+                                foreach (XmlElement perfNode in segmentNode.GetElementsByTagName("Performance"))
+                                {
+                                    //Do we have a PAR_ID and a Startnum?
+                                    if (perfNode.Attributes.GetNamedItem("PAR_ID") != null && perfNode.Attributes.GetNamedItem("PRF_STNUM") != null)
+                                    {
+                                        //Is it our current skater?
+                                        if (perfNode.Attributes.GetNamedItem("PAR_ID").Value == PARID)
+                                        {
+                                            //Check short or free
+                                            if (type == "S")
+                                            {
+                                                StartNo1 = perfNode.Attributes.GetNamedItem("PRF_STNUM").Value;
+                                            }
+                                            if (type == "F")
+                                            {
+                                                StartNo2 = perfNode.Attributes.GetNamedItem("PRF_STNUM").Value;
+                                            }
+
+                                        }
+                                        type = segmentNode.Attributes.GetNamedItem("SCP_TYPE").Value;
+                                    }
+
+                                }
+                            }
+
+
+                            //Find the class in Competition
+                            XmlNode classNode = null;
+                            foreach (XmlNode node in doc.DocumentElement.GetElementsByTagName("Class"))
+                            {
+                                if (node.Attributes.GetNamedItem("Name").Value == className)
+                                {
+                                    classNode = node;
+                                }
+                            }
+
+                            // If class not found, create a new class
+                            if (classNode == null)
+                            {//New class. Create structure
+                                classNode = doc.CreateElement("Class");
+                                XmlAttribute attributeName = doc.CreateAttribute("Name");
+                                attributeName.Value = className;
+                                classNode.Attributes.Append(attributeName);
+                                if (hasShort)
+                                {
+                                    XmlAttribute attributeShort = doc.CreateAttribute("HasShort");
+                                    attributeShort.Value = "true";
+                                    classNode.Attributes.Append(attributeShort);
+                                }
+                                doc.DocumentElement.AppendChild(classNode);
+                            }
+
+                            // Try to find if skater already present using ID number from indTA and match with ID from Competition
+                            XmlNode personNode = null;
+                            if (classNode.HasChildNodes && ID != string.Empty)
+                            {
+                                foreach (XmlNode personNodeDoc in classNode)
+                                {
+                                    if (personNodeDoc.Attributes.GetNamedItem("ID") != null && personNodeDoc.Attributes.GetNamedItem("ID").Value == ID)
+                                    {
+                                        personNode = personNodeDoc;
+                                    }
+                                }
+                            }
+
+
+                            // If we didn't find skater with ID, try to find if skater already present using First-, Lastname and Club to match from Competition
+                            if (personNode == null)
+                            {
+                                if (classNode.HasChildNodes)
+                                {
+                                    foreach (XmlNode personNodeDoc in classNode)
+                                    {
+                                        if (GetXMLElement(personNodeDoc["FirstName"], "", "") == FirstName &&
+                                            GetXMLElement(personNodeDoc["LastName"], "", "") == LastName &&
+                                            GetXMLElement(personNodeDoc["Club"], "", "") == Club)
+                                        {
+                                            personNode = personNodeDoc;
+                                        }
+                                    }
+
+                                }
+                            }
+
+
+                            // If person not found, create a new person
+                            if (personNode == null)
+                            {
+                                personNode = doc.CreateElement("Skater");
+                                XmlAttribute attributeID = doc.CreateAttribute("ID");
+                                attributeID.Value = ID;
+                                personNode.Attributes.Append(attributeID);
+                                XmlAttribute attributeBD = doc.CreateAttribute("BirthDate");
+                                attributeBD.Value = Birthdate;
+                                personNode.Attributes.Append(attributeBD);
+
+                                classNode.AppendChild(personNode);
+                            }
+
+                            // Make sure we have elements
+                            if (personNode["FirstName"] == null) personNode.AppendChild(doc.CreateElement("FirstName"));
+                            if (personNode["LastName"] == null) personNode.AppendChild(doc.CreateElement("LastName"));
+                            if (personNode["Club"] == null) personNode.AppendChild(doc.CreateElement("Club"));
+                            if (personNode["Short"] == null) personNode.AppendChild(doc.CreateElement("Short"));
+                            if (personNode["Short"]["StartNo"] == null) personNode["Short"].AppendChild(doc.CreateElement("StartNo"));
+                            if (personNode["Free"] == null) personNode.AppendChild(doc.CreateElement("Free"));
+                            if (personNode["Free"]["StartNo"] == null) personNode["Free"].AppendChild(doc.CreateElement("StartNo"));
+
+                            // Update 
+                            personNode["FirstName"].InnerText = FirstName;
+                            personNode["LastName"].InnerText = LastName;
+                            personNode["Club"].InnerText = Club;
+                            personNode["Short"]["StartNo"].InnerText = StartNo1.PadLeft(3, ' '); ;
+                            personNode["Free"]["StartNo"].InnerText = StartNo2.PadLeft(3, ' '); ;
+
+                        }
+
+
+                    }
+
+
+
+                    doc.Save("competition.xml");
+
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading ISUCalc XML-file\n" + e.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
 
         private void autoconnectMusic()
         {
@@ -931,14 +1115,28 @@ namespace SkatersMusicPlayer
                 if (skaterNode.Attributes.GetNamedItem("BirthDate") != null)
                 {
                     BirthDate = skaterNode.Attributes.GetNamedItem("BirthDate").Value.Replace("-", "");
+                    if (BirthDate == "")
+                    {
+                        BirthDate = "*";
+                    }
+                    else
+                    {
+                        BirthDate = BirthDate + "xxxx";
+                    }
+                }
+                string ID = "";
+                if (skaterNode.Attributes.GetNamedItem("ID") != null)
+                {
+                    ID = skaterNode.Attributes.GetNamedItem("ID").Value;
                 }
                 // Free music
                 // Search for music
                 FileInfo[] fiArray = null;
+                string FileToFind = GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "_" + (ID == "" ? "*" : ID) + "_Friåkning.*";
                 try
                 {
                     //fiArray = new DirectoryInfo(@"CompetitionMusic\" + skaterNode.ParentNode.Attributes.GetNamedItem("Name").Value.ToString().Replace(" ", "_") + @"\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "") + "_" + GetXMLElement(skaterNode["LastName"], "", "") + "_" + GetXMLElement(skaterNode["Club"], "", "") + "_Free*.*");
-                    fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Friåkning.*");
+                    fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(FileToFind);
                 }
                 catch (Exception)
                 {
@@ -978,7 +1176,7 @@ namespace SkatersMusicPlayer
                 }
                 else
                 {
-                    MissingFiles = MissingFiles + @"CompetitionMusic\" + GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Friåkning.*" + "\n";
+                    MissingFiles = MissingFiles + @"CompetitionMusic\" + FileToFind + "\n";
                 }
 
 
@@ -989,10 +1187,11 @@ namespace SkatersMusicPlayer
                     // Short music
                     // Search for music
                     fiArray = null;
+                    FileToFind = GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "_" + (ID == "" ? "*" : ID) + "_Kortprogram.*";
                     try
                     {
                         //fiArray = new DirectoryInfo(@"CompetitionMusic\" + skaterNode.ParentNode.Attributes.GetNamedItem("Name").Value.ToString().Replace(" ", "_") + @"\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "") + "_" + GetXMLElement(skaterNode["LastName"], "", "") + "_" + GetXMLElement(skaterNode["Club"], "", "") + "_Short*.*");
-                        fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Kortprogram.*");
+                        fiArray = new DirectoryInfo(@"CompetitionMusic\").GetFiles(FileToFind);
                     }
                     catch (Exception)
                     {
@@ -1034,7 +1233,7 @@ namespace SkatersMusicPlayer
                     else
                     {
                         //MissingFiles = MissingFiles + @"CompetitionMusic\" + skaterNode.ParentNode.Attributes.GetNamedItem("Name").Value.ToString().Replace(" ", "_") + @"\" + GetXMLElement(skaterNode["FirstName"], "", "") + "_" + GetXMLElement(skaterNode["LastName"], "", "") + "_" + GetXMLElement(skaterNode["Club"], "", "") + "_Short*.*" + "\n";
-                        MissingFiles = MissingFiles + @"CompetitionMusic\" + GetXMLElement(skaterNode["FirstName"], "", "").Replace(" ", "_") + "_" + GetXMLElement(skaterNode["LastName"], "", "").Replace(" ", "_") + "_" + BirthDate + "*_Kortprogram.*" + "\n";
+                        MissingFiles = MissingFiles + @"CompetitionMusic\" + FileToFind + "\n";
                     }
                 }
 
