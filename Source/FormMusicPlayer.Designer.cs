@@ -97,6 +97,8 @@
             this.folderBrowserDialogCC = new System.Windows.Forms.FolderBrowserDialog();
             this.folderBrowserDialogISU = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
+            this.UnzipMusicfiletoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxSkatersMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -452,6 +454,7 @@
             this.importFromISUCalcFSXMLtoolStripMenuItem,
             this.importFromClubcompToolStripMenuItem,
             this.toolStripSeparator2,
+            this.UnzipMusicfiletoolStripMenuItem,
             this.autoconnectMusicToSkatersToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
@@ -545,7 +548,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -796,8 +799,21 @@
             // 
             // openFileDialogISUCalcXML
             // 
-            this.openFileDialogISUCalcXML.Filter = "ISC Exportfil|*.xml|All files|*.*";
+            this.openFileDialogISUCalcXML.Filter = "ISU Exportfil|*.xml|All files|*.*";
             this.openFileDialogISUCalcXML.RestoreDirectory = true;
+            // 
+            // UnzipMusicfiletoolStripMenuItem
+            // 
+            this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
+            this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(354, 24);
+            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
+            this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.UnzipMusicfiletoolStripMenuItem_Click);
+            // 
+            // openFileDialogMusicarchive
+            // 
+            this.openFileDialogMusicarchive.Filter = "Musicfiles|musikfil*.zip|zip-files|*.zip|All files|*.*";
+            this.openFileDialogMusicarchive.ReadOnlyChecked = true;
+            this.openFileDialogMusicarchive.RestoreDirectory = true;
             // 
             // FormMusicPlayer
             // 
@@ -904,6 +920,8 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogISU;
         private System.Windows.Forms.ToolStripMenuItem importFromISUCalcFSXMLtoolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogISUCalcXML;
+        private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
     }
 }
 

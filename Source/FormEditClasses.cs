@@ -61,22 +61,23 @@ namespace SkatersMusicPlayer
             // Save classes
             if (DocClasses.DocumentElement != null)
             {
-                // Remove all classes from XML tree
-                while (DocClasses.DocumentElement.HasChildNodes)
-                {
-                    try
-                    {
-                        //Try to remove folder. If it can't an exception will be thrown, but we ignore that...
-                        System.IO.Directory.Delete(Application.StartupPath + @"\CompetitionMusic\" + DocClasses.DocumentElement.FirstChild.Attributes["Name"].Value.Replace(" ", "_"));
-                    }
-                    catch (Exception)
-                    {
-                        //Do nothing
-                    }
+                // No longer to this, since IndTA doesn't support files in folders
+                //// Remove all classes from XML tree
+                //while (DocClasses.DocumentElement.HasChildNodes)
+                //{
+                //    try
+                //    {
+                //        //Try to remove folder. If it can't an exception will be thrown, but we ignore that...
+                //        System.IO.Directory.Delete(Application.StartupPath + @"\CompetitionMusic\" + DocClasses.DocumentElement.FirstChild.Attributes["Name"].Value.Replace(" ", "_"));
+                //    }
+                //    catch (Exception)
+                //    {
+                //        //Do nothing
+                //    }
 
-                    // Remove class from XML tree
-                    DocClasses.DocumentElement.RemoveChild(DocClasses.DocumentElement.FirstChild);
-                }
+                //    // Remove class from XML tree
+                //    DocClasses.DocumentElement.RemoveChild(DocClasses.DocumentElement.FirstChild);
+                //}
 
                 //Loop through all rows and add classes
                 for (int r = 0; r < dataGridView1.Rows.Count - 1; r++)

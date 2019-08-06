@@ -7,6 +7,7 @@ using NAudio;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using AboutBox;
+using System.IO.Compression;
 
 namespace SkatersMusicPlayer
 {
@@ -880,11 +881,48 @@ namespace SkatersMusicPlayer
 
         private void ImportFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
+            if (openFileDialogISUCalcXML.ShowDialog() == DialogResult.OK)
             {
-                LoadISUCalcXML(doc, openFileDialogIndTA.FileName);
+                LoadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
                 MessageBox.Show("Classes and Skaters loaded from file\n\nEdit Classes will now open to verify if class has Short", "IndTA imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 editClassesMenuItem_Click(sender, e);
+            }
+        }
+
+        private void UnzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get Filename to unpack
+            if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
+            {
+                int NumberOfFiles = 0;
+                string extractPath = Application.StartupPath + @"\CompetitionMusic\";
+
+                using (ZipArchive archive = ZipFile.OpenRead(openFileDialogMusicarchive.FileName))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        if (entry.FullName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Gets the full path to ensure that relative segments are removed.
+                            string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                            // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
+                            // are case-insensitive.
+                            if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                            {
+                                entry.ExtractToFile(destinationPath, true);
+                                NumberOfFiles = NumberOfFiles + 1;
+                            }
+                        }
+                    }
+                }
+
+                //ZipArchive archive2 = ZipFile.Open(openFileDialogMusicarchive.FileName, ZipArchiveMode.Read);
+                //archive2.ExtractToDirectory(Application.StartupPath + @"\CompetitionMusic\");
+                if (MessageBox.Show(NumberOfFiles.ToString() + " Music files are now unpacked. You can autoconnect to skaters if you want\n\nDo you want to autoconnect?", "Music unpacked", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    autoconnectMusicToSkatersToolStripMenuItem_Click(sender, e);
+                }
             }
         }
     }
