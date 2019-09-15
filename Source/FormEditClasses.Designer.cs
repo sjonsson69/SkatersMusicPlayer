@@ -1,6 +1,6 @@
 ﻿namespace SkatersMusicPlayer
 {
-    partial class FormEditClasses
+    partial class formEditCategories
     {
         /// <summary>
         /// Required designer variable.
@@ -31,12 +31,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Class = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.HasShort = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HasFree = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.NumberOfSkater = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
+            this.Category = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HasShort = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.HasFree = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.NumberOfParticipants = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,10 +47,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Class,
+            this.Category,
             this.HasShort,
             this.HasFree,
-            this.NumberOfSkater});
+            this.NumberOfParticipants});
             this.dataGridView1.Location = new System.Drawing.Point(12, 12);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
@@ -58,39 +58,6 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             this.dataGridView1.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
-            // 
-            // Class
-            // 
-            this.Class.HeaderText = "Class";
-            this.Class.Name = "Class";
-            this.Class.Width = 400;
-            // 
-            // HasShort
-            // 
-            this.HasShort.FalseValue = "";
-            this.HasShort.HeaderText = "Has Short";
-            this.HasShort.Name = "HasShort";
-            this.HasShort.TrueValue = "true";
-            // 
-            // HasFree
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            dataGridViewCellStyle1.NullValue = false;
-            this.HasFree.DefaultCellStyle = dataGridViewCellStyle1;
-            this.HasFree.HeaderText = "Has Free";
-            this.HasFree.Name = "HasFree";
-            this.HasFree.ReadOnly = true;
-            // 
-            // NumberOfSkater
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.NumberOfSkater.DefaultCellStyle = dataGridViewCellStyle2;
-            this.NumberOfSkater.HeaderText = "No of skaters in Class";
-            this.NumberOfSkater.Name = "NumberOfSkater";
-            this.NumberOfSkater.ReadOnly = true;
-            this.NumberOfSkater.Width = 200;
             // 
             // buttonCancel
             // 
@@ -112,9 +79,42 @@
             this.buttonSave.TabIndex = 2;
             this.buttonSave.Text = "&Save";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonClassSave_Click);
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
-            // FormEditClasses
+            // Category
+            // 
+            this.Category.HeaderText = "Category";
+            this.Category.Name = "Category";
+            this.Category.Width = 440;
+            // 
+            // HasShort
+            // 
+            this.HasShort.FalseValue = "";
+            this.HasShort.HeaderText = "Has Short";
+            this.HasShort.Name = "HasShort";
+            this.HasShort.TrueValue = "true";
+            // 
+            // HasFree
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            dataGridViewCellStyle1.NullValue = false;
+            this.HasFree.DefaultCellStyle = dataGridViewCellStyle1;
+            this.HasFree.HeaderText = "Has Free";
+            this.HasFree.Name = "HasFree";
+            this.HasFree.ReadOnly = true;
+            // 
+            // NumberOfParticipants
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.NumberOfParticipants.DefaultCellStyle = dataGridViewCellStyle2;
+            this.NumberOfParticipants.HeaderText = "No of participants";
+            this.NumberOfParticipants.Name = "NumberOfParticipants";
+            this.NumberOfParticipants.ReadOnly = true;
+            this.NumberOfParticipants.Width = 160;
+            // 
+            // formEditCategories
             // 
             this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -127,9 +127,9 @@
             this.Controls.Add(this.dataGridView1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "FormEditClasses";
+            this.Name = "formEditCategories";
             this.ShowInTaskbar = false;
-            this.Text = "Edit Classes";
+            this.Text = "Edit Categories";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -140,9 +140,9 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonSave;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Class;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Category;
         private System.Windows.Forms.DataGridViewCheckBoxColumn HasShort;
         private System.Windows.Forms.DataGridViewCheckBoxColumn HasFree;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfSkater;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfParticipants;
     }
 }

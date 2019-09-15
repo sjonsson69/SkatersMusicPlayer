@@ -30,27 +30,28 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
             this.volumeMeter1 = new NAudio.Gui.VolumeMeter();
             this.volumeMeter2 = new NAudio.Gui.VolumeMeter();
-            this.listViewSkaters = new System.Windows.Forms.ListView();
+            this.listViewParticipants = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.groupBoxSkatersMusic = new System.Windows.Forms.GroupBox();
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBoxParticipantMusic = new System.Windows.Forms.GroupBox();
             this.groupBoxAutoPauseMusic = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.labelDelay = new System.Windows.Forms.Label();
             this.volumeSliderPause = new NAudio.Gui.VolumeSlider();
             this.numericUpDownPause = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAutoPauseMusic = new System.Windows.Forms.CheckBox();
-            this.comboBoxClass = new System.Windows.Forms.ComboBox();
+            this.comboBoxCategory = new System.Windows.Forms.ComboBox();
             this.buttonPause = new System.Windows.Forms.Button();
             this.labelCurrentTime = new System.Windows.Forms.Label();
             this.labelTotalTime = new System.Windows.Forms.Label();
@@ -62,17 +63,9 @@
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editCompetitiontoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editClassesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editSkatersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.importFromIndTA1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromClubcompOLDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromISUCalcFSXMLtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromClubcompToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.autoconnectMusicToSkatersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editEventtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editCategoriesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,9 +90,15 @@
             this.folderBrowserDialogCC = new System.Windows.Forms.FolderBrowserDialog();
             this.folderBrowserDialogISU = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
-            this.UnzipMusicfiletoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
-            this.groupBoxSkatersMusic.SuspendLayout();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromISUCalcFSXMLtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromClubcompToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.UnzipMusicfiletoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoconnectMusicToParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPosition)).BeginInit();
@@ -183,31 +182,32 @@
             this.volumeMeter2.TabStop = false;
             this.volumeMeter2.Text = "volumeMeter2";
             // 
-            // listViewSkaters
+            // listViewParticipants
             // 
-            this.listViewSkaters.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.listViewSkaters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.listViewParticipants.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.listViewParticipants.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewSkaters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewParticipants.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
             this.columnHeader4,
-            this.columnHeader7});
-            this.listViewSkaters.FullRowSelect = true;
-            this.listViewSkaters.HideSelection = false;
-            this.listViewSkaters.Location = new System.Drawing.Point(8, 57);
-            this.listViewSkaters.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.listViewSkaters.MultiSelect = false;
-            this.listViewSkaters.Name = "listViewSkaters";
-            this.listViewSkaters.ShowItemToolTips = true;
-            this.listViewSkaters.Size = new System.Drawing.Size(500, 254);
-            this.listViewSkaters.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.listViewSkaters.TabIndex = 1;
-            this.listViewSkaters.UseCompatibleStateImageBehavior = false;
-            this.listViewSkaters.View = System.Windows.Forms.View.Details;
-            this.listViewSkaters.SelectedIndexChanged += new System.EventHandler(this.listViewSkaters_SelectedIndexChanged);
+            this.columnHeader7,
+            this.columnHeader8});
+            this.listViewParticipants.FullRowSelect = true;
+            this.listViewParticipants.HideSelection = false;
+            this.listViewParticipants.Location = new System.Drawing.Point(8, 57);
+            this.listViewParticipants.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.listViewParticipants.MultiSelect = false;
+            this.listViewParticipants.Name = "listViewParticipants";
+            this.listViewParticipants.ShowItemToolTips = true;
+            this.listViewParticipants.Size = new System.Drawing.Size(500, 254);
+            this.listViewParticipants.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.listViewParticipants.TabIndex = 1;
+            this.listViewParticipants.UseCompatibleStateImageBehavior = false;
+            this.listViewParticipants.View = System.Windows.Forms.View.Details;
+            this.listViewParticipants.SelectedIndexChanged += new System.EventHandler(this.listViewParticipants_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -226,37 +226,45 @@
             // 
             // columnHeader4
             // 
+            this.columnHeader4.DisplayIndex = 4;
             this.columnHeader4.Text = "Length";
             this.columnHeader4.Width = 73;
             // 
             // columnHeader7
             // 
+            this.columnHeader7.DisplayIndex = 5;
             this.columnHeader7.Text = "Music file";
             this.columnHeader7.Width = 84;
             // 
-            // groupBoxSkatersMusic
+            // columnHeader8
             // 
-            this.groupBoxSkatersMusic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.columnHeader8.DisplayIndex = 3;
+            this.columnHeader8.Text = "Music title";
+            this.columnHeader8.Width = 90;
+            // 
+            // groupBoxParticipantMusic
+            // 
+            this.groupBoxParticipantMusic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxSkatersMusic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.groupBoxSkatersMusic.Controls.Add(this.groupBoxAutoPauseMusic);
-            this.groupBoxSkatersMusic.Controls.Add(this.comboBoxClass);
-            this.groupBoxSkatersMusic.Controls.Add(this.buttonPause);
-            this.groupBoxSkatersMusic.Controls.Add(this.labelCurrentTime);
-            this.groupBoxSkatersMusic.Controls.Add(this.labelTotalTime);
-            this.groupBoxSkatersMusic.Controls.Add(this.trackBarPosition);
-            this.groupBoxSkatersMusic.Controls.Add(this.listViewSkaters);
-            this.groupBoxSkatersMusic.Controls.Add(this.buttonStop);
-            this.groupBoxSkatersMusic.Controls.Add(this.buttonPlay);
-            this.groupBoxSkatersMusic.Location = new System.Drawing.Point(133, 33);
-            this.groupBoxSkatersMusic.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBoxSkatersMusic.Name = "groupBoxSkatersMusic";
-            this.groupBoxSkatersMusic.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBoxSkatersMusic.Size = new System.Drawing.Size(516, 490);
-            this.groupBoxSkatersMusic.TabIndex = 3;
-            this.groupBoxSkatersMusic.TabStop = false;
-            this.groupBoxSkatersMusic.Text = "Skaters music";
+            this.groupBoxParticipantMusic.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.groupBoxParticipantMusic.Controls.Add(this.groupBoxAutoPauseMusic);
+            this.groupBoxParticipantMusic.Controls.Add(this.comboBoxCategory);
+            this.groupBoxParticipantMusic.Controls.Add(this.buttonPause);
+            this.groupBoxParticipantMusic.Controls.Add(this.labelCurrentTime);
+            this.groupBoxParticipantMusic.Controls.Add(this.labelTotalTime);
+            this.groupBoxParticipantMusic.Controls.Add(this.trackBarPosition);
+            this.groupBoxParticipantMusic.Controls.Add(this.listViewParticipants);
+            this.groupBoxParticipantMusic.Controls.Add(this.buttonStop);
+            this.groupBoxParticipantMusic.Controls.Add(this.buttonPlay);
+            this.groupBoxParticipantMusic.Location = new System.Drawing.Point(133, 33);
+            this.groupBoxParticipantMusic.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxParticipantMusic.Name = "groupBoxParticipantMusic";
+            this.groupBoxParticipantMusic.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBoxParticipantMusic.Size = new System.Drawing.Size(516, 490);
+            this.groupBoxParticipantMusic.TabIndex = 3;
+            this.groupBoxParticipantMusic.TabStop = false;
+            this.groupBoxParticipantMusic.Text = "Participant music";
             // 
             // groupBoxAutoPauseMusic
             // 
@@ -272,7 +280,7 @@
             this.groupBoxAutoPauseMusic.Size = new System.Drawing.Size(500, 62);
             this.groupBoxAutoPauseMusic.TabIndex = 8;
             this.groupBoxAutoPauseMusic.TabStop = false;
-            this.groupBoxAutoPauseMusic.Text = "Automatic pause music (replay skaters music)";
+            this.groupBoxAutoPauseMusic.Text = "Automatic pause music (replay participants music)";
             // 
             // label1
             // 
@@ -320,25 +328,17 @@
             this.checkBoxAutoPauseMusic.Text = "Enabled";
             this.checkBoxAutoPauseMusic.UseVisualStyleBackColor = true;
             // 
-            // comboBoxClass
+            // comboBoxCategory
             // 
-            this.comboBoxClass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBoxCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxClass.FormattingEnabled = true;
-            this.comboBoxClass.Items.AddRange(new object[] {
-            "Ungdom 13 Flickor Short Program",
-            "Juniorer Damer Short Program",
-            "Seniorer Herrar Short Program",
-            "Ungdom 13 Flickor Free Skating",
-            "",
-            "",
-            ""});
-            this.comboBoxClass.Location = new System.Drawing.Point(8, 21);
-            this.comboBoxClass.Name = "comboBoxClass";
-            this.comboBoxClass.Size = new System.Drawing.Size(500, 28);
-            this.comboBoxClass.TabIndex = 0;
-            this.comboBoxClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxClass_SelectedIndexChanged);
+            this.comboBoxCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCategory.FormattingEnabled = true;
+            this.comboBoxCategory.Location = new System.Drawing.Point(8, 21);
+            this.comboBoxCategory.Name = "comboBoxCategory";
+            this.comboBoxCategory.Size = new System.Drawing.Size(500, 28);
+            this.comboBoxCategory.TabIndex = 0;
+            this.comboBoxCategory.SelectedIndexChanged += new System.EventHandler(this.comboBoxCategory_SelectedIndexChanged);
             // 
             // buttonPause
             // 
@@ -401,6 +401,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.importToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -421,13 +422,13 @@
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Enabled = false;
             this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(162, 24);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.newToolStripMenuItem.Text = "&New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
@@ -444,98 +445,33 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editCompetitiontoolStripMenuItem,
-            this.editClassesMenuItem,
-            this.editSkatersToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.importFromIndTA1ToolStripMenuItem,
-            this.importFromIndTA2ToolStripMenuItem,
-            this.importFromClubcompOLDToolStripMenuItem,
-            this.importFromISUCalcFSXMLtoolStripMenuItem,
-            this.importFromClubcompToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.UnzipMusicfiletoolStripMenuItem,
-            this.autoconnectMusicToSkatersToolStripMenuItem});
+            this.editEventtoolStripMenuItem,
+            this.editCategoriesMenuItem,
+            this.editParticipantsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
-            // editCompetitiontoolStripMenuItem
+            // editEventtoolStripMenuItem
             // 
-            this.editCompetitiontoolStripMenuItem.Name = "editCompetitiontoolStripMenuItem";
-            this.editCompetitiontoolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.editCompetitiontoolStripMenuItem.Text = "Edit Com&petition";
-            this.editCompetitiontoolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            this.editEventtoolStripMenuItem.Name = "editEventtoolStripMenuItem";
+            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editEventtoolStripMenuItem.Text = "&Event";
+            this.editEventtoolStripMenuItem.Click += new System.EventHandler(this.editEventMenuItem_Click);
             // 
-            // editClassesMenuItem
+            // editCategoriesMenuItem
             // 
-            this.editClassesMenuItem.Name = "editClassesMenuItem";
-            this.editClassesMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.editClassesMenuItem.Text = "Edit &Classes";
-            this.editClassesMenuItem.Click += new System.EventHandler(this.editClassesMenuItem_Click);
+            this.editCategoriesMenuItem.Name = "editCategoriesMenuItem";
+            this.editCategoriesMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editCategoriesMenuItem.Text = "&Categories";
+            this.editCategoriesMenuItem.Click += new System.EventHandler(this.editCategoriesMenuItem_Click);
             // 
-            // editSkatersToolStripMenuItem
+            // editParticipantsToolStripMenuItem
             // 
-            this.editSkatersToolStripMenuItem.Name = "editSkatersToolStripMenuItem";
-            this.editSkatersToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.editSkatersToolStripMenuItem.Text = "Edit &Skaters";
-            this.editSkatersToolStripMenuItem.Click += new System.EventHandler(this.editSkatersToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(351, 6);
-            // 
-            // importFromIndTA1ToolStripMenuItem
-            // 
-            this.importFromIndTA1ToolStripMenuItem.Enabled = false;
-            this.importFromIndTA1ToolStripMenuItem.Name = "importFromIndTA1ToolStripMenuItem";
-            this.importFromIndTA1ToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.importFromIndTA1ToolStripMenuItem.Text = "Import from &IndTA 1.0";
-            this.importFromIndTA1ToolStripMenuItem.Visible = false;
-            this.importFromIndTA1ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTAToolStripMenuItem_Click);
-            // 
-            // importFromIndTA2ToolStripMenuItem
-            // 
-            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
-            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.importFromIndTA2ToolStripMenuItem.Text = "Import from &IndTA 2.0";
-            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
-            // 
-            // importFromClubcompOLDToolStripMenuItem
-            // 
-            this.importFromClubcompOLDToolStripMenuItem.Enabled = false;
-            this.importFromClubcompOLDToolStripMenuItem.Name = "importFromClubcompOLDToolStripMenuItem";
-            this.importFromClubcompOLDToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.importFromClubcompOLDToolStripMenuItem.Text = "OLD-Import from C&lubcomp / Starcomp";
-            this.importFromClubcompOLDToolStripMenuItem.Visible = false;
-            this.importFromClubcompOLDToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcompOldToolStripMenuItem_Click);
-            // 
-            // importFromISUCalcFSXMLtoolStripMenuItem
-            // 
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Name = "importFromISUCalcFSXMLtoolStripMenuItem";
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Text = "Import from ISUCalcFS &XML";
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Click += new System.EventHandler(this.ImportFromISUCalcFSXMLtoolStripMenuItem_Click);
-            // 
-            // importFromClubcompToolStripMenuItem
-            // 
-            this.importFromClubcompToolStripMenuItem.Name = "importFromClubcompToolStripMenuItem";
-            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.importFromClubcompToolStripMenuItem.Text = "Import from S&tarcomp";
-            this.importFromClubcompToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcomp2016ToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(351, 6);
-            // 
-            // autoconnectMusicToSkatersToolStripMenuItem
-            // 
-            this.autoconnectMusicToSkatersToolStripMenuItem.Name = "autoconnectMusicToSkatersToolStripMenuItem";
-            this.autoconnectMusicToSkatersToolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.autoconnectMusicToSkatersToolStripMenuItem.Text = "Autoconnect music to skaters";
-            this.autoconnectMusicToSkatersToolStripMenuItem.Click += new System.EventHandler(this.autoconnectMusicToSkatersToolStripMenuItem_Click);
+            this.editParticipantsToolStripMenuItem.Name = "editParticipantsToolStripMenuItem";
+            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editParticipantsToolStripMenuItem.Text = "&Participants";
+            this.editParticipantsToolStripMenuItem.Click += new System.EventHandler(this.editParticipantsToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -633,7 +569,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem9});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -719,7 +655,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem10});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -802,18 +738,64 @@
             this.openFileDialogISUCalcXML.Filter = "ISU Exportfil|*.xml|All files|*.*";
             this.openFileDialogISUCalcXML.RestoreDirectory = true;
             // 
-            // UnzipMusicfiletoolStripMenuItem
-            // 
-            this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
-            this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(354, 24);
-            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
-            this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.UnzipMusicfiletoolStripMenuItem_Click);
-            // 
             // openFileDialogMusicarchive
             // 
             this.openFileDialogMusicarchive.Filter = "Musicfiles|musikfil*.zip|zip-files|*.zip|All files|*.*";
             this.openFileDialogMusicarchive.ReadOnlyChecked = true;
             this.openFileDialogMusicarchive.RestoreDirectory = true;
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importFromIndTA2ToolStripMenuItem,
+            this.importFromISUCalcFSXMLtoolStripMenuItem,
+            this.importFromClubcompToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.UnzipMusicfiletoolStripMenuItem,
+            this.autoconnectMusicToParticipantsToolStripMenuItem});
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
+            this.importToolStripMenuItem.Text = "&Import";
+            // 
+            // importFromIndTA2ToolStripMenuItem
+            // 
+            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
+            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
+            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
+            // 
+            // importFromISUCalcFSXMLtoolStripMenuItem
+            // 
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Name = "importFromISUCalcFSXMLtoolStripMenuItem";
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Text = "ISUCalcFS &XML";
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Click += new System.EventHandler(this.importFromISUCalcFSXMLtoolStripMenuItem_Click);
+            // 
+            // importFromClubcompToolStripMenuItem
+            // 
+            this.importFromClubcompToolStripMenuItem.Name = "importFromClubcompToolStripMenuItem";
+            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromClubcompToolStripMenuItem.Text = "&Starcomp";
+            this.importFromClubcompToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcomp2016ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(315, 6);
+            // 
+            // UnzipMusicfiletoolStripMenuItem
+            // 
+            this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
+            this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
+            this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.unzipMusicfiletoolStripMenuItem_Click);
+            // 
+            // autoconnectMusicToParticipantsToolStripMenuItem
+            // 
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Name = "autoconnectMusicToParticipantsToolStripMenuItem";
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Text = "&Autoconnect music to participants";
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Click += new System.EventHandler(this.autoconnectMusicToParticipantsToolStripMenuItem_Click);
             // 
             // FormMusicPlayer
             // 
@@ -826,16 +808,16 @@
             this.Controls.Add(this.groupBoxVolume);
             this.Controls.Add(this.groupBoxSoundLevels);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.groupBoxSkatersMusic);
+            this.Controls.Add(this.groupBoxParticipantMusic);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FormMusicPlayer";
             this.Text = "Skaters MusicPlayer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMusicPlayer_FormClosing);
-            this.groupBoxSkatersMusic.ResumeLayout(false);
-            this.groupBoxSkatersMusic.PerformLayout();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMusicPlayer_FormClosing);
+            this.groupBoxParticipantMusic.ResumeLayout(false);
+            this.groupBoxParticipantMusic.PerformLayout();
             this.groupBoxAutoPauseMusic.ResumeLayout(false);
             this.groupBoxAutoPauseMusic.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).EndInit();
@@ -860,18 +842,18 @@
         private NAudio.Gui.VolumeSlider volumeSlider1;
         private NAudio.Gui.VolumeMeter volumeMeter1;
         private NAudio.Gui.VolumeMeter volumeMeter2;
-        private System.Windows.Forms.ListView listViewSkaters;
+        private System.Windows.Forms.ListView listViewParticipants;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.GroupBox groupBoxSkatersMusic;
+        private System.Windows.Forms.GroupBox groupBoxParticipantMusic;
         private System.Windows.Forms.TrackBar trackBarPosition;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label labelCurrentTime;
         private System.Windows.Forms.Label labelTotalTime;
         private System.Windows.Forms.Button buttonPause;
-        private System.Windows.Forms.ComboBox comboBoxClass;
+        private System.Windows.Forms.ComboBox comboBoxCategory;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
@@ -905,23 +887,22 @@
         private System.Windows.Forms.ListView listViewBreakMusic;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.ToolStripMenuItem editClassesMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editSkatersToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editCompetitiontoolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem importFromIndTA1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editCategoriesMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editParticipantsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editEventtoolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogIndTA;
-        private System.Windows.Forms.ToolStripMenuItem importFromClubcompOLDToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToSkatersToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogCC;
-        private System.Windows.Forms.ToolStripMenuItem importFromIndTA2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromClubcompToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogISU;
-        private System.Windows.Forms.ToolStripMenuItem importFromISUCalcFSXMLtoolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogISUCalcXML;
-        private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromIndTA2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromISUCalcFSXMLtoolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromClubcompToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToParticipantsToolStripMenuItem;
     }
 }
 

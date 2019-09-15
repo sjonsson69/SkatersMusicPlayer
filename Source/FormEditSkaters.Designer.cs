@@ -1,6 +1,6 @@
 ﻿namespace SkatersMusicPlayer
 {
-    partial class FormEditSkaters
+    partial class FormEditParticipants
     {
         /// <summary>
         /// Required designer variable.
@@ -31,16 +31,17 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.comboBoxClass = new System.Windows.Forms.ComboBox();
+            this.comboBoxCategory = new System.Windows.Forms.ComboBox();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.dataGridViewSkaters = new System.Windows.Forms.DataGridView();
+            this.dataGridViewParticipants = new System.Windows.Forms.DataGridView();
             this.ColumnStartNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnLName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnClub = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnBirthDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MusicTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnSelectFile = new System.Windows.Forms.DataGridViewButtonColumn();
             this.ColumnLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMusic = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,21 +49,22 @@
             this.ColumnStartNoSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMusicFileSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnChecksumSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MusicTitleSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSkaters)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewParticipants)).BeginInit();
             this.SuspendLayout();
             // 
-            // comboBoxClass
+            // comboBoxCategory
             // 
-            this.comboBoxClass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboBoxCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxClass.FormattingEnabled = true;
-            this.comboBoxClass.Location = new System.Drawing.Point(12, 12);
-            this.comboBoxClass.Name = "comboBoxClass";
-            this.comboBoxClass.Size = new System.Drawing.Size(984, 28);
-            this.comboBoxClass.TabIndex = 0;
-            this.comboBoxClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxClass_SelectedIndexChanged);
+            this.comboBoxCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCategory.FormattingEnabled = true;
+            this.comboBoxCategory.Location = new System.Drawing.Point(12, 12);
+            this.comboBoxCategory.Name = "comboBoxCategory";
+            this.comboBoxCategory.Size = new System.Drawing.Size(984, 28);
+            this.comboBoxCategory.TabIndex = 0;
+            this.comboBoxCategory.SelectedIndexChanged += new System.EventHandler(this.comboBoxCategory_SelectedIndexChanged);
             // 
             // buttonSave
             // 
@@ -86,33 +88,35 @@
             this.buttonCancel.Text = "&Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
-            // dataGridViewSkaters
+            // dataGridViewParticipants
             // 
-            this.dataGridViewSkaters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dataGridViewParticipants.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewSkaters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewSkaters.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewParticipants.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewParticipants.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnStartNo,
             this.ColumnFName,
             this.ColumnLName,
             this.ColumnClub,
             this.ColumnID,
             this.ColumnBirthDate,
+            this.MusicTitle,
             this.ColumnSelectFile,
             this.ColumnLength,
             this.ColumnMusic,
             this.ColumnChecksum,
             this.ColumnStartNoSecond,
             this.ColumnMusicFileSecond,
-            this.ColumnChecksumSecond});
-            this.dataGridViewSkaters.Location = new System.Drawing.Point(12, 47);
-            this.dataGridViewSkaters.MultiSelect = false;
-            this.dataGridViewSkaters.Name = "dataGridViewSkaters";
-            this.dataGridViewSkaters.Size = new System.Drawing.Size(984, 507);
-            this.dataGridViewSkaters.TabIndex = 1;
-            this.dataGridViewSkaters.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewSkaters_CellContentClick);
-            this.dataGridViewSkaters.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
+            this.ColumnChecksumSecond,
+            this.MusicTitleSecond});
+            this.dataGridViewParticipants.Location = new System.Drawing.Point(12, 47);
+            this.dataGridViewParticipants.MultiSelect = false;
+            this.dataGridViewParticipants.Name = "dataGridViewParticipants";
+            this.dataGridViewParticipants.Size = new System.Drawing.Size(984, 507);
+            this.dataGridViewParticipants.TabIndex = 1;
+            this.dataGridViewParticipants.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewParticipants_CellContentClick);
+            this.dataGridViewParticipants.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
             // 
             // ColumnStartNo
             // 
@@ -160,6 +164,12 @@
             this.ColumnBirthDate.Name = "ColumnBirthDate";
             this.ColumnBirthDate.ReadOnly = true;
             this.ColumnBirthDate.Visible = false;
+            // 
+            // MusicTitle
+            // 
+            this.MusicTitle.HeaderText = "Music title";
+            this.MusicTitle.Name = "MusicTitle";
+            this.MusicTitle.Width = 125;
             // 
             // ColumnSelectFile
             // 
@@ -220,13 +230,19 @@
             this.ColumnChecksumSecond.ReadOnly = true;
             this.ColumnChecksumSecond.Visible = false;
             // 
+            // MusicTitleSecond
+            // 
+            this.MusicTitleSecond.HeaderText = "Music title Second";
+            this.MusicTitleSecond.Name = "MusicTitleSecond";
+            this.MusicTitleSecond.Visible = false;
+            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.RestoreDirectory = true;
             this.openFileDialog1.Title = "Select music file";
             // 
-            // FormEditSkaters
+            // FormEditParticipants
             // 
             this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -234,26 +250,26 @@
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(1008, 601);
             this.ControlBox = false;
-            this.Controls.Add(this.dataGridViewSkaters);
+            this.Controls.Add(this.dataGridViewParticipants);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.comboBoxClass);
+            this.Controls.Add(this.comboBoxCategory);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "FormEditSkaters";
+            this.Name = "FormEditParticipants";
             this.ShowInTaskbar = false;
-            this.Text = "Edit Skaters";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSkaters)).EndInit();
+            this.Text = "Edit Participants";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewParticipants)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBoxClass;
+        private System.Windows.Forms.ComboBox comboBoxCategory;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.DataGridView dataGridViewSkaters;
+        private System.Windows.Forms.DataGridView dataGridViewParticipants;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStartNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFName;
@@ -261,6 +277,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnClub;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnID;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnBirthDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MusicTitle;
         private System.Windows.Forms.DataGridViewButtonColumn ColumnSelectFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnLength;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMusic;
@@ -268,5 +285,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStartNoSecond;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMusicFileSecond;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnChecksumSecond;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MusicTitleSecond;
     }
 }

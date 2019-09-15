@@ -1,96 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using System.IO;
 
 namespace SkatersMusicPlayer
 {
-    public partial class FormEditClasses : Form
+    public partial class formEditCategories : Form
     {
-        XmlDocument DocClasses = null;
+        XmlDocument docCategories = null;
 
-        public void LoadClassesToGrid(XmlDocument doc, DataGridView DV)
+        public static void loadCategoriesToGrid(XmlDocument doc, DataGridView DV)
         {
-            try
+            if (doc != null && DV != null)
             {
-                DV.Rows.Clear();
-
-                if (doc.DocumentElement != null)
+                try
                 {
-                    foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName("Class"))
+                    DV.Rows.Clear();
+
+                    if (doc.DocumentElement != null)
                     {
-                        DV.Rows.Add();
-                        DV[0, DV.Rows.Count - 2].Tag = tableNode.InnerXml;  // Store the InnerXML for each Class
-                        DV[0, DV.Rows.Count - 2].Value = tableNode.Attributes.GetNamedItem("Name").Value;
-
-                        // Does the Class have differens classes?
-                        if (tableNode.Attributes.GetNamedItem("HasShort") != null)
+                        foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
                         {
-                            DV[1, DV.Rows.Count - 2].Value = "true";
-                        }
-                        DV[2, DV.Rows.Count - 2].Value = "true";
-                        DV[3, DV.Rows.Count - 2].Value = tableNode.ChildNodes.Count; // Number of skaters in class
+                            DV.Rows.Add();
+                            DV[0, DV.Rows.Count - 2].Tag = tableNode.InnerXml;  // Store the InnerXML for each Category
+                            DV[0, DV.Rows.Count - 2].Value = tableNode.Attributes.GetNamedItem("Name").Value;
 
+                            // Does the Category have differens segments?
+                            if (tableNode.Attributes.GetNamedItem("HasShort") != null)
+                            {
+                                DV[1, DV.Rows.Count - 2].Value = "true";
+                            }
+                            DV[2, DV.Rows.Count - 2].Value = "true";
+                            DV[3, DV.Rows.Count - 2].Value = tableNode.ChildNodes.Count; // Number of participants in category
+
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error loading Classes\n" + e.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception e)
+                {
+                    MessageBox.Show("Error loading Categories\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
-        public FormEditClasses(XmlDocument doc)
+        public formEditCategories(XmlDocument doc)
         {
             InitializeComponent();
 
-            DocClasses = doc;
-            LoadClassesToGrid(doc, dataGridView1);
+            docCategories = doc;
+            loadCategoriesToGrid(doc, dataGridView1);
 
         }
 
-        private void buttonClassSave_Click(object sender, EventArgs e)
+        private void buttonSave_Click(object sender, EventArgs e)
         {
-            // Save classes
-            if (DocClasses.DocumentElement != null)
+            // Save categories
+            if (docCategories.DocumentElement != null)
             {
-                // Remove all classes from XML tree
-                while (DocClasses.DocumentElement.HasChildNodes)
+                // Remove all categories from XML tree
+                while (docCategories.DocumentElement.HasChildNodes)
                 {
-                    // Remove class from XML tree
-                    DocClasses.DocumentElement.RemoveChild(DocClasses.DocumentElement.FirstChild);
+                    // Remove category from XML tree
+                    docCategories.DocumentElement.RemoveChild(docCategories.DocumentElement.FirstChild);
                 }
 
-                //Loop through all rows and add classes
+                //Loop through all rows and add category
                 for (int r = 0; r < dataGridView1.Rows.Count - 1; r++)
                 {
-                    //Name="Ungdom C" HasShort="true">
-
-                    // Try to create directory - No longer do this since IndTA2.0 doesn't supply files in folders
-                    //System.IO.Directory.CreateDirectory(Application.StartupPath + @"\CompetitionMusic\" + dataGridView1[0, r].Value.ToString().Replace(" ", "_"));
-
-                    XmlNode classNode = DocClasses.CreateElement("Class");
-                    XmlAttribute attributeName = DocClasses.CreateAttribute("Name");
+                    XmlNode categoryNode = docCategories.CreateElement(Properties.Resources.XMLTAG_CATEGORY);
+                    XmlAttribute attributeName = docCategories.CreateAttribute("Name");
                     attributeName.Value = (string)dataGridView1[0, r].Value;
-                    classNode.Attributes.Append(attributeName);
+                    categoryNode.Attributes.Append(attributeName);
                     if (dataGridView1[1, r].Value != null && dataGridView1[1, r].Value.ToString() == "true")
                     {
-                        XmlAttribute attributeShort = DocClasses.CreateAttribute("HasShort");
+                        XmlAttribute attributeShort = docCategories.CreateAttribute("HasShort");
                         attributeShort.Value = (string)dataGridView1[1, r].Value;
-                        classNode.Attributes.Append(attributeShort);
+                        categoryNode.Attributes.Append(attributeShort);
                     }
-                    classNode.InnerXml = (string)dataGridView1[0, r].Tag;  // Store the InnerXML for each Class
+                    categoryNode.InnerXml = (string)dataGridView1[0, r].Tag;  // Store the InnerXML for each Category
 
-                    DocClasses.DocumentElement.AppendChild(classNode);
+                    docCategories.DocumentElement.AppendChild(categoryNode);
                 }
-                DocClasses.Save("competition.xml");
+                docCategories.Save(Properties.Resources.XML_FILENAME);
             }
 
             //End form
@@ -106,8 +96,8 @@ namespace SkatersMusicPlayer
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             if ((int)e.Row.Cells[3].Value != 0)
-            {// Class contains skaters, that will be removed
-                if (MessageBox.Show("Are you sure you want to remove " + e.Row.Cells[0].Value + "?\n\nIt contains " + e.Row.Cells[3].Value + " skater(s) that also will be deleted!", "Delete Class?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            {// Category contains participants, that will be removed
+                if (MessageBox.Show("Are you sure you want to remove " + e.Row.Cells[0].Value + "?\n\nIt contains " + e.Row.Cells[3].Value + " participants that also will be deleted!", Properties.Resources.CAPTION_DELETE_CATEGORY, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 {
                     e.Cancel = true;
                 }

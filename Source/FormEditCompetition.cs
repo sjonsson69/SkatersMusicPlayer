@@ -1,51 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace SkatersMusicPlayer
 {
-    public partial class FormEditCompetition : Form
+    public partial class FormEditEvent : Form
     {
-        XmlDocument DocCompetition = null;
+        XmlDocument docEvent = null;
 
-        public void LoadCompetition(XmlDocument doc, TextBox TB)
+        public static void loadEvent(XmlDocument doc, TextBox TB)
         {
-            try
+            if (doc != null && TB != null)
             {
-                TB.Text = "";
-                TB.Tag = null;
-
-                if (doc.DocumentElement != null)
+                try
                 {
-                    TB.Tag = doc.DocumentElement.InnerXml;  // Store the InnerXML for each Class
-                    TB.Text = doc.DocumentElement.GetAttribute("Name");
+                    TB.Text = string.Empty;
+                    TB.Tag = null;
+
+                    if (doc.DocumentElement != null)
+                    {
+                        TB.Tag = doc.DocumentElement.InnerXml;  // Store the InnerXML for each Category
+                        TB.Text = doc.DocumentElement.GetAttribute("Name");
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error loading Competition\n"+e.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception e)
+                {
+                    MessageBox.Show("Error loading Event\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
-        public FormEditCompetition(XmlDocument doc)
+        public FormEditEvent(XmlDocument doc)
         {
             InitializeComponent();
 
-            DocCompetition = doc;
-            LoadCompetition(doc, textBoxCompetition);
+            docEvent = doc;
+            loadEvent(doc, textBoxEvent);
         }
 
-        private void buttonClassSave_Click(object sender, EventArgs e)
+        private void buttonSave_Click(object sender, EventArgs e)
         {
-            DocCompetition.DocumentElement.SetAttribute("Name", textBoxCompetition.Text);
-            DocCompetition.Save("competition.xml");
+            docEvent.DocumentElement.SetAttribute("Name", textBoxEvent.Text);
+            docEvent.Save(Properties.Resources.XML_FILENAME);
 
             this.DialogResult = DialogResult.OK;
         }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SkatersMusicPlayer
@@ -16,7 +13,10 @@ namespace SkatersMusicPlayer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMusicPlayer());
+            using (FormMusicPlayer FMP = new FormMusicPlayer())
+            {
+                Application.Run(FMP);
+            }
         }
     }
 }

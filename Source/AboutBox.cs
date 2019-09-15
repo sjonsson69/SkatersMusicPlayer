@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace AboutBox
 {
-    partial class AboutBox : Form
+    partial class aboutBox : Form
     {
-        public AboutBox()
+        public aboutBox()
         {
             InitializeComponent();
 
@@ -17,17 +14,17 @@ namespace AboutBox
             //  Change assembly information settings for your application through either:
             //  - Project->Properties->Application->Assembly Information
             //  - AssemblyInfo.cs
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-            this.labelCopyright.Text = AssemblyCopyright;
-            this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription+"\n\n"+AssemblyTrademark;
+            Text = $"About {assemblyTitle}";
+            labelProductName.Text = assemblyProduct;
+            labelVersion.Text = $"Version {assemblyVersion}";
+            labelCopyright.Text = assemblyCopyright;
+            labelCompanyName.Text = assemblyCompany;
+            textBoxDescription.Text = assemblyDescription + "\n\n" + assemblyTrademark;
         }
 
         #region Assembly Attribute Accessors
 
-        public string AssemblyTitle
+        public static string assemblyTitle
         {
             get
             {
@@ -39,15 +36,17 @@ namespace AboutBox
                     // Select the first one
                     AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
                     // If it is not an empty string, return it
-                    if (titleAttribute.Title != "")
+                    if (string.IsNullOrEmpty(titleAttribute.Title))
+                    {
                         return titleAttribute.Title;
+                    }
                 }
                 // If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
                 return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
         }
 
-        public string AssemblyVersion
+        public static string assemblyVersion
         {
             get
             {
@@ -55,7 +54,7 @@ namespace AboutBox
             }
         }
 
-        public string AssemblyDescription
+        public static string assemblyDescription
         {
             get
             {
@@ -63,13 +62,13 @@ namespace AboutBox
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
                 // If there aren't any Description attributes, return an empty string
                 if (attributes.Length == 0)
-                    return "";
+                    return string.Empty;
                 // If there is a Description attribute, return its value
                 return ((AssemblyDescriptionAttribute)attributes[0]).Description;
             }
         }
 
-        public string AssemblyProduct
+        public static string assemblyProduct
         {
             get
             {
@@ -77,13 +76,13 @@ namespace AboutBox
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 // If there aren't any Product attributes, return an empty string
                 if (attributes.Length == 0)
-                    return "";
+                    return string.Empty;
                 // If there is a Product attribute, return its value
                 return ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
 
-        public string AssemblyCopyright
+        public static string assemblyCopyright
         {
             get
             {
@@ -91,13 +90,13 @@ namespace AboutBox
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
                 // If there aren't any Copyright attributes, return an empty string
                 if (attributes.Length == 0)
-                    return "";
+                    return string.Empty;
                 // If there is a Copyright attribute, return its value
                 return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
             }
         }
 
-        public string AssemblyCompany
+        public static string assemblyCompany
         {
             get
             {
@@ -105,13 +104,13 @@ namespace AboutBox
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
                 // If there aren't any Company attributes, return an empty string
                 if (attributes.Length == 0)
-                    return "";
+                    return string.Empty;
                 // If there is a Company attribute, return its value
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
             }
         }
 
-        public string AssemblyTrademark
+        public static string assemblyTrademark
         {
             get
             {
@@ -119,7 +118,7 @@ namespace AboutBox
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
                 // If there aren't any Trademark attributes, return an empty string
                 if (attributes.Length == 0)
-                    return "";
+                    return string.Empty;
                 // If there is a Trademark attribute, return its value
                 return ((AssemblyTrademarkAttribute)attributes[0]).Trademark;
             }

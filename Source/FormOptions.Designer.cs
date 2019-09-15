@@ -1,6 +1,6 @@
 ﻿namespace SkatersMusicPlayer
 {
-    partial class FormOptions
+    partial class formOptions
     {
         /// <summary>
         /// Required designer variable.
@@ -85,7 +85,7 @@
             this.groupBoxAutoPauseMusic.Size = new System.Drawing.Size(984, 62);
             this.groupBoxAutoPauseMusic.TabIndex = 0;
             this.groupBoxAutoPauseMusic.TabStop = false;
-            this.groupBoxAutoPauseMusic.Text = "Automatic pause music (replay skaters music)";
+            this.groupBoxAutoPauseMusic.Text = "Automatic pause music (replay participants music)";
             // 
             // label1
             // 
@@ -210,7 +210,7 @@
             // 
             this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
-            // FormOptions
+            // formOptions
             // 
             this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -224,7 +224,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "FormOptions";
+            this.Name = "formOptions";
             this.ShowInTaskbar = false;
             this.Text = "Options";
             this.groupBoxAutoPauseMusic.ResumeLayout(false);

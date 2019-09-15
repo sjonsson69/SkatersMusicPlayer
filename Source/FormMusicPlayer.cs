@@ -1,28 +1,26 @@
-﻿using System;
-using System.IO;
+﻿using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
+using System;
 using System.Drawing;
+using System.Resources;
 using System.Windows.Forms;
 using System.Xml;
-using NAudio;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
-using AboutBox;
-using System.IO.Compression;
 
 namespace SkatersMusicPlayer
 {
     public partial class FormMusicPlayer : Form
     {
-        enum Player { Nothing, Skater, Warmup, Break, Spotify };
+        enum player { Nothing, Participant, Warmup, Break, Spotify };
 
-        public XmlDocument doc = new XmlDocument();
+        //Constants for messages
+        public XmlDocument doc = new XmlDocument() { XmlResolver = null };
 
-        private IWavePlayer waveOutDeviceSkater = null;
-        private AudioFileReader audioFileReaderSkater = null;
+        private IWavePlayer waveOutDeviceParticipant = null;
+        private AudioFileReader audioFileReaderParticipant = null;
         private FadeInOutSampleProvider fadeInOut;
-        private Action<float> setVolumeDelegateSkater;
-        private bool PausePlaying = false;
-        private bool StopPressed = false;
+        private Action<float> setVolumeDelegateParticipant;
+        private bool pausePlaying = false;
+        private bool stopPressed = false;
 
         private IWavePlayer waveOutDeviceWarmup = null;
         private AudioFileReader audioFileReaderWarmup = null;
@@ -31,35 +29,34 @@ namespace SkatersMusicPlayer
         private AudioFileReader audioFileReaderBreak = null;
         private Action<float> setVolumeDelegateBreak;
 
-
         public FormMusicPlayer()
         {
             InitializeComponent();
 
-            labelCurrentTime.Text = "";
-            labelTotalTime.Text = "";
+            labelCurrentTime.Text = string.Empty;
+            labelTotalTime.Text = string.Empty;
 
-            LoadSettings();
+            loadSettings();
 
-            LoadXMLfile();
+            loadXMLfile();
 
         }
 
         // Load settings from config-file
-        private void LoadSettings()
+        private void loadSettings()
         {
             // Load PauseMusic settings
-            checkBoxAutoPauseMusic.Checked = (GetConfigurationValue("PauseMusicEnabled", "TRUE").ToUpper() == "TRUE");
+            checkBoxAutoPauseMusic.Checked = getConfigurationValue("PauseMusicEnabled", "TRUE").ToUpper() == "TRUE";
             try
             {   //Try do parse delay value.
-                numericUpDownPause.Value = Decimal.Parse(GetConfigurationValue("PauseMusicDelay", "0"));
+                numericUpDownPause.Value = decimal.Parse(getConfigurationValue("PauseMusicDelay", "0"));
             }
             catch (Exception)
             {//Do nothing
             }
             try
             {   //Try do parse volume value.
-                volumeSliderPause.Volume = float.Parse(GetConfigurationValue("PauseVolume", "0,1"));
+                volumeSliderPause.Volume = float.Parse(getConfigurationValue("PauseVolume", "0,1"));
             }
             catch (Exception)
             {//Do nothing
@@ -67,61 +64,75 @@ namespace SkatersMusicPlayer
 
 
             // Load music folders for Warmup music and Break music
-            LoadMusicFolder(GetConfigurationValue("WarmupMusicDirectory", ""), true, listViewWarmupMusic);
-            LoadMusicFolder(GetConfigurationValue("BreakMusicDirectory", ""), true, listViewBreakMusic);
+            loadMusicFolder(getConfigurationValue("WarmupMusicDirectory", string.Empty), true, listViewWarmupMusic);
+            loadMusicFolder(getConfigurationValue("BreakMusicDirectory", string.Empty), true, listViewBreakMusic);
 
-            EnableButtons();
+            //Kolla om vi fått Break music. Om inte så ta bort boxen och flytta resten
+            if (listViewBreakMusic.Items.Count == 0)
+            {
+                groupBoxBreakMusic.Visible = false;
+                groupBoxWarmupMusic.Left += groupBoxBreakMusic.Width + 6;
+                groupBoxParticipantMusic.Width += groupBoxBreakMusic.Width + 6;
+            }
+            // Kolla om vi fått Warmup music. Om inte så ta bort boxen och bredda resten
+            if (listViewWarmupMusic.Items.Count == 0)
+            {
+                groupBoxWarmupMusic.Visible = false;
+                groupBoxParticipantMusic.Width += groupBoxWarmupMusic.Width + 6;
+            }
+
+            enableButtons();
         }
 
 
         #region CreateWaveOut
-        private void CreateWaveOutSkater()
+        private void createWaveOutParticipant()
         {
-            CloseWaveOutSkater();
+            closeWaveOutParticipant();
 
-            waveOutDeviceSkater = new WaveOut();
-            waveOutDeviceSkater.PlaybackStopped += OnPlaybackStopped;
+            waveOutDeviceParticipant = new WaveOut();
+            waveOutDeviceParticipant.PlaybackStopped += onPlaybackStopped;
         }
 
-        private void CreateWaveOutWarmup()
+        private void createWaveOutWarmup()
         {
-            CloseWaveOutWarmup();
+            closeWaveOutWarmup();
 
             waveOutDeviceWarmup = new WaveOut();
-            waveOutDeviceWarmup.PlaybackStopped += OnPlaybackStoppedWarmup;
+            waveOutDeviceWarmup.PlaybackStopped += onPlaybackStoppedWarmup;
         }
 
-        private void CreateWaveOutBreak()
+        private void createWaveOutBreak()
         {
-            CloseWaveOutBreak();
+            closeWaveOutBreak();
 
             waveOutDeviceBreak = new WaveOut();
-            waveOutDeviceBreak.PlaybackStopped += OnPlaybackStoppedBreak;
+            waveOutDeviceBreak.PlaybackStopped += onPlaybackStoppedBreak;
         }
 
         #endregion
         #region CloseWaveOut
-        private void CloseWaveOutSkater()
+        private void closeWaveOutParticipant()
         {
-            if (waveOutDeviceSkater != null)
+            if (waveOutDeviceParticipant != null)
             {
-                waveOutDeviceSkater.Stop();
+                waveOutDeviceParticipant.Stop();
             }
-            if (audioFileReaderSkater != null)
+            if (audioFileReaderParticipant != null)
             {
                 // this one really closes the file and ACM conversion
-                audioFileReaderSkater.Dispose();
-                setVolumeDelegateSkater = null;
-                audioFileReaderSkater = null;
+                audioFileReaderParticipant.Dispose();
+                setVolumeDelegateParticipant = null;
+                audioFileReaderParticipant = null;
             }
-            if (waveOutDeviceSkater != null)
+            if (waveOutDeviceParticipant != null)
             {
-                waveOutDeviceSkater.Dispose();
-                waveOutDeviceSkater = null;
+                waveOutDeviceParticipant.Dispose();
+                waveOutDeviceParticipant = null;
             }
         }
 
-        private void CloseWaveOutWarmup()
+        private void closeWaveOutWarmup()
         {
             if (waveOutDeviceWarmup != null)
             {
@@ -141,7 +152,7 @@ namespace SkatersMusicPlayer
             }
         }
 
-        private void CloseWaveOutBreak()
+        private void closeWaveOutBreak()
         {
             if (waveOutDeviceBreak != null)
             {
@@ -163,27 +174,27 @@ namespace SkatersMusicPlayer
 
         #endregion
         #region NextMusic
-        private void NextSkater()
+        private void nextParticipant()
         {
-            if (listViewSkaters.Tag != null)
+            if (listViewParticipants.Tag != null)
             {
-                int No = (int)listViewSkaters.Tag;
-                listViewSkaters.Items[No].SubItems[0].BackColor = SystemColors.Window;
-                listViewSkaters.Items[No].SubItems[0].ForeColor = Color.Gray;
+                int No = (int)listViewParticipants.Tag;
+                listViewParticipants.Items[No].SubItems[0].BackColor = SystemColors.Window;
+                listViewParticipants.Items[No].SubItems[0].ForeColor = Color.Gray;
                 No++;
-                if (No < listViewSkaters.Items.Count)
-                {   //Step to next skater
-                    listViewSkaters.Items[No].Selected = true;
+                if (No < listViewParticipants.Items.Count)
+                {   //Step to next participant
+                    listViewParticipants.Items[No].Selected = true;
                 }
                 else
-                {   //No more skaters. Unload music
-                    CloseWaveOutSkater();
-                    EnableButtons();
+                {   //No more participants. Unload music
+                    closeWaveOutParticipant();
+                    enableButtons();
                 }
             }
         }
 
-        private void NextWarmup()
+        private void nextWarmup()
         {
             int No = listViewWarmupMusic.SelectedItems[0].Index;
             No++;
@@ -192,7 +203,7 @@ namespace SkatersMusicPlayer
             listViewWarmupMusic.Items[No].Selected = true;
         }
 
-        private void NextBreak()
+        private void nextBreak()
         {
             int No = listViewBreakMusic.SelectedItems[0].Index;
             No++;
@@ -203,57 +214,57 @@ namespace SkatersMusicPlayer
 
         #endregion
         #region OnPlaybackStopped
-        void OnPlaybackStopped(object sender, StoppedEventArgs e)
+        void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
             if (e.Exception != null)
             {
-                MessageBox.Show(e.Exception.Message, "Playback Device Error");
+                MessageBox.Show(e.Exception.Message, Properties.Resources.PLAYBACK_DEVICE_ERROR);
             }
-            if (audioFileReaderSkater != null)
+            if (audioFileReaderParticipant != null)
             {
                 // Reset music
-                audioFileReaderSkater.Position = 0;
+                audioFileReaderParticipant.Position = 0;
                 volumeMeter1.Amplitude = 0;
                 volumeMeter2.Amplitude = 0;
 
-                if (!StopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
+                if (!stopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
                 {
-                    if (PausePlaying)  // We were playing pause music. Restart!
+                    if (pausePlaying)  // We were playing pause music. Restart!
                     {
-                        waveOutDeviceSkater.Play();
+                        waveOutDeviceParticipant.Play();
                     }
                     else
                     {
                         if (checkBoxAutoPauseMusic.Checked)  // Should we play automatic pausemusic?
                         {
                             volumeSlider1.Volume = volumeSliderPause.Volume;
-                            PausePlaying = true;
+                            pausePlaying = true;
                             fadeInOut.BeginFadeIn((double)numericUpDownPause.Value * 1000.0);
-                            waveOutDeviceSkater.Play();
+                            waveOutDeviceParticipant.Play();
                         }
                         else
                         {
-                            // Change to next skaters music
-                            NextSkater();
+                            // Change to next participants music
+                            nextParticipant();
                         }
                     }
                 }
                 else  // We have pressed stop!
                 {
-                    if (PausePlaying)
+                    if (pausePlaying)
                     {
-                        NextSkater();
+                        nextParticipant();
                     }
                 }
             }
-            StopPressed = false;  // Mark that we have handled the stop button.
+            stopPressed = false;  // Mark that we have handled the stop button.
         }
 
-        void OnPlaybackStoppedWarmup(object sender, StoppedEventArgs e)
+        void onPlaybackStoppedWarmup(object sender, StoppedEventArgs e)
         {
             if (e.Exception != null)
             {
-                MessageBox.Show(e.Exception.Message, "Playback Device Error");
+                MessageBox.Show(e.Exception.Message, Properties.Resources.PLAYBACK_DEVICE_ERROR);
             }
             if (audioFileReaderWarmup != null)
             {
@@ -262,22 +273,22 @@ namespace SkatersMusicPlayer
                 volumeMeter1.Amplitude = 0;
                 volumeMeter2.Amplitude = 0;
 
-                if (!StopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
+                if (!stopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
                 {
                     // Change to next music
-                    NextWarmup();
+                    nextWarmup();
                     waveOutDeviceWarmup.Play();
-                    EnableButtons();
+                    enableButtons();
                 }
             }
-            StopPressed = false;  // Mark that we have handled the stop button.
+            stopPressed = false;  // Mark that we have handled the stop button.
         }
 
-        void OnPlaybackStoppedBreak(object sender, StoppedEventArgs e)
+        void onPlaybackStoppedBreak(object sender, StoppedEventArgs e)
         {
             if (e.Exception != null)
             {
-                MessageBox.Show(e.Exception.Message, "Playback Device Error");
+                _ = MessageBox.Show(e.Exception.Message, Properties.Resources.PLAYBACK_DEVICE_ERROR);
             }
             if (audioFileReaderBreak != null)
             {
@@ -286,54 +297,50 @@ namespace SkatersMusicPlayer
                 volumeMeter1.Amplitude = 0;
                 volumeMeter2.Amplitude = 0;
 
-                if (!StopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
+                if (!stopPressed)  // Has the music ended? (That is, we haven't pressed the stop button)
                 {
                     // Change to next music
-                    NextBreak();
+                    nextBreak();
                     waveOutDeviceBreak.Play();
-                    EnableButtons();
+                    enableButtons();
                 }
             }
-            StopPressed = false;  // Mark that we have handled the stop button.
+            stopPressed = false;  // Mark that we have handled the stop button.
         }
         #endregion
         #region Buttons
 
-        private void EnableButtons()
+        private void enableButtons()
         {
-            Player WhatsPlaying = Player.Nothing;
-            PlaybackState PlayerState = PlaybackState.Stopped;
+            player WhatsPlaying = player.Nothing;
 
             //What is playing?
             if (waveOutDeviceWarmup != null && audioFileReaderWarmup != null)
             {
                 if (waveOutDeviceWarmup.PlaybackState != PlaybackState.Stopped)
                 {
-                    WhatsPlaying = Player.Warmup;
-                    PlayerState = waveOutDeviceWarmup.PlaybackState;
+                    WhatsPlaying = player.Warmup;
                 }
             }
             if (waveOutDeviceBreak != null || audioFileReaderBreak != null)
             {
                 if (waveOutDeviceBreak.PlaybackState != PlaybackState.Stopped)
                 {
-                    WhatsPlaying = Player.Break;
-                    PlayerState = waveOutDeviceBreak.PlaybackState;
+                    WhatsPlaying = player.Break;
                 }
             }
-            if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
+            if (waveOutDeviceParticipant != null && audioFileReaderParticipant != null)
             {
-                if (waveOutDeviceSkater.PlaybackState != PlaybackState.Stopped)
+                if (waveOutDeviceParticipant.PlaybackState != PlaybackState.Stopped)
                 {
-                    WhatsPlaying = Player.Skater;
-                    PlayerState = waveOutDeviceSkater.PlaybackState;
+                    WhatsPlaying = player.Participant;
                 }
             }
 
 
             //Enable/Disable  group boxes if they are active or if nothing else is playing
-            groupBoxWarmupMusic.Enabled = (WhatsPlaying == Player.Nothing || WhatsPlaying == Player.Warmup);
-            groupBoxBreakMusic.Enabled = (WhatsPlaying == Player.Nothing || WhatsPlaying == Player.Break);
+            groupBoxWarmupMusic.Enabled = (WhatsPlaying == player.Nothing || WhatsPlaying == player.Warmup);
+            groupBoxBreakMusic.Enabled = (WhatsPlaying == player.Nothing || WhatsPlaying == player.Break);
 
 
             // Do we have a warmup music loaded?
@@ -397,8 +404,8 @@ namespace SkatersMusicPlayer
             }
 
 
-            // Do we have a skaters music loaded?
-            if (waveOutDeviceSkater == null || audioFileReaderSkater == null)
+            // Do we have a participants music loaded?
+            if (waveOutDeviceParticipant == null || audioFileReaderParticipant == null)
             {//No music ready
                 //Disable all buttons
                 buttonPlay.Enabled = false;
@@ -407,19 +414,19 @@ namespace SkatersMusicPlayer
             }
             else
             {//Yes!
-                if (waveOutDeviceSkater.PlaybackState == PlaybackState.Playing)
+                if (waveOutDeviceParticipant.PlaybackState == PlaybackState.Playing)
                 {
                     buttonPlay.Enabled = false;
                     buttonPause.Enabled = true;
                     buttonStop.Enabled = true;
                 }
-                else if (waveOutDeviceSkater.PlaybackState == PlaybackState.Paused)
+                else if (waveOutDeviceParticipant.PlaybackState == PlaybackState.Paused)
                 {
                     buttonPlay.Enabled = true;
                     buttonPause.Enabled = false;
                     buttonStop.Enabled = true;
                 }
-                else if (waveOutDeviceSkater.PlaybackState == PlaybackState.Stopped)
+                else if (waveOutDeviceParticipant.PlaybackState == PlaybackState.Stopped)
                 {
                     buttonPlay.Enabled = true;
                     buttonPause.Enabled = false;
@@ -432,45 +439,45 @@ namespace SkatersMusicPlayer
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
+            if (waveOutDeviceParticipant != null && audioFileReaderParticipant != null)
             {
                 // Stop all other units playing!
                 if (waveOutDeviceWarmup != null && waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
                 {
-                    StopPressed = true;  // Mark that we manually stopped the playback
+                    stopPressed = true;  // Mark that we manually stopped the playback
                     waveOutDeviceWarmup.Stop();
                 }
                 if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
                 {
-                    StopPressed = true;  // Mark that we manually stopped the playback
+                    stopPressed = true;  // Mark that we manually stopped the playback
                     waveOutDeviceBreak.Stop();
                 }
 
-                // Start skaters music
-                waveOutDeviceSkater.Play();
-                EnableButtons();
+                // Start participants music
+                waveOutDeviceParticipant.Play();
+                enableButtons();
             }
         }
 
         private void buttonPause_Click(object sender, EventArgs e)
         {
-            if (waveOutDeviceSkater != null)
+            if (waveOutDeviceParticipant != null)
             {
-                if (waveOutDeviceSkater.PlaybackState == PlaybackState.Playing)
+                if (waveOutDeviceParticipant.PlaybackState == PlaybackState.Playing)
                 {
-                    waveOutDeviceSkater.Pause();
-                    EnableButtons();
+                    waveOutDeviceParticipant.Pause();
+                    enableButtons();
                 }
             }
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
-            if (waveOutDeviceSkater != null)
+            if (waveOutDeviceParticipant != null)
             {
-                StopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
-                waveOutDeviceSkater.Stop();
-                EnableButtons();
+                stopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
+                waveOutDeviceParticipant.Stop();
+                enableButtons();
             }
         }
 
@@ -480,11 +487,11 @@ namespace SkatersMusicPlayer
             {
                 if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
                 {
-                    StopPressed = true;  // Mark that we manually stopped the playback
+                    stopPressed = true;  // Mark that we manually stopped the playback
                     waveOutDeviceBreak.Stop();
                 }
                 waveOutDeviceWarmup.Play();
-                EnableButtons();
+                enableButtons();
             }
         }
 
@@ -495,7 +502,7 @@ namespace SkatersMusicPlayer
                 if (waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
                 {
                     waveOutDeviceWarmup.Pause();
-                    EnableButtons();
+                    enableButtons();
                 }
             }
         }
@@ -504,9 +511,9 @@ namespace SkatersMusicPlayer
         {
             if (waveOutDeviceWarmup != null)
             {
-                StopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
+                stopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
                 waveOutDeviceWarmup.Stop();
-                EnableButtons();
+                enableButtons();
             }
         }
 
@@ -516,11 +523,11 @@ namespace SkatersMusicPlayer
             {
                 if (waveOutDeviceWarmup != null && waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
                 {
-                    StopPressed = true;  // Mark that we manually stopped the playback
+                    stopPressed = true;  // Mark that we manually stopped the playback
                     waveOutDeviceWarmup.Stop();
                 }
                 waveOutDeviceBreak.Play();
-                EnableButtons();
+                enableButtons();
             }
         }
 
@@ -531,7 +538,7 @@ namespace SkatersMusicPlayer
                 if (waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
                 {
                     waveOutDeviceBreak.Pause();
-                    EnableButtons();
+                    enableButtons();
                 }
             }
         }
@@ -540,14 +547,14 @@ namespace SkatersMusicPlayer
         {
             if (waveOutDeviceBreak != null)
             {
-                StopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
+                stopPressed = true; // markera att vi har tryckt på stopknappen så inte automatiken fortsätter...
                 waveOutDeviceBreak.Stop();
-                EnableButtons();
+                enableButtons();
             }
         }
 
         #endregion
-        void OnPostVolumeMeter(object sender, StreamVolumeEventArgs e)
+        void onPostVolumeMeter(object sender, StreamVolumeEventArgs e)
         {
             // we know it is stereo
             volumeMeter1.Amplitude = e.MaxSampleValues[0];
@@ -556,63 +563,53 @@ namespace SkatersMusicPlayer
 
         private void volumeSlider1_VolumeChanged(object sender, EventArgs e)
         {
-            if (setVolumeDelegateSkater != null)
-            {
-                setVolumeDelegateSkater(volumeSlider1.Volume);
-            }
-            if (setVolumeDelegateWarmup != null)
-            {
-                setVolumeDelegateWarmup(volumeSlider1.Volume);
-            }
-            if (setVolumeDelegateBreak != null)
-            {
-                setVolumeDelegateBreak(volumeSlider1.Volume);
-            }
+            setVolumeDelegateParticipant?.Invoke(volumeSlider1.Volume);
+            setVolumeDelegateWarmup?.Invoke(volumeSlider1.Volume);
+            setVolumeDelegateBreak?.Invoke(volumeSlider1.Volume);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (waveOutDeviceSkater != null && audioFileReaderSkater != null)
+                if (waveOutDeviceParticipant != null && audioFileReaderParticipant != null)
                 {
                     //TimeSpan currentTime = (waveOutDevice.PlaybackState == PlaybackState.Stopped) ? TimeSpan.Zero : audioFileReader.CurrentTime;
-                    TimeSpan currentTime = audioFileReaderSkater.CurrentTime;
-                    trackBarPosition.Value = Math.Min(trackBarPosition.Maximum, (int)(100 * currentTime.TotalSeconds / audioFileReaderSkater.TotalTime.TotalSeconds));
-                    labelCurrentTime.Text = String.Format("{0:00}:{1:00}", (int)currentTime.TotalMinutes, currentTime.Seconds);
+                    TimeSpan currentTime = audioFileReaderParticipant.CurrentTime;
+                    trackBarPosition.Value = Math.Min(trackBarPosition.Maximum, (int)(100 * currentTime.TotalSeconds / audioFileReaderParticipant.TotalTime.TotalSeconds));
+                    labelCurrentTime.Text = string.Format("{0:00}:{1:00}", (int)currentTime.TotalMinutes, currentTime.Seconds);
                 }
                 else
                 {
                     trackBarPosition.Value = 0;
-                    //toolStripStatusLabel1.Text = "";
                 }
 
                 // Update statuslabel
-                if (toolStripStatusLabel1.Text == "")
+                if (string.IsNullOrEmpty(toolStripStatusLabel1.Text))
                 {
-                    if (waveOutDeviceSkater != null && waveOutDeviceSkater.PlaybackState == PlaybackState.Playing)
-                    {// We're playing skaters music
-                        if (PausePlaying)
+                    if (waveOutDeviceParticipant != null && waveOutDeviceParticipant.PlaybackState == PlaybackState.Playing)
+                    {// We're playing participants music
+                        if (pausePlaying)
                         {//Playing pausemusic
-                            toolStripStatusLabel1.Text = "Playing pause music...";
+                            toolStripStatusLabel1.Text = Properties.Resources.PLAYING_PAUSE_MUSIC;
                         }
                         else
-                        {//Playing skaters music
-                            toolStripStatusLabel1.Text = "Playing skaters music...";
+                        {//Playing participants music
+                            toolStripStatusLabel1.Text = Properties.Resources.PLAYING_PARTICIPANT_MUSIC;
                         }
                     }
                     else if (waveOutDeviceWarmup != null && waveOutDeviceWarmup.PlaybackState == PlaybackState.Playing)
                     {
-                        toolStripStatusLabel1.Text = "Playing warmup music...";
+                        toolStripStatusLabel1.Text = Properties.Resources.PLAYING_WARMUP_MUSIC;
                     }
                     else if (waveOutDeviceBreak != null && waveOutDeviceBreak.PlaybackState == PlaybackState.Playing)
                     {
-                        toolStripStatusLabel1.Text = "Playing break music...";
+                        toolStripStatusLabel1.Text = Properties.Resources.PLAYING_BREAK_MUSIC;
                     }
                 }
                 else
                 {
-                    toolStripStatusLabel1.Text = "";
+                    toolStripStatusLabel1.Text = string.Empty;
                 }
             }
             catch (Exception)
@@ -623,62 +620,61 @@ namespace SkatersMusicPlayer
 
         private void trackBarPosition_Scroll(object sender, EventArgs e)
         {
-            if (waveOutDeviceSkater != null)
+            if (waveOutDeviceParticipant != null)
             {
-                audioFileReaderSkater.CurrentTime = TimeSpan.FromSeconds(audioFileReaderSkater.TotalTime.TotalSeconds * trackBarPosition.Value / 100.0);
+                audioFileReaderParticipant.CurrentTime = TimeSpan.FromSeconds(audioFileReaderParticipant.TotalTime.TotalSeconds * trackBarPosition.Value / 100.0);
             }
         }
 
 
         #region ListViewSelected
-        private void listViewSkaters_SelectedIndexChanged(object sender, EventArgs e)
+        private void listViewParticipants_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                if (listViewSkaters.SelectedItems.Count == 1)
+                if (listViewParticipants.SelectedItems.Count == 1)
                 {
-                    if (listViewSkaters.Tag != null)
+                    if (listViewParticipants.Tag != null)
                     {
-                        listViewSkaters.Items[(int)listViewSkaters.Tag].SubItems[0].BackColor = SystemColors.Window;
-                        listViewSkaters.Items[(int)listViewSkaters.Tag].SubItems[0].ForeColor = Color.Gray;
-                        listViewSkaters.Tag = null;
+                        listViewParticipants.Items[(int)listViewParticipants.Tag].SubItems[0].BackColor = SystemColors.Window;
+                        listViewParticipants.Items[(int)listViewParticipants.Tag].SubItems[0].ForeColor = Color.Gray;
+                        listViewParticipants.Tag = null;
                     }
 
-                    CreateWaveOutSkater();
+                    createWaveOutParticipant();
 
                     //Check that there is a file in the grid. Gives a strange error message it we let AudioFileReader throw exception
-                    if (listViewSkaters.SelectedItems[0].SubItems[4].Text == string.Empty)
+                    if (string.IsNullOrEmpty(listViewParticipants.SelectedItems[0].SubItems[4].Text))
                     {
-                        throw new Exception("No file specified for skater");
+                        throw new Exception(Properties.Resources.CAPTION_NO_FILE_FOR_PARTICIPANT);
                     }
 
 
-                    audioFileReaderSkater = new AudioFileReader(listViewSkaters.SelectedItems[0].SubItems[4].Text);
-                    var sampleChannel = new SampleChannel(audioFileReaderSkater, true);
-                    this.setVolumeDelegateSkater = (vol) => sampleChannel.Volume = vol;
+                    audioFileReaderParticipant = new AudioFileReader(listViewParticipants.SelectedItems[0].SubItems[4].Text);
+                    var sampleChannel = new SampleChannel(audioFileReaderParticipant, true);
+                    this.setVolumeDelegateParticipant = (vol) => sampleChannel.Volume = vol;
                     var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-                    postVolumeMeter.StreamVolume += OnPostVolumeMeter;
+                    postVolumeMeter.StreamVolume += onPostVolumeMeter;
                     fadeInOut = new FadeInOutSampleProvider(postVolumeMeter, false);
 
-                    labelTotalTime.Text = String.Format("{0:00}:{1:00}", (int)audioFileReaderSkater.TotalTime.TotalMinutes, audioFileReaderSkater.TotalTime.Seconds);
+                    labelTotalTime.Text = $"{(int)audioFileReaderParticipant.TotalTime.TotalMinutes:00}:{audioFileReaderParticipant.TotalTime.Seconds:00}";
 
                     //waveOutDevice.Init(postVolumeMeter);
-                    waveOutDeviceSkater.Init(fadeInOut);
+                    waveOutDeviceParticipant.Init(fadeInOut);
                     volumeSlider1.Volume = 1.0f;
-                    PausePlaying = false;
+                    pausePlaying = false;
 
-                    listViewSkaters.Tag = listViewSkaters.SelectedItems[0].Index;
-                    listViewSkaters.SelectedItems[0].BackColor = Color.LightGreen;
-                    listViewSkaters.SelectedItems[0].EnsureVisible();
-                    listViewSkaters.SelectedItems[0].Selected = false;
+                    listViewParticipants.Tag = listViewParticipants.SelectedItems[0].Index;
+                    listViewParticipants.SelectedItems[0].BackColor = Color.LightGreen;
+                    listViewParticipants.SelectedItems[0].EnsureVisible();
+                    listViewParticipants.SelectedItems[0].Selected = false;
 
-                    EnableButtons();
+                    enableButtons();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Can't load music\n" + listViewSkaters.SelectedItems[0].SubItems[4].Text + "\n\n" + ex.Message, "Error loading music!", MessageBoxButtons.OK);
-                //MessageBox.Show("Can't load music\n" + listViewSkaters.SelectedItems[0].SubItems[4].Text + "\n\n" + ex.Message, "Error loading music!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Can't load music\n" + listViewParticipants.SelectedItems[0].SubItems[4].Text + "\n\n" + ex.Message, Properties.Resources.CAPTION_ERROR_LOADING_MUSIC, MessageBoxButtons.OK);
             }
         }
 
@@ -688,13 +684,13 @@ namespace SkatersMusicPlayer
             {
                 try
                 {
-                    CreateWaveOutWarmup();
+                    createWaveOutWarmup();
 
                     audioFileReaderWarmup = new AudioFileReader(listViewWarmupMusic.SelectedItems[0].SubItems[1].Text);
                     var sampleChannel = new SampleChannel(audioFileReaderWarmup, true);
                     this.setVolumeDelegateWarmup = (vol) => sampleChannel.Volume = vol;
                     var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-                    postVolumeMeter.StreamVolume += OnPostVolumeMeter;
+                    postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
                     //waveOutDevice.Init(postVolumeMeter);
                     waveOutDeviceWarmup.Init(postVolumeMeter);
@@ -707,7 +703,7 @@ namespace SkatersMusicPlayer
 
                 listViewWarmupMusic.SelectedItems[0].EnsureVisible();
 
-                EnableButtons();
+                enableButtons();
             }
         }
 
@@ -717,13 +713,13 @@ namespace SkatersMusicPlayer
             {
                 try
                 {
-                    CreateWaveOutBreak();
+                    createWaveOutBreak();
 
                     audioFileReaderBreak = new AudioFileReader(listViewBreakMusic.SelectedItems[0].SubItems[1].Text);
                     var sampleChannel = new SampleChannel(audioFileReaderBreak, true);
                     this.setVolumeDelegateBreak = (vol) => sampleChannel.Volume = vol;
                     var postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-                    postVolumeMeter.StreamVolume += OnPostVolumeMeter;
+                    postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
                     //waveOutDevice.Init(postVolumeMeter);
                     waveOutDeviceBreak.Init(postVolumeMeter);
@@ -736,58 +732,81 @@ namespace SkatersMusicPlayer
 
                 listViewBreakMusic.SelectedItems[0].EnsureVisible();
 
-                EnableButtons();
+                enableButtons();
             }
         }
 
         #endregion
 
-        private void comboBoxClass_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadSkaters(doc, comboBoxClass.SelectedItem.ToString(), listViewSkaters);
-            if (listViewSkaters.Items.Count != 0)
-            {// Select first skater
-                listViewSkaters.Items[0].Selected = true;
+            loadParticipants(doc, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
+            if (listViewParticipants.Items.Count != 0)
+            {// Select first participant
+                listViewParticipants.Items[0].Selected = true;
             }
             buttonPlay.Focus();
         }
 
         #region MenuItems
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormEditCompetition EC = new FormEditCompetition(doc);
-            if (EC.ShowDialog() == DialogResult.OK)
+            if (MessageBox.Show(Properties.Resources.QUESTION_DELETE_COMPETITION, Properties.Resources.CAPTION_NEW_COMPETITION, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                LoadXMLfile();
-            }
-        }
-
-        private void editClassesMenuItem_Click(object sender, EventArgs e)
-        {
-            FormEditClasses EC = new FormEditClasses(doc);
-            if (EC.ShowDialog() == DialogResult.OK)
-            {
-                LoadXMLfile();
-            }
-        }
-
-        private void editSkatersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string Class = string.Empty;
-            if (comboBoxClass.SelectedItem != null)
-            {
-                Class = comboBoxClass.SelectedItem.ToString();
-            }
-            FormEditSkaters ES = new FormEditSkaters(this, Class);
-            if (ES.ShowDialog() == DialogResult.OK)
-            {
-                LoadXMLfile();
-                try
-                {//Try to reload class
-                    comboBoxClass.SelectedIndex = comboBoxClass.FindStringExact(Class);
-                }
-                catch (Exception)
+                // Remove all categories from XML tree
+                while (doc.DocumentElement.HasChildNodes)
                 {
+                    // Remove category from XML tree
+                    doc.DocumentElement.RemoveChild(doc.DocumentElement.FirstChild);
+                    doc.DocumentElement.SetAttribute("Name", "New event");
+                    doc.Save(Properties.Resources.XML_FILENAME);
+                    loadXMLfile();
+                }
+            }
+
+        }
+
+        private void editEventMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormEditEvent EC = new FormEditEvent(doc))
+            {
+                if (EC.ShowDialog() == DialogResult.OK)
+                {
+                    loadXMLfile();
+                }
+            }
+        }
+
+        private void editCategoriesMenuItem_Click(object sender, EventArgs e)
+        {
+            using (formEditCategories EC = new formEditCategories(doc))
+            {
+                if (EC.ShowDialog() == DialogResult.OK)
+                {
+                    loadXMLfile();
+                }
+            }
+        }
+
+        private void editParticipantsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string category = string.Empty;
+            if (comboBoxCategory.SelectedItem != null)
+            {
+                category = comboBoxCategory.SelectedItem.ToString();
+            }
+            using (FormEditParticipants ES = new FormEditParticipants(this, category))
+            {
+                if (ES.ShowDialog() == DialogResult.OK)
+                {
+                    loadXMLfile();
+                    try
+                    {//Try to reload category
+                        comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
         }
@@ -797,21 +816,11 @@ namespace SkatersMusicPlayer
             Close();
         }
 
-        private void FormMusicPlayer_FormClosing(object sender, FormClosingEventArgs e)
+        private void formMusicPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to end the program?", "End program", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            if (MessageBox.Show(Properties.Resources.QUESTION_END_PROGRAM, Properties.Resources.CAPTION_END_PROGRAM, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
             {
                 e.Cancel = true;
-            }
-        }
-
-        private void importFromIndTAToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
-            {
-                LoadIndTA1(doc, openFileDialogIndTA.FileName);
-                MessageBox.Show("Classes and Skaters loaded from file\n\nEdit Classes will now open to verify if class has Short", "IndTA imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editClassesMenuItem_Click(sender, e);
             }
         }
 
@@ -819,19 +828,21 @@ namespace SkatersMusicPlayer
         {
             if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
             {
-                LoadIndTA2(doc, openFileDialogIndTA.FileName);
-                MessageBox.Show("Classes and Skaters loaded from file\n\nEdit Classes will now open to verify if class has Short", "IndTA imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editClassesMenuItem_Click(sender, e);
+                loadIndTA2(doc, openFileDialogIndTA.FileName);
+                loadXMLfile();
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                editCategoriesMenuItem_Click(sender, e);
             }
         }
 
-        private void importFromClubcompOldToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialogCC.ShowDialog() == DialogResult.OK)
+            if (openFileDialogISUCalcXML.ShowDialog() == DialogResult.OK)
             {
-                LoadClubStarCompOld(doc, folderBrowserDialogCC.SelectedPath);
-                MessageBox.Show("Classes and Skaters loaded from Clubcomp/Starcomp\n\nEdit Classes will now open to verify if classes", "Clubcomp/Starcomp imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editClassesMenuItem_Click(sender, e);
+                loadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
+                loadXMLfile();
+                MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                editCategoriesMenuItem_Click(sender, e);
             }
         }
 
@@ -839,24 +850,48 @@ namespace SkatersMusicPlayer
         {
             if (folderBrowserDialogCC.ShowDialog() == DialogResult.OK)
             {
-                LoadClubStarComp2016(doc, folderBrowserDialogCC.SelectedPath);
-                MessageBox.Show("Classes and Skaters loaded from Clubcomp/Starcomp\n\nEdit Classes will now open to verify if classes", "Clubcomp/Starcomp imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editClassesMenuItem_Click(sender, e);
+                loadClubStarComp2016(doc, folderBrowserDialogCC.SelectedPath);
+                loadXMLfile();
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                editCategoriesMenuItem_Click(sender, e);
             }
         }
 
-        private void autoconnectMusicToSkatersToolStripMenuItem_Click(object sender, EventArgs e)
+        private void unzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string Class = string.Empty;
-            if (comboBoxClass.SelectedItem != null)
+            // Get Filename to unpack
+            if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
             {
-                Class = comboBoxClass.SelectedItem.ToString();
+                int NumberOfFiles = 0;
+
+                // Unzip the file
+                NumberOfFiles = unzipMusicFiles(NumberOfFiles, openFileDialogMusicarchive.FileName);
+
+                // Notify, and ask if autoconnect
+                if (NumberOfFiles == 0)
+                {
+                    MessageBox.Show(Properties.Resources.NO_MUSIC_FILES_UNZIPPED, Properties.Resources.CAPTION_NO_FILES_UNZIPPED, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                if (MessageBox.Show(NumberOfFiles.ToString() + " Music files are now unpacked. You can autoconnect music to participants if you want\n\nDo you want to autoconnect?", Properties.Resources.CAPTION_FILES_UNZIPPED, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    autoconnectMusicToParticipantsToolStripMenuItem_Click(sender, e);
+                }
+            }
+        }
+
+        private void autoconnectMusicToParticipantsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string category = string.Empty;
+            if (comboBoxCategory.SelectedItem != null)
+            {
+                category = comboBoxCategory.SelectedItem.ToString();
             }
             autoconnectMusic();
-            LoadXMLfile();
+            loadXMLfile();
             try
-            {//Try to reload class
-                comboBoxClass.SelectedIndex = comboBoxClass.FindStringExact(Class);
+            {//Try to reload category
+                comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
             }
             catch (Exception)
             {
@@ -865,65 +900,22 @@ namespace SkatersMusicPlayer
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormOptions FO = new FormOptions(this);
-            if (FO.ShowDialog() == DialogResult.OK)
+            using (formOptions FO = new formOptions())
             {
-                LoadSettings();
+                if (FO.ShowDialog() == DialogResult.OK)
+                {
+                    loadSettings();
+                }
             }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AboutBox.AboutBox ab = new AboutBox.AboutBox();
-            ab.ShowDialog();
+            using (AboutBox.aboutBox ab = new AboutBox.aboutBox())
+            {
+                ab.ShowDialog();
+            }
         }
         #endregion
-
-        private void ImportFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogISUCalcXML.ShowDialog() == DialogResult.OK)
-            {
-                LoadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
-                MessageBox.Show("Classes and Skaters loaded from file\n\nEdit Classes will now open to verify if class has Short", "IndTA imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editClassesMenuItem_Click(sender, e);
-            }
-        }
-
-        private void UnzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Get Filename to unpack
-            if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
-            {
-                int NumberOfFiles = 0;
-                string extractPath = Application.StartupPath + @"\CompetitionMusic\";
-
-                using (ZipArchive archive = ZipFile.OpenRead(openFileDialogMusicarchive.FileName))
-                {
-                    foreach (ZipArchiveEntry entry in archive.Entries)
-                    {
-                        if (entry.FullName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Gets the full path to ensure that relative segments are removed.
-                            string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
-
-                            // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
-                            // are case-insensitive.
-                            if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
-                            {
-                                entry.ExtractToFile(destinationPath, true);
-                                NumberOfFiles = NumberOfFiles + 1;
-                            }
-                        }
-                    }
-                }
-
-                //ZipArchive archive2 = ZipFile.Open(openFileDialogMusicarchive.FileName, ZipArchiveMode.Read);
-                //archive2.ExtractToDirectory(Application.StartupPath + @"\CompetitionMusic\");
-                if (MessageBox.Show(NumberOfFiles.ToString() + " Music files are now unpacked. You can autoconnect to skaters if you want\n\nDo you want to autoconnect?", "Music unpacked", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    autoconnectMusicToSkatersToolStripMenuItem_Click(sender, e);
-                }
-            }
-        }
     }
 }

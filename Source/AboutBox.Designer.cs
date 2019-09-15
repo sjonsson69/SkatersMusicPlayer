@@ -1,6 +1,6 @@
 ﻿namespace AboutBox
 {
-    partial class AboutBox
+    partial class aboutBox
     {
         /// <summary>
         /// Required designer variable.
