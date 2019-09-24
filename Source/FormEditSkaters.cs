@@ -70,7 +70,7 @@ namespace SkatersMusicPlayer
                         // First check so no other participant already has this file
                         for (int i = 0; i < senderGrid.Rows.Count - 1; i++)
                         {
-                            if ((i != e.RowIndex && senderGrid[8, i].Value.ToString() == openFileDialog1.FileName) || (senderGrid[11, i].Value.ToString() == openFileDialog1.FileName))
+                            if ((i != e.RowIndex && senderGrid[9, i].Value.ToString() == openFileDialog1.FileName) || (senderGrid[12, i].Value.ToString() == openFileDialog1.FileName))
                             {
                                 MessageBox.Show("File already connected to participant " + senderGrid[1, i].Value + " " + senderGrid[2, i].Value + "\n\nFile not connected to this participant!", Properties.Resources.CAPTION_DUPLICATE_USE, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                                 MD5 = string.Empty;  //Remove MD5 to indicate that the file isn't connected
@@ -82,7 +82,7 @@ namespace SkatersMusicPlayer
                         {
                             if (!string.IsNullOrEmpty(MD5))
                             {
-                                if ((i != e.RowIndex && senderGrid[9, i].Value.ToString() == MD5) || (senderGrid[12, i].Value.ToString() == MD5))
+                                if ((i != e.RowIndex && senderGrid[10, i].Value.ToString() == MD5) || (senderGrid[13, i].Value.ToString() == MD5))
                                 {
                                     MessageBox.Show("Identical file content already connected to participant " + senderGrid[1, i].Value + " " + senderGrid[2, i].Value + "\n\nFile not connected to this participant!", Properties.Resources.CAPTION_DUPLICATE_USE, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                                     MD5 = string.Empty;  //Remove MD5 to indicate that the file isn't connected
@@ -96,9 +96,9 @@ namespace SkatersMusicPlayer
                         // Do we have a MD5? If so connect file to participant
                         if (!string.IsNullOrEmpty(MD5))
                         {
-                            senderGrid[7, e.RowIndex].Value = string.Format("{0:00}:{1:00}", (int)audioFileReaderTest.TotalTime.TotalMinutes, audioFileReaderTest.TotalTime.Seconds);
-                            senderGrid[8, e.RowIndex].Value = openFileDialog1.FileName;
-                            senderGrid[9, e.RowIndex].Value = FormMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
+                            senderGrid[8, e.RowIndex].Value = string.Format("{0:00}:{1:00}", (int)audioFileReaderTest.TotalTime.TotalMinutes, audioFileReaderTest.TotalTime.Seconds);
+                            senderGrid[9, e.RowIndex].Value = openFileDialog1.FileName;
+                            senderGrid[10, e.RowIndex].Value = FormMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
                             senderGrid.Rows[e.RowIndex].DefaultCellStyle.ForeColor = SystemColors.ControlText;  // Restore color if it wasn't correct
                         }
                     }
