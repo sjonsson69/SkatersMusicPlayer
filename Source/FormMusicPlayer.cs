@@ -29,6 +29,8 @@ namespace SkatersMusicPlayer
         private AudioFileReader audioFileReaderBreak = null;
         private Action<float> setVolumeDelegateBreak;
 
+        private int selectedBreakIndex = -1;
+
         public FormMusicPlayer()
         {
             InitializeComponent();
@@ -205,11 +207,30 @@ namespace SkatersMusicPlayer
 
         private void nextBreak()
         {
-            int No = listViewBreakMusic.SelectedItems[0].Index;
-            No++;
-            if (No >= listViewBreakMusic.Items.Count) No = 0;
-            //Step to next file
-            listViewBreakMusic.Items[No].Selected = true;
+            int nextIndex;
+
+            // If no item is currently selected, fall back to use last selected item if available.
+            if (listViewBreakMusic.SelectedItems.Count == 0)
+            {
+                if (selectedBreakIndex < 0)
+                {
+                    // Start from the first index if no valid item has ever been selected.
+                    nextIndex = 0;
+                }
+                else
+                {
+                    // Go to next item, based on the previously selected valid item.
+                    nextIndex = (++selectedBreakIndex) % listViewBreakMusic.Items.Count;
+                }
+            }
+            else
+            {
+                // Go to next item based on current selection.
+                nextIndex = (listViewBreakMusic.SelectedIndices[0] + 1) % listViewBreakMusic.Items.Count;
+            }
+
+            // Step to next file.
+            listViewBreakMusic.Items[nextIndex].Selected = true;
         }
 
         #endregion
@@ -711,6 +732,7 @@ namespace SkatersMusicPlayer
         {
             if (listViewBreakMusic.SelectedItems.Count == 1)
             {
+                selectedBreakIndex = listViewBreakMusic.SelectedIndices[0];
                 try
                 {
                     createWaveOutBreak();
@@ -727,7 +749,8 @@ namespace SkatersMusicPlayer
                 }
                 catch (Exception)
                 {
-                    //Do nothing!
+                    // Mark selection invalid since opening file failed.
+                    selectedBreakIndex = -1;
                 }
 
                 listViewBreakMusic.SelectedItems[0].EnsureVisible();
