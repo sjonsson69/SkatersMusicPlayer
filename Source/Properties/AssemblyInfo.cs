@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SkatersMusicPlayer")]
-[assembly: AssemblyCopyright("Copyright © 2015-2019 Stefan Jonsson")]
+[assembly: AssemblyCopyright("Copyright © 2015-2022 Stefan Jonsson")]
 [assembly: AssemblyTrademark("Using NAudio by Mark Heath from https://naudio.codeplex.com/")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2019.2.*")]
+[assembly: AssemblyVersion("2022.2.*")]
 [assembly: NeutralResourcesLanguage("en")]
 

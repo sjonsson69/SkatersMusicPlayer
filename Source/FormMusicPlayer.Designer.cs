@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -66,6 +66,13 @@
             this.editEventtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editCategoriesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromISUCalcFSXMLtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromClubcompToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.UnzipMusicfiletoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoconnectMusicToParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,13 +98,7 @@
             this.folderBrowserDialogISU = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromISUCalcFSXMLtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromClubcompToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.UnzipMusicfiletoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoconnectMusicToParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromStarFSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -426,7 +427,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(162, 24);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -455,23 +456,78 @@
             // editEventtoolStripMenuItem
             // 
             this.editEventtoolStripMenuItem.Name = "editEventtoolStripMenuItem";
-            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editEventtoolStripMenuItem.Text = "&Event";
             this.editEventtoolStripMenuItem.Click += new System.EventHandler(this.editEventMenuItem_Click);
             // 
             // editCategoriesMenuItem
             // 
             this.editCategoriesMenuItem.Name = "editCategoriesMenuItem";
-            this.editCategoriesMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editCategoriesMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editCategoriesMenuItem.Text = "&Categories";
             this.editCategoriesMenuItem.Click += new System.EventHandler(this.editCategoriesMenuItem_Click);
             // 
             // editParticipantsToolStripMenuItem
             // 
             this.editParticipantsToolStripMenuItem.Name = "editParticipantsToolStripMenuItem";
-            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editParticipantsToolStripMenuItem.Text = "&Participants";
             this.editParticipantsToolStripMenuItem.Click += new System.EventHandler(this.editParticipantsToolStripMenuItem_Click);
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importFromIndTA2ToolStripMenuItem,
+            this.importFromISUCalcFSXMLtoolStripMenuItem,
+            this.importFromClubcompToolStripMenuItem,
+            this.importFromStarFSToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.UnzipMusicfiletoolStripMenuItem,
+            this.autoconnectMusicToParticipantsToolStripMenuItem});
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
+            this.importToolStripMenuItem.Text = "&Import";
+            // 
+            // importFromIndTA2ToolStripMenuItem
+            // 
+            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
+            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
+            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
+            // 
+            // importFromISUCalcFSXMLtoolStripMenuItem
+            // 
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Name = "importFromISUCalcFSXMLtoolStripMenuItem";
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Text = "ISUCalcFS &XML";
+            this.importFromISUCalcFSXMLtoolStripMenuItem.Click += new System.EventHandler(this.importFromISUCalcFSXMLtoolStripMenuItem_Click);
+            // 
+            // importFromClubcompToolStripMenuItem
+            // 
+            this.importFromClubcompToolStripMenuItem.Name = "importFromClubcompToolStripMenuItem";
+            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromClubcompToolStripMenuItem.Text = "&Starcomp";
+            this.importFromClubcompToolStripMenuItem.Visible = false;
+            this.importFromClubcompToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcomp2016ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(315, 6);
+            // 
+            // UnzipMusicfiletoolStripMenuItem
+            // 
+            this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
+            this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
+            this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.unzipMusicfiletoolStripMenuItem_Click);
+            // 
+            // autoconnectMusicToParticipantsToolStripMenuItem
+            // 
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Name = "autoconnectMusicToParticipantsToolStripMenuItem";
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Text = "&Autoconnect music to participants";
+            this.autoconnectMusicToParticipantsToolStripMenuItem.Click += new System.EventHandler(this.autoconnectMusicToParticipantsToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -499,7 +555,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -569,7 +625,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9});
+            listViewItem1});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -655,7 +711,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem10});
+            listViewItem2});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -744,58 +800,12 @@
             this.openFileDialogMusicarchive.ReadOnlyChecked = true;
             this.openFileDialogMusicarchive.RestoreDirectory = true;
             // 
-            // importToolStripMenuItem
+            // importFromStarFSToolStripMenuItem
             // 
-            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromIndTA2ToolStripMenuItem,
-            this.importFromISUCalcFSXMLtoolStripMenuItem,
-            this.importFromClubcompToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.UnzipMusicfiletoolStripMenuItem,
-            this.autoconnectMusicToParticipantsToolStripMenuItem});
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
-            this.importToolStripMenuItem.Text = "&Import";
-            // 
-            // importFromIndTA2ToolStripMenuItem
-            // 
-            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
-            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
-            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
-            // 
-            // importFromISUCalcFSXMLtoolStripMenuItem
-            // 
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Name = "importFromISUCalcFSXMLtoolStripMenuItem";
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Text = "ISUCalcFS &XML";
-            this.importFromISUCalcFSXMLtoolStripMenuItem.Click += new System.EventHandler(this.importFromISUCalcFSXMLtoolStripMenuItem_Click);
-            // 
-            // importFromClubcompToolStripMenuItem
-            // 
-            this.importFromClubcompToolStripMenuItem.Name = "importFromClubcompToolStripMenuItem";
-            this.importFromClubcompToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.importFromClubcompToolStripMenuItem.Text = "&Starcomp";
-            this.importFromClubcompToolStripMenuItem.Click += new System.EventHandler(this.importFromClubcomp2016ToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(315, 6);
-            // 
-            // UnzipMusicfiletoolStripMenuItem
-            // 
-            this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
-            this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
-            this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.unzipMusicfiletoolStripMenuItem_Click);
-            // 
-            // autoconnectMusicToParticipantsToolStripMenuItem
-            // 
-            this.autoconnectMusicToParticipantsToolStripMenuItem.Name = "autoconnectMusicToParticipantsToolStripMenuItem";
-            this.autoconnectMusicToParticipantsToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.autoconnectMusicToParticipantsToolStripMenuItem.Text = "&Autoconnect music to participants";
-            this.autoconnectMusicToParticipantsToolStripMenuItem.Click += new System.EventHandler(this.autoconnectMusicToParticipantsToolStripMenuItem_Click);
+            this.importFromStarFSToolStripMenuItem.Name = "importFromStarFSToolStripMenuItem";
+            this.importFromStarFSToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.importFromStarFSToolStripMenuItem.Text = "&StarFS";
+            this.importFromStarFSToolStripMenuItem.Click += new System.EventHandler(this.importFromStarFSToolStripMenuItem_Click);
             // 
             // FormMusicPlayer
             // 
@@ -903,6 +913,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToParticipantsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromStarFSToolStripMenuItem;
     }
 }
 

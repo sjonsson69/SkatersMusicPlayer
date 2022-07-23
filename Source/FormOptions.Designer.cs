@@ -109,7 +109,7 @@
             // 
             this.volumeSliderPause.Location = new System.Drawing.Point(502, 26);
             this.volumeSliderPause.Name = "volumeSliderPause";
-            this.volumeSliderPause.Size = new System.Drawing.Size(108, 23);
+            this.volumeSliderPause.Size = new System.Drawing.Size(476, 23);
             this.volumeSliderPause.TabIndex = 4;
             this.volumeSliderPause.TabStop = false;
             this.volumeSliderPause.Volume = 0.1779F;

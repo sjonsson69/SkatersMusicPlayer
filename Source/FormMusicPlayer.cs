@@ -917,5 +917,10 @@ namespace SkatersMusicPlayer
             }
         }
         #endregion
+
+        private void importFromStarFSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
