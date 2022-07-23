@@ -35,12 +35,18 @@ namespace SkatersMusicPlayer
         private void buttonSave_Click(object sender, EventArgs e)
         {
             // Save changes to config-file
-            ConfigurationManager.AppSettings["PauseMusicEnabled"] = (checkBoxAutoPauseMusic.Checked ? "true" : "false");
-            ConfigurationManager.AppSettings["PauseMusicDelay"] = numericUpDownPause.Value.ToString();
-            ConfigurationManager.AppSettings["PauseVolume"] = volumeSliderPause.Volume.ToString();
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-            ConfigurationManager.AppSettings["WarmupMusicDirectory"] = tbWarmupDir.Text;
-            ConfigurationManager.AppSettings["BreakMusicDirectory"] = tbBreakDir.Text;
+            config.AppSettings.Settings["PauseMusicEnabled"].Value = (checkBoxAutoPauseMusic.Checked ? "true" : "false");
+            config.AppSettings.Settings["PauseMusicDelay"].Value = numericUpDownPause.Value.ToString();
+            config.AppSettings.Settings["PauseVolume"].Value = volumeSliderPause.Volume.ToString();
+
+            config.AppSettings.Settings["WarmupMusicDirectory"].Value = tbWarmupDir.Text;
+            config.AppSettings.Settings["BreakMusicDirectory"].Value = tbBreakDir.Text;
+
+            //Save values
+            config.Save(ConfigurationSaveMode.Minimal);
+            ConfigurationManager.RefreshSection("appSettings");
 
             // Return OK to main window
             this.DialogResult = DialogResult.OK;
