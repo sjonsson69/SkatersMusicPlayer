@@ -14,14 +14,10 @@ namespace SkatersMusicPlayer
     {
         public static string getConfigurationValue(string Key, string Default)
         {
-            string Value = Default;
-            try
+            string Value = ConfigurationManager.AppSettings[Key];
+            if (string.IsNullOrEmpty(Value))
             {
-                Value = ConfigurationManager.AppSettings[Key].ToString();
-            }
-            catch (Exception)
-            {
-                //Do nothing
+                Value = Default;
             }
             return Value;
         }
