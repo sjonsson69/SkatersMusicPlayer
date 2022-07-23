@@ -841,20 +841,23 @@ namespace SkatersMusicPlayer
             {
                 loadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
                 loadXMLfile();
-                MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 editCategoriesMenuItem_Click(sender, e);
+            }
+        }
+
+        private void importFromStarFSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogStarFS.ShowDialog() == DialogResult.OK)
+            {
+                loadStarFS(doc, openFileDialogStarFS.FileName);
+                loadXMLfile();
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void importFromClubcomp2016ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialogCC.ShowDialog() == DialogResult.OK)
-            {
-                loadClubStarComp2016(doc, folderBrowserDialogCC.SelectedPath);
-                loadXMLfile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
-            }
         }
 
         private void unzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
@@ -918,9 +921,5 @@ namespace SkatersMusicPlayer
         }
         #endregion
 
-        private void importFromStarFSToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

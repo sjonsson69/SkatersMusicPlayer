@@ -304,6 +304,15 @@ namespace SkatersMusicPlayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Categories and Participants loaded from file..
+        /// </summary>
+        internal static string QUESTION_IMPORTED {
+            get {
+                return ResourceManager.GetString("QUESTION_IMPORTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Categories and Participants loaded from file. Edit Categories will now open to verify if category has Short.
         /// </summary>
         internal static string QUESTION_IMPORTED_VERIFY_SHORT {

@@ -198,6 +198,9 @@
   <data name="QUESTION_END_PROGRAM" xml:space="preserve">
     <value>Are you sure you want to end the program?</value>
   </data>
+  <data name="QUESTION_IMPORTED" xml:space="preserve">
+    <value>Categories and Participants loaded from file.</value>
+  </data>
   <data name="QUESTION_IMPORTED_VERIFY_SHORT" xml:space="preserve">
     <value>Categories and Participants loaded from file. Edit Categories will now open to verify if category has Short</value>
   </data>
