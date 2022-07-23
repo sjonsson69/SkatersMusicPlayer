@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -94,8 +94,6 @@
             this.buttonBreakPause = new System.Windows.Forms.Button();
             this.buttonBreakPlay = new System.Windows.Forms.Button();
             this.openFileDialogIndTA = new System.Windows.Forms.OpenFileDialog();
-            this.folderBrowserDialogCC = new System.Windows.Forms.FolderBrowserDialog();
-            this.folderBrowserDialogISU = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
@@ -623,7 +621,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem5});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -709,7 +707,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem6});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -774,18 +772,6 @@
             // 
             this.openFileDialogIndTA.Filter = "Anmälningslista|*.xml|All files|*.*";
             this.openFileDialogIndTA.RestoreDirectory = true;
-            // 
-            // folderBrowserDialogCC
-            // 
-            this.folderBrowserDialogCC.RootFolder = System.Environment.SpecialFolder.MyComputer;
-            this.folderBrowserDialogCC.SelectedPath = "C:\\Competition";
-            this.folderBrowserDialogCC.ShowNewFolderButton = false;
-            // 
-            // folderBrowserDialogISU
-            // 
-            this.folderBrowserDialogISU.RootFolder = System.Environment.SpecialFolder.MyComputer;
-            this.folderBrowserDialogISU.SelectedPath = "C:\\ISUCalcFS\\";
-            this.folderBrowserDialogISU.ShowNewFolderButton = false;
             // 
             // openFileDialogISUCalcXML
             // 
@@ -897,8 +883,6 @@
         private System.Windows.Forms.ToolStripMenuItem editParticipantsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editEventtoolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogIndTA;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogCC;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogISU;
         private System.Windows.Forms.OpenFileDialog openFileDialogISUCalcXML;
         private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
         private System.Windows.Forms.ColumnHeader columnHeader8;

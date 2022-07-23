@@ -856,10 +856,6 @@ namespace SkatersMusicPlayer
             }
         }
 
-        private void importFromClubcomp2016ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
         private void unzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Get Filename to unpack
