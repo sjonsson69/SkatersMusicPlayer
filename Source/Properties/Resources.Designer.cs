@@ -322,6 +322,29 @@ namespace SkatersMusicPlayer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to -- Singel
+        ///select	p.FederationId,
+        ///			SUBSTRING(CAST(p.BirthDate AS char),1,10) AS BirthDate,
+        ///			P.FirstName,
+        ///			p.LastName,
+        ///			cl.Name AS CLUBNAME,
+        ///			ms.Title as MusicShort,
+        ///			mf.Title as MusicFree,
+        ///			CAST(crs.StartNumber AS char) as StartNoShort,
+        ///			CAST(crf.StartNumber AS char) as StartNoFree,
+        ///			c.Name as CategoryName
+        ///from		person p
+        ///			left outer join club cl on cl.ShortName=p.Club
+        ///			inner join single s on s.Person_Id=p.Id								-- Koppling från Person till CompetitorID
+        ///			inner join en [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SQL_FSM_PARTICIPANTS {
+            get {
+                return ResourceManager.GetString("SQL_FSM_PARTICIPANTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to event.xml.
         /// </summary>
         internal static string XML_FILENAME {

@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using MySqlConnector;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Drawing;
@@ -844,6 +845,41 @@ namespace SkatersMusicPlayer
                 _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 editCategoriesMenuItem_Click(sender, e);
             }
+        }
+
+        private void fSManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string server = "127.0.0.1";
+            string port = "3306";
+            string username = "sa";
+            string password = "fsmanager";
+
+            //try to connect to server
+            try
+            {
+                toolStripStatusLabel1.Text = "Trying to connect to FS Manager server: " + server;
+                statusStrip1.Update();
+                using (FormSelectFSMDatabase FFSMD = new FormSelectFSMDatabase(server, port, username, password))
+                {
+                    //Ask what database we should import (database selected is stored in the tag of the form)
+                    if (FFSMD.ShowDialog() == DialogResult.OK)
+                    {
+                        loadFSM(doc, server, port, username, password, FFSMD.Tag.ToString());
+                        loadXMLfile();
+                        _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        editCategoriesMenuItem_Click(sender, e);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading FS Manager database\n" + ex.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                toolStripStatusLabel1.Text = string.Empty;
+            }
+
         }
 
         private void importFromStarFSToolStripMenuItem_Click(object sender, EventArgs e)

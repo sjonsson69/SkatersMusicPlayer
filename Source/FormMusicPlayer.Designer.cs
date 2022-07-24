@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -97,6 +97,7 @@
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
+            this.fSManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -476,11 +477,12 @@
             // 
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromIndTA2ToolStripMenuItem,
-            this.importFromISUCalcFSXMLtoolStripMenuItem,
+            this.fSManagerToolStripMenuItem,
             this.importFromStarFSToolStripMenuItem,
             this.toolStripSeparator3,
             this.UnzipMusicfiletoolStripMenuItem,
-            this.autoconnectMusicToParticipantsToolStripMenuItem});
+            this.autoconnectMusicToParticipantsToolStripMenuItem,
+            this.importFromISUCalcFSXMLtoolStripMenuItem});
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
             this.importToolStripMenuItem.Text = "&Import";
@@ -621,7 +623,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem5});
+            listViewItem3});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -707,7 +709,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem6});
+            listViewItem4});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -788,6 +790,13 @@
             // 
             this.openFileDialogStarFS.Filter = "StarFS competitiondatabase|*.db|All files|*.*";
             this.openFileDialogStarFS.RestoreDirectory = true;
+            // 
+            // fSManagerToolStripMenuItem
+            // 
+            this.fSManagerToolStripMenuItem.Name = "fSManagerToolStripMenuItem";
+            this.fSManagerToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.fSManagerToolStripMenuItem.Text = "&FS Manager";
+            this.fSManagerToolStripMenuItem.Click += new System.EventHandler(this.fSManagerToolStripMenuItem_Click);
             // 
             // FormMusicPlayer
             // 
@@ -894,6 +903,7 @@
         private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToParticipantsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFromStarFSToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogStarFS;
+        private System.Windows.Forms.ToolStripMenuItem fSManagerToolStripMenuItem;
     }
 }
 
