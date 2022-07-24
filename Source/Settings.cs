@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Text;
 
 namespace SkatersMusicPlayer
 {
@@ -6,9 +8,13 @@ namespace SkatersMusicPlayer
     {
         private static string isStringNull(string value)
         {
+            return isStringNull(value, string.Empty);
+        }
+        private static string isStringNull(string value, string defaultValue)
+        {
             if (value == null)
             {
-                value = string.Empty;
+                value = defaultValue;
             }
             return value;
         }
@@ -18,7 +24,7 @@ namespace SkatersMusicPlayer
             get
             {
                 string value = ConfigurationManager.AppSettings["PauseMusicEnabled"];
-                value = isStringNull(value);
+                value = isStringNull(value, "true");
                 return value.ToLower() == "true";
             }
             set
@@ -32,7 +38,7 @@ namespace SkatersMusicPlayer
             get
             {
                 string value = ConfigurationManager.AppSettings["PauseMusicDelay"];
-                value = isStringNull(value);
+                value = isStringNull(value, "20");
                 decimal.TryParse(value, out decimal delay);
                 return delay;
             }
@@ -47,10 +53,7 @@ namespace SkatersMusicPlayer
             get
             {
                 string value = ConfigurationManager.AppSettings["PauseVolume"];
-                if (string.IsNullOrEmpty(value))
-                {
-                    value = "0,1";
-                }
+                value = isStringNull(value, "0,1");
                 float.TryParse(value, out float volume);
                 return volume;
             }
@@ -66,7 +69,7 @@ namespace SkatersMusicPlayer
             get
             {
                 string value = ConfigurationManager.AppSettings["WarmupMusicDirectory"];
-                value = isStringNull(value);
+                value = isStringNull(value, @".\WarmupMusic");
                 return value;
             }
             set
@@ -80,7 +83,7 @@ namespace SkatersMusicPlayer
             get
             {
                 string value = ConfigurationManager.AppSettings["BreakMusicDirectory"];
-                value = isStringNull(value);
+                value = isStringNull(value, @".\BreakMusic");
                 return value;
             }
             set
@@ -89,10 +92,77 @@ namespace SkatersMusicPlayer
             }
         }
 
+        public static string FSMServer
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["FSMServer"];
+                value = isStringNull(value, "127.0.0.1");
+                return value;
+            }
+            set
+            {
+                saveAppSettings("FSMServer", value);
+            }
+        }
+
+        public static string FSMPort
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["FSMPort"];
+                value = isStringNull(value, "3306");
+                return value;
+            }
+            set
+            {
+                saveAppSettings("FSMPort", value);
+            }
+        }
+        public static string FSMUsername
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["FSMUsername"];
+                value = isStringNull(value, "Ogu3GfB1Ni0oLJgB/c5PNw==");
+                value = Crypt.crypt.kryptera(value, string.Empty, false);
+                return value;
+            }
+            set
+            {
+                saveAppSettings("FSMUsername", Crypt.crypt.kryptera(value, string.Empty, true));
+            }
+        }
+
+        public static string FSMPassword
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["FSMPassword"];
+                value = isStringNull(value, "GDqbs0arr3WRjT56FjoBab4QafEv+AfwBff94bNpge4=");
+                value = Crypt.crypt.kryptera(value, string.Empty, false);
+                return value;
+            }
+            set
+            {
+                saveAppSettings("FSMPassword", Crypt.crypt.kryptera(value, string.Empty, true));
+            }
+        }
+
         private static void saveAppSettings(string key, string value)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.AppSettings.Settings[key].Value = value;
+            //Does the key exist?
+            var s = config.AppSettings.Settings[key];
+            if (s == null)
+            {//No, create key
+                config.AppSettings.Settings.Add(key, value);
+            }
+            else
+            {//Update key
+                s.Value = value;
+            }
+
             config.Save(ConfigurationSaveMode.Minimal);
 
             ConfigurationManager.RefreshSection("appSettings");

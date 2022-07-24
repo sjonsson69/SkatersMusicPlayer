@@ -136,6 +136,7 @@
     <Compile Include="AboutBox.designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Crypt.cs" />
     <Compile Include="FormEditClasses.cs">
       <SubType>Form</SubType>
     </Compile>

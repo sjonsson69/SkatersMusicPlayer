@@ -834,10 +834,10 @@ namespace SkatersMusicPlayer
 
         private void fSManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string server = "127.0.0.1";
-            string port = "3306";
-            string username = "sa";
-            string password = "fsmanager";
+            string server = settings.FSMServer;
+            string port = settings.FSMPort;
+            string username = settings.FSMUsername;
+            string password = settings.FSMPassword;
 
             //try to connect to server
             try

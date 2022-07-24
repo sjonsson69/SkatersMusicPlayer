@@ -18,6 +18,11 @@ namespace SkatersMusicPlayer
             // Load music folders for Warmup music and Break music
             tbWarmupDir.Text = settings.warmupMusicDirectory;
             tbBreakDir.Text = settings.breakMusicDirectory;
+
+            tbFSMServer.Text = settings.FSMServer;
+            tbFSMServerPort.Text = settings.FSMPort;
+            tbFSMUsername.Text = settings.FSMUsername;
+            tbFSMPassword.Text = settings.FSMPassword;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -39,8 +44,14 @@ namespace SkatersMusicPlayer
             settings.pauseMusicEnabled = checkBoxAutoPauseMusic.Checked;
             settings.pauseMusicDelay = numericUpDownPause.Value;
             settings.pauseVolume = volumeSliderPause.Volume;
+            
             settings.warmupMusicDirectory = tbWarmupDir.Text;
             settings.breakMusicDirectory = tbBreakDir.Text;
+
+            settings.FSMServer = tbFSMServer.Text;
+            settings.FSMPort = tbFSMServerPort.Text;
+            settings.FSMUsername = tbFSMUsername.Text;
+            settings.FSMPassword = tbFSMPassword.Text;
 
 
             // Return OK to main window
