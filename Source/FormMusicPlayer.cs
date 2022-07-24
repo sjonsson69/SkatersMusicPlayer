@@ -1,9 +1,7 @@
-﻿using MySqlConnector;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Drawing;
-using System.Resources;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -47,26 +45,13 @@ namespace SkatersMusicPlayer
         private void loadSettings()
         {
             // Load PauseMusic settings
-            checkBoxAutoPauseMusic.Checked = getConfigurationValue("PauseMusicEnabled", "TRUE").ToUpper() == "TRUE";
-            try
-            {   //Try do parse delay value.
-                numericUpDownPause.Value = decimal.Parse(getConfigurationValue("PauseMusicDelay", "0"));
-            }
-            catch (Exception)
-            {//Do nothing
-            }
-            try
-            {   //Try do parse volume value.
-                volumeSliderPause.Volume = float.Parse(getConfigurationValue("PauseVolume", "0,1"));
-            }
-            catch (Exception)
-            {//Do nothing
-            }
-
+            checkBoxAutoPauseMusic.Checked = settings.pauseMusicEnabled;
+            numericUpDownPause.Value = settings.pauseMusicDelay;
+            volumeSliderPause.Volume = settings.pauseVolume;
 
             // Load music folders for Warmup music and Break music
-            loadMusicFolder(getConfigurationValue("WarmupMusicDirectory", string.Empty), true, listViewWarmupMusic);
-            loadMusicFolder(getConfigurationValue("BreakMusicDirectory", string.Empty), true, listViewBreakMusic);
+            loadMusicFolder(settings.warmupMusicDirectory, true, listViewWarmupMusic);
+            loadMusicFolder(settings.breakMusicDirectory, true, listViewBreakMusic);
 
             //Kolla om vi fått Break music. Om inte så ta bort boxen och flytta resten
             if (listViewBreakMusic.Items.Count == 0)

@@ -14,15 +14,6 @@ namespace SkatersMusicPlayer
 {
     public partial class FormMusicPlayer : Form
     {
-        public static string getConfigurationValue(string Key, string Default)
-        {
-            string Value = ConfigurationManager.AppSettings[Key];
-            if (string.IsNullOrEmpty(Value))
-            {
-                Value = Default;
-            }
-            return Value;
-        }
         public static string getDBString(SQLiteDataReader reader, int column, string defaultValue)
         {
             if (reader.IsDBNull(column))
