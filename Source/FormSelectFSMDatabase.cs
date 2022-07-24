@@ -13,10 +13,17 @@ namespace SkatersMusicPlayer
 {
     public partial class FormSelectFSMDatabase : Form
     {
-        public FormSelectFSMDatabase(string server, string port, string username, string password)
+        public FormSelectFSMDatabase()
         {
             InitializeComponent();
-            using (MySqlConnection conn = new MySqlConnection("Server=" + server + ";Port=" + port + ";Uid=" + username + ";Pwd=" + password + ";Connection Timeout=10;"))
+            var conString = new MySqlConnectionStringBuilder
+            {
+                Server = settings.FSMServer,
+                Port = settings.FSMPort,
+                UserID = settings.FSMUsername,
+                Password = settings.FSMPassword
+            };
+            using (MySqlConnection conn = new MySqlConnection(conString.ToString()))
             {
                 conn.Open();
                 //Find all databases

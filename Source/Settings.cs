@@ -106,19 +106,21 @@ namespace SkatersMusicPlayer
             }
         }
 
-        public static string FSMPort
+        public static uint FSMPort
         {
             get
             {
                 string value = ConfigurationManager.AppSettings["FSMPort"];
                 value = isStringNull(value, "3306");
-                return value;
+                uint.TryParse(value, out uint p);
+                return p;
             }
             set
             {
-                saveAppSettings("FSMPort", value);
+                saveAppSettings("FSMPort", value.ToString());
             }
         }
+
         public static string FSMUsername
         {
             get

@@ -971,12 +971,20 @@ namespace SkatersMusicPlayer
 
         }
 
-        private void loadFSM(XmlDocument doc, string server, string port, string username, string password, string database)
+        private void loadFSM(XmlDocument doc, string database)
         {
             //Load StarFS database
             try
             {
-                using (MySqlConnection con = new MySqlConnection("Server=" + server + ";Port=" + port + ";Uid=" + username + ";Pwd=" + password + ";Database=" + database))
+                var conString = new MySqlConnectionStringBuilder
+                {
+                    Server = settings.FSMServer,
+                    Port = settings.FSMPort,
+                    UserID = settings.FSMUsername,
+                    Password = settings.FSMPassword,
+                    Database= database
+                };
+                using (MySqlConnection con = new MySqlConnection(conString.ToString()))
                 {
                     con.Open();
 

@@ -834,22 +834,17 @@ namespace SkatersMusicPlayer
 
         private void fSManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string server = settings.FSMServer;
-            string port = settings.FSMPort;
-            string username = settings.FSMUsername;
-            string password = settings.FSMPassword;
-
             //try to connect to server
             try
             {
-                toolStripStatusLabel1.Text = "Trying to connect to FS Manager server: " + server;
+                toolStripStatusLabel1.Text = "Trying to connect to FS Manager server: " + settings.FSMServer;
                 statusStrip1.Update();
-                using (FormSelectFSMDatabase FFSMD = new FormSelectFSMDatabase(server, port, username, password))
+                using (FormSelectFSMDatabase FFSMD = new FormSelectFSMDatabase())
                 {
                     //Ask what database we should import (database selected is stored in the tag of the form)
                     if (FFSMD.ShowDialog() == DialogResult.OK)
                     {
-                        loadFSM(doc, server, port, username, password, FFSMD.Tag.ToString());
+                        loadFSM(doc, FFSMD.Tag.ToString());
                         loadXMLfile();
                         _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         editCategoriesMenuItem_Click(sender, e);

@@ -45,18 +45,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBoxFSManager = new System.Windows.Forms.GroupBox();
-            this.tbFSMServer = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tbFSMServerPort = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tbFSMUsername = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.tbFSMPassword = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.tbFSMUsername = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbFSMServer = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.nUDFSMPort = new System.Windows.Forms.NumericUpDown();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
             this.groupBoxDirectories.SuspendLayout();
             this.groupBoxFSManager.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUDFSMPort)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSave
@@ -222,11 +223,11 @@
             // 
             // groupBoxFSManager
             // 
+            this.groupBoxFSManager.Controls.Add(this.nUDFSMPort);
             this.groupBoxFSManager.Controls.Add(this.tbFSMPassword);
             this.groupBoxFSManager.Controls.Add(this.label7);
             this.groupBoxFSManager.Controls.Add(this.tbFSMUsername);
             this.groupBoxFSManager.Controls.Add(this.label6);
-            this.groupBoxFSManager.Controls.Add(this.tbFSMServerPort);
             this.groupBoxFSManager.Controls.Add(this.label5);
             this.groupBoxFSManager.Controls.Add(this.tbFSMServer);
             this.groupBoxFSManager.Controls.Add(this.label4);
@@ -236,60 +237,6 @@
             this.groupBoxFSManager.TabIndex = 5;
             this.groupBoxFSManager.TabStop = false;
             this.groupBoxFSManager.Text = "FS Manager - Server settings";
-            // 
-            // tbFSMServer
-            // 
-            this.tbFSMServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFSMServer.Location = new System.Drawing.Point(223, 25);
-            this.tbFSMServer.Name = "tbFSMServer";
-            this.tbFSMServer.Size = new System.Drawing.Size(755, 26);
-            this.tbFSMServer.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 28);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(116, 20);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Server address";
-            // 
-            // tbFSMServerPort
-            // 
-            this.tbFSMServerPort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFSMServerPort.Location = new System.Drawing.Point(223, 57);
-            this.tbFSMServerPort.Name = "tbFSMServerPort";
-            this.tbFSMServerPort.Size = new System.Drawing.Size(755, 26);
-            this.tbFSMServerPort.TabIndex = 9;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 60);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 20);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Server port";
-            // 
-            // tbFSMUsername
-            // 
-            this.tbFSMUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbFSMUsername.Location = new System.Drawing.Point(223, 89);
-            this.tbFSMUsername.Name = "tbFSMUsername";
-            this.tbFSMUsername.Size = new System.Drawing.Size(755, 26);
-            this.tbFSMUsername.TabIndex = 11;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 92);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(83, 20);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Username";
             // 
             // tbFSMPassword
             // 
@@ -309,6 +256,63 @@
             this.label7.Size = new System.Drawing.Size(78, 20);
             this.label7.TabIndex = 12;
             this.label7.Text = "Password";
+            // 
+            // tbFSMUsername
+            // 
+            this.tbFSMUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbFSMUsername.Location = new System.Drawing.Point(223, 89);
+            this.tbFSMUsername.Name = "tbFSMUsername";
+            this.tbFSMUsername.Size = new System.Drawing.Size(755, 26);
+            this.tbFSMUsername.TabIndex = 11;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 92);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 20);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Username";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 59);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(87, 20);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Server port";
+            // 
+            // tbFSMServer
+            // 
+            this.tbFSMServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbFSMServer.Location = new System.Drawing.Point(223, 25);
+            this.tbFSMServer.Name = "tbFSMServer";
+            this.tbFSMServer.Size = new System.Drawing.Size(755, 26);
+            this.tbFSMServer.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 28);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(116, 20);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Server address";
+            // 
+            // nUDFSMPort
+            // 
+            this.nUDFSMPort.Location = new System.Drawing.Point(223, 57);
+            this.nUDFSMPort.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.nUDFSMPort.Name = "nUDFSMPort";
+            this.nUDFSMPort.Size = new System.Drawing.Size(755, 26);
+            this.nUDFSMPort.TabIndex = 14;
             // 
             // formOptions
             // 
@@ -335,6 +339,7 @@
             this.groupBoxDirectories.PerformLayout();
             this.groupBoxFSManager.ResumeLayout(false);
             this.groupBoxFSManager.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUDFSMPort)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -362,9 +367,9 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tbFSMUsername;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox tbFSMServerPort;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbFSMServer;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown nUDFSMPort;
     }
 }
