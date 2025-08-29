@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -490,6 +490,7 @@
             this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
             this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
             this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
+            this.importFromIndTA2ToolStripMenuItem.Visible = false;
             this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
             // 
             // fSManagerToolStripMenuItem
@@ -621,7 +622,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem3});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -707,7 +708,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem4});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -780,7 +781,7 @@
             // 
             // openFileDialogMusicarchive
             // 
-            this.openFileDialogMusicarchive.Filter = "Musicfiles|musikfil*.zip|zip-files|*.zip|All files|*.*";
+            this.openFileDialogMusicarchive.Filter = "zip-files|*.zip|All files|*.*";
             this.openFileDialogMusicarchive.ReadOnlyChecked = true;
             this.openFileDialogMusicarchive.RestoreDirectory = true;
             // 

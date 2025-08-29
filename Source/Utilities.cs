@@ -1171,11 +1171,11 @@ namespace SkatersMusicPlayer
                 // Free music
                 // Search for music
                 FileInfo[] fiArray = null;
-                string FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty) + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty) + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
+                string FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ","-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ","-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
                 //Syncro/Pair?
                 if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
                 {//No last name, probably Syncro or Pair
-                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
+                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
                 }
 
                 try
@@ -1231,10 +1231,10 @@ namespace SkatersMusicPlayer
                     // Short music
                     // Search for music
                     fiArray = null;
-                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty) + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty) + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
+                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
                     if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
                     {//No last name, probably Syncro or Pair
-                        FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty) + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
+                        FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
                     }
                     try
                     {
