@@ -1,18 +1,108 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
+using System.IO;
 
 namespace SkatersMusicPlayer
 {
-    public partial class FormMusicPlayer : Form
+    public partial class formMusicPlayer : Form
     {
+
+
+        // Define the root object representing the entire JSON file
+#nullable enable
+        public class competitionEvent
+        {
+            // The main name of the competition
+            [JsonProperty("competitionName")]
+            public string competitionName { get; set; } = string.Empty;
+
+            // A list of all segments (e.g., "Junior Men - Short Program") in the competition
+            [JsonProperty("categoriesAndSegments")]
+            public List<categorySegment> categoriesAndSegments { get; set; } = new List<categorySegment>();
+
+            // --- Example Usage of Deserialization (Optional, for testing) ---
+            /*
+            public static CompetitionEvent? FromJson(string json)
+            {
+                return JsonConvert.DeserializeObject<CompetitionEvent>(json);
+            }
+            */
+        }
+
+        // Represents a single category/segment within the competition
+        public class categorySegment
+        {
+            [JsonProperty("categoryName")]
+            public string categoryName { get; set; } = string.Empty;
+
+            // The list of participants registered for this specific segment
+            [JsonProperty("participants")]
+            public List<participant> participants { get; set; } = new List<participant>();
+        }
+
+        // Represents a single athlete/participant
+        public class participant
+        {
+            // Using Guid for the ID, which is a good type for UUID strings
+            [JsonProperty("id")]
+            public Guid? id { get; set; }
+
+            // Using nullable integer (int?) because 'startNumber' can be null in the JSON
+            [JsonProperty("startNumber")]
+            public int? startNumber { get; set; }
+
+            [JsonProperty("firstName")]
+            public string? firstName { get; set; }
+
+            [JsonProperty("lastName")]
+            public string? lastName { get; set; }
+
+            // Using DateTime to correctly parse the date string (e.g., "2007-03-22")
+            [JsonProperty("birthDate")]
+            public DateTime? birthDate { get; set; }
+
+            [JsonProperty("club")]
+            public string? club { get; set; }
+
+            // Nested object for music details
+            [JsonProperty("music")]
+            public competitionMusic? music { get; set; }
+        }
+
+#nullable enable
+        // Represents the music details for a participant's segment
+        public class competitionMusic
+        {
+            // Using nullable string (string?) because 'file', 'md5', and 'title' can be null
+            [JsonProperty("file")]
+            public string? file { get; set; }
+
+            [JsonProperty("md5")]
+            public string? md5 { get; set; }
+
+            [JsonProperty("title")]
+            public string? title { get; set; }
+        }
+#nullable disable
+
+
         enum player { Nothing, Participant, Warmup, Break, Spotify };
 
         //Constants for messages
         public XmlDocument doc = new XmlDocument() { XmlResolver = null };
+
+        //Json object for event
+#nullable enable
+        public competitionEvent? compEvent = null;
+#nullable disable   
 
         private IWavePlayer waveOutDeviceParticipant = null;
         private AudioFileReader audioFileReaderParticipant = null;
@@ -28,7 +118,7 @@ namespace SkatersMusicPlayer
         private AudioFileReader audioFileReaderBreak = null;
         private Action<float> setVolumeDelegateBreak;
 
-        public FormMusicPlayer()
+        public formMusicPlayer()
         {
             InitializeComponent();
 
@@ -37,8 +127,7 @@ namespace SkatersMusicPlayer
 
             loadSettings();
 
-            loadXMLfile();
-
+            loadJsonFile();
         }
 
         // Load settings from config-file
@@ -100,10 +189,7 @@ namespace SkatersMusicPlayer
         #region CloseWaveOut
         private void closeWaveOutParticipant()
         {
-            if (waveOutDeviceParticipant != null)
-            {
-                waveOutDeviceParticipant.Stop();
-            }
+            waveOutDeviceParticipant?.Stop();
             if (audioFileReaderParticipant != null)
             {
                 // this one really closes the file and ACM conversion
@@ -120,10 +206,7 @@ namespace SkatersMusicPlayer
 
         private void closeWaveOutWarmup()
         {
-            if (waveOutDeviceWarmup != null)
-            {
-                waveOutDeviceWarmup.Stop();
-            }
+            waveOutDeviceWarmup?.Stop();
             if (audioFileReaderWarmup != null)
             {
                 // this one really closes the file and ACM conversion
@@ -140,10 +223,7 @@ namespace SkatersMusicPlayer
 
         private void closeWaveOutBreak()
         {
-            if (waveOutDeviceBreak != null)
-            {
-                waveOutDeviceBreak.Stop();
-            }
+            waveOutDeviceBreak?.Stop();
             if (audioFileReaderBreak != null)
             {
                 // this one really closes the file and ACM conversion
@@ -726,7 +806,8 @@ namespace SkatersMusicPlayer
 
         private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loadParticipants(doc, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
+            //loadParticipants(doc, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
+            loadParticipants(compEvent, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
             if (listViewParticipants.Items.Count != 0)
             {// Select first participant
                 listViewParticipants.Items[0].Selected = true;
@@ -739,37 +820,38 @@ namespace SkatersMusicPlayer
         {
             if (MessageBox.Show(Properties.Resources.QUESTION_DELETE_COMPETITION, Properties.Resources.CAPTION_NEW_COMPETITION, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                // Remove all categories from XML tree
-                while (doc.DocumentElement.HasChildNodes)
+                // create a new Json file
+                compEvent = new competitionEvent
                 {
-                    // Remove category from XML tree
-                    doc.DocumentElement.RemoveChild(doc.DocumentElement.FirstChild);
-                    doc.DocumentElement.SetAttribute("Name", "New event");
-                    doc.Save(Properties.Resources.XML_FILENAME);
-                    loadXMLfile();
-                }
+                    competitionName = "New event",
+                    categoriesAndSegments = new List<categorySegment>()
+                };
+                serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
+
+                //reload json file
+                loadJsonFile();
             }
 
         }
 
         private void editEventMenuItem_Click(object sender, EventArgs e)
         {
-            using (FormEditEvent EC = new FormEditEvent(doc))
+            using (FormEditEvent EC = new FormEditEvent(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                 }
             }
         }
 
         private void editCategoriesMenuItem_Click(object sender, EventArgs e)
         {
-            using (formEditCategories EC = new formEditCategories(doc))
+            using (formEditCategories EC = new formEditCategories(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                 }
             }
         }
@@ -785,7 +867,7 @@ namespace SkatersMusicPlayer
             {
                 if (ES.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                     try
                     {//Try to reload category
                         comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
@@ -930,6 +1012,12 @@ namespace SkatersMusicPlayer
             {
                 ab.ShowDialog();
             }
+        }
+        // Add this method inside the competitionEvent class
+        public static void serializeToFile(competitionEvent compEvent, string filePath)
+        {
+            var json = JsonConvert.SerializeObject(compEvent, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(filePath, json, Encoding.UTF8);
         }
         #endregion
 

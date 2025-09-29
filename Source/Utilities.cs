@@ -12,7 +12,7 @@ using System.Xml;
 
 namespace SkatersMusicPlayer
 {
-    public partial class FormMusicPlayer : Form
+    public partial class formMusicPlayer : Form
     {
         public static string getDBString(SQLiteDataReader reader, int column, string defaultValue)
         {
@@ -164,6 +164,39 @@ namespace SkatersMusicPlayer
             loadCategories(doc, comboBoxCategory);
         }
 
+        private void loadJsonFile()
+        {
+            // Load JsonFile
+            try
+            {
+                if (File.Exists(Properties.Resources.JSON_FILENAME))
+                {
+                    string json = File.ReadAllText(Properties.Resources.JSON_FILENAME);
+                    compEvent = Newtonsoft.Json.JsonConvert.DeserializeObject<competitionEvent>(json);
+                }
+                else
+                {
+                    compEvent = new competitionEvent();
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading Event JSON-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                compEvent = new competitionEvent();
+            }
+
+            // Set competitionname in form header
+            this.Text = "Skaters MusicPlayer - " + compEvent.competitionName;
+
+            // Empty Listview
+            listViewParticipants.Items.Clear();
+            listViewParticipants.Tag = null;
+
+            // Load categories
+            loadCategories(compEvent, comboBoxCategory);
+
+        }
+
         public static void loadCategories(XmlDocument doc, ComboBox CB)
         {
             if (doc != null && CB != null)
@@ -183,6 +216,32 @@ namespace SkatersMusicPlayer
                                 CB.Items.Add(tableNode.Attributes.GetNamedItem("Name").Value + " - Short");
                             }
                             CB.Items.Add(tableNode.Attributes.GetNamedItem("Name").Value + " - Free "); // Extra space required to be removed when we select a category
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    _ = MessageBox.Show("Error loading categories\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
+
+        public static void loadCategories(competitionEvent compEvent, ComboBox CB)
+        {
+            if (compEvent != null && CB != null)
+            {
+                try
+                {
+                    // Remove all old data
+                    CB.Items.Clear();
+
+                    if (compEvent.categoriesAndSegments.Count != 0)
+                    {
+                        //Loop for all categories
+                        foreach (var category in compEvent.categoriesAndSegments)
+                        {
+                            CB.Items.Add(category.categoryName);
                         }
                     }
                 }
@@ -245,12 +304,8 @@ namespace SkatersMusicPlayer
             }
         }
 
-        private void loadParticipants(XmlDocument doc, string selected, ListView LV)
+        private void loadParticipants(competitionEvent compEvent, string selected, ListView LV)
         {
-            // Split selected itemtext into Category and Segment
-            string Category = selected.Substring(0, selected.Length - 8);
-            string Segment = selected.Substring(selected.Length - 5, 5).Trim();
-
             // Remove all participants, and also remove Tag so we dont colorcode from last category/segment.
             LV.Items.Clear();
             LV.Tag = null;
@@ -258,25 +313,26 @@ namespace SkatersMusicPlayer
             // Initialize audioreader so we can verify if the files found are playable
             AudioFileReader audioFileReaderTest = null;
 
-            if (doc.DocumentElement != null)
+            if (compEvent != null)
             {
                 // Loop throu all Categories to find the selected one
-                foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
+                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
                 {
                     // Is it the correct category?
-                    if (tableNode.Attributes.GetNamedItem("Name").Value == Category)
+                    if (catSeg.categoryName == selected)
                     {
-                        foreach (XmlNode participant in tableNode.ChildNodes)
+                        foreach (participant par in catSeg.participants)
                         {
                             // Update infotext that we are working...
-                            toolStripStatusLabel1.Text = "Loading participant:" + getXMLElement(participant["FirstName"], string.Empty, string.Empty) + " " + getXMLElement(participant["LastName"], string.Empty, string.Empty);
+                            toolStripStatusLabel1.Text = "Loading participant:" + par?.firstName + " " + par?.lastName;
                             statusStrip1.Update();
 
-                            ListViewItem I = new ListViewItem(getXMLElement(participant[Segment], "StartNo", string.Empty));
-                            I.SubItems.Add(getXMLElement(participant["FirstName"], string.Empty, string.Empty) + " " + getXMLElement(participant["LastName"], string.Empty, string.Empty));
-                            I.SubItems.Add(getXMLElement(participant["Club"], string.Empty, string.Empty));
-                            string musicFile = getXMLElement(participant[Segment], "MusicFile", string.Empty);
-                            string MD5Value = getXMLElementAttribute(participant[Segment], "MusicFile", "MD5", string.Empty);
+                            ListViewItem I = new ListViewItem(par?.startNumber.ToString());
+                            I.SubItems.Add(par?.firstName + " " + par?.lastName);
+                            I.SubItems.Add(par?.club);
+                            // Returns the music file path or string.Empty if not available
+                            string musicFile = par?.music?.file ?? string.Empty;
+                            string MD5Value = par?.music?.md5 ?? string.Empty;
                             try
                             {
                                 //Try to load the file to see if NAudio can read it. Gives an exception if we can't read it
@@ -290,8 +346,8 @@ namespace SkatersMusicPlayer
                                 }
                                 else
                                 {// MD5 is correct!
-                                    _ = I.SubItems.Add($"{(int)audioFileReaderTest.TotalTime.TotalMinutes:00}:{audioFileReaderTest.TotalTime.Seconds:00}");
-                                    _ = I.SubItems.Add(musicFile);
+                                    I.SubItems.Add($"{(int)audioFileReaderTest.TotalTime.TotalMinutes:00}:{audioFileReaderTest.TotalTime.Seconds:00}");
+                                    I.SubItems.Add(musicFile);
                                 }
                             }
                             catch (Exception)
@@ -318,7 +374,7 @@ namespace SkatersMusicPlayer
                                 }
                             }
 
-                            I.SubItems.Add(getXMLElement(participant[Segment], "MusicName", string.Empty));
+                            I.SubItems.Add(par?.music?.title ?? string.Empty);
 
                             LV.Items.Add(I);
                         }
@@ -392,6 +448,88 @@ namespace SkatersMusicPlayer
                                 string musicFile = getXMLElement(participant[Segment], "MusicFile", string.Empty);
                                 DV[9, rownr].Value = musicFile;
                                 string MD5Value = getXMLElementAttribute(participant[Segment], "MusicFile", "MD5", string.Empty);
+                                DV[10, rownr].Value = MD5Value;
+                                try
+                                {
+                                    //Try to load the file to see if NAudio can read it. Gives an exception if we can't read it
+                                    audioFileReaderTest = new AudioFileReader(musicFile);
+                                    // Check MD5 for musicfile so there hasn't been a change of file since imported.
+                                    if (string.IsNullOrEmpty(MD5Value) || MD5Value == getMD5HashFromFile(musicFile))
+                                    {// MD5 is correct!
+                                        DV[8, rownr].Value = string.Format("{0:00}:{1:00}", (int)audioFileReaderTest.TotalTime.TotalMinutes, audioFileReaderTest.TotalTime.Seconds);
+                                    }
+                                    else
+                                    {// MD5 doesn't match!
+                                        DV[8, rownr].Value = "Checksum error";
+                                        DV.Rows[rownr].DefaultCellStyle.ForeColor = Color.Orange;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    // Can't read file
+                                    if (string.IsNullOrEmpty(musicFile))
+                                    {
+                                        DV[8, rownr].Value = "No file";
+                                    }
+                                    else
+                                    {
+                                        DV[8, rownr].Value = "Invalid file";
+                                    }
+                                    DV.Rows[rownr].DefaultCellStyle.ForeColor = Color.Red;
+                                }
+                                finally
+                                {
+                                    if (audioFileReaderTest != null)
+                                    {
+                                        // Dispose of the reader
+                                        audioFileReaderTest.Dispose();
+                                        audioFileReaderTest = null;
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void loadParticipantsDV(competitionEvent compEvent, string selected, DataGridView DV)
+        {
+            if (compEvent != null && selected != null && DV != null)
+            {
+                DV.Rows.Clear();
+
+                // Initialize audioreader so we can verify if the files found are playable
+                AudioFileReader audioFileReaderTest = null;
+
+                if (compEvent.categoriesAndSegments.Count != 0)
+                {
+                    // Loop throu all Categorieses to find the selected one
+                    foreach (categorySegment catseg in compEvent.categoriesAndSegments)
+                    {
+                        // Is it the correct category?
+                        if (catseg.categoryName == selected)
+                        {
+                            foreach (participant par in catseg.participants)
+                            {
+
+                                DV.Rows.Add();
+                                int rownr = DV.Rows.Count - 2;
+                                DV[0, rownr].Value = par.startNumber.ToString();
+                                DV[1, rownr].Value = par?.firstName ?? string.Empty;
+                                DV[2, rownr].Value = par?.lastName ?? string.Empty;
+                                DV[3, rownr].Value = par?.club ?? string.Empty;
+                                DV[4, rownr].Value = par?.id;
+                                DV[5, rownr].Value = par?.birthDate;
+
+                                DV[6, rownr].Value = par?.music?.title ?? string.Empty;
+
+                                // Load music file and information, and check the file information
+                                string musicFile = par?.music?.file ?? string.Empty;
+                                DV[9, rownr].Value = musicFile;
+                                string MD5Value = par?.music?.md5 ?? string.Empty;
                                 DV[10, rownr].Value = MD5Value;
                                 try
                                 {
@@ -982,7 +1120,7 @@ namespace SkatersMusicPlayer
                     Port = settings.FSMPort,
                     UserID = settings.FSMUsername,
                     Password = settings.FSMPassword,
-                    Database= database
+                    Database = database
                 };
                 using (MySqlConnection con = new MySqlConnection(conString.ToString()))
                 {
@@ -1171,7 +1309,7 @@ namespace SkatersMusicPlayer
                 // Free music
                 // Search for music
                 FileInfo[] fiArray = null;
-                string FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ","-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ","-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
+                string FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
                 //Syncro/Pair?
                 if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
                 {//No last name, probably Syncro or Pair
@@ -1327,10 +1465,7 @@ namespace SkatersMusicPlayer
             }
             finally
             {
-                if (audioFileReaderTest != null)
-                {
-                    audioFileReaderTest.Dispose();
-                }
+                audioFileReaderTest?.Dispose();
             }
             return MD5;
         }

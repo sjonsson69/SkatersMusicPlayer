@@ -29,13 +29,10 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.Category = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.HasShort = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HasFree = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.NumberOfParticipants = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -48,8 +45,6 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Category,
-            this.HasShort,
-            this.HasFree,
             this.NumberOfParticipants});
             this.dataGridView1.Location = new System.Drawing.Point(12, 12);
             this.dataGridView1.MultiSelect = false;
@@ -83,32 +78,15 @@
             // 
             // Category
             // 
+            this.Category.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Category.HeaderText = "Category";
             this.Category.Name = "Category";
-            this.Category.Width = 440;
-            // 
-            // HasShort
-            // 
-            this.HasShort.FalseValue = "";
-            this.HasShort.HeaderText = "Has Short";
-            this.HasShort.Name = "HasShort";
-            this.HasShort.TrueValue = "true";
-            // 
-            // HasFree
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            dataGridViewCellStyle1.NullValue = false;
-            this.HasFree.DefaultCellStyle = dataGridViewCellStyle1;
-            this.HasFree.HeaderText = "Has Free";
-            this.HasFree.Name = "HasFree";
-            this.HasFree.ReadOnly = true;
             // 
             // NumberOfParticipants
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.NumberOfParticipants.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.NumberOfParticipants.DefaultCellStyle = dataGridViewCellStyle1;
             this.NumberOfParticipants.HeaderText = "No of participants";
             this.NumberOfParticipants.Name = "NumberOfParticipants";
             this.NumberOfParticipants.ReadOnly = true;
@@ -141,8 +119,6 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.DataGridViewTextBoxColumn Category;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn HasShort;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn HasFree;
         private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfParticipants;
     }
 }

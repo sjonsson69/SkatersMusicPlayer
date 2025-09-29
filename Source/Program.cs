@@ -13,7 +13,7 @@ namespace SkatersMusicPlayer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            using (FormMusicPlayer FMP = new FormMusicPlayer())
+            using (formMusicPlayer FMP = new formMusicPlayer())
             {
                 Application.Run(FMP);
             }

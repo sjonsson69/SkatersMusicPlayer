@@ -1,37 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
+using static SkatersMusicPlayer.formMusicPlayer;
 
 namespace SkatersMusicPlayer
 {
     public partial class formEditCategories : Form
     {
-        XmlDocument docCategories = null;
+        public competitionEvent compEvent2 = null;
 
-        public static void loadCategoriesToGrid(XmlDocument doc, DataGridView DV)
+
+        public static void loadCategoriesToGrid(competitionEvent compEvent, DataGridView DV)
         {
-            if (doc != null && DV != null)
+            if (compEvent != null && DV != null)
             {
                 try
                 {
                     DV.Rows.Clear();
 
-                    if (doc.DocumentElement != null)
+                    if (compEvent.categoriesAndSegments.Count!=0)
                     {
-                        foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
+                        // Load categories from competitionEvent
+                        foreach (categorySegment cat in compEvent.categoriesAndSegments)
                         {
                             DV.Rows.Add();
-                            DV[0, DV.Rows.Count - 2].Tag = tableNode.InnerXml;  // Store the InnerXML for each Category
-                            DV[0, DV.Rows.Count - 2].Value = tableNode.Attributes.GetNamedItem("Name").Value;
-
-                            // Does the Category have differens segments?
-                            if (tableNode.Attributes.GetNamedItem("HasShort") != null)
-                            {
-                                DV[1, DV.Rows.Count - 2].Value = "true";
-                            }
-                            DV[2, DV.Rows.Count - 2].Value = "true";
-                            DV[3, DV.Rows.Count - 2].Value = tableNode.ChildNodes.Count; // Number of participants in category
-
+                            DV[0, DV.Rows.Count - 2].Tag = cat.participants;  // Store the participants for each Category
+                            DV[0, DV.Rows.Count - 2].Value = cat.categoryName;
+                            DV[1, DV.Rows.Count - 2].Value = cat.participants.Count; // Number of participants in category
                         }
                     }
                 }
@@ -42,46 +38,31 @@ namespace SkatersMusicPlayer
             }
         }
 
-        public formEditCategories(XmlDocument doc)
+        public formEditCategories(competitionEvent compEvent)
         {
             InitializeComponent();
 
-            docCategories = doc;
-            loadCategoriesToGrid(doc, dataGridView1);
-
+            compEvent2 = compEvent;
+            loadCategoriesToGrid(compEvent2, dataGridView1);
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            // Save categories
-            if (docCategories.DocumentElement != null)
+            // Save categories to competitionEvent
+            compEvent2.categoriesAndSegments.Clear();
+            for (int r = 0; r < dataGridView1.Rows.Count - 1; r++)
             {
-                // Remove all categories from XML tree
-                while (docCategories.DocumentElement.HasChildNodes)
+                categorySegment cat = new categorySegment();
+                cat.categoryName = (string)dataGridView1[0, r].Value;
+                if (dataGridView1[0, r].Tag != null)
                 {
-                    // Remove category from XML tree
-                    docCategories.DocumentElement.RemoveChild(docCategories.DocumentElement.FirstChild);
+                    cat.participants = (List<participant>)dataGridView1[0, r].Tag;  // Retrieve the participants for each Category
                 }
-
-                //Loop through all rows and add category
-                for (int r = 0; r < dataGridView1.Rows.Count - 1; r++)
-                {
-                    XmlNode categoryNode = docCategories.CreateElement(Properties.Resources.XMLTAG_CATEGORY);
-                    XmlAttribute attributeName = docCategories.CreateAttribute("Name");
-                    attributeName.Value = (string)dataGridView1[0, r].Value;
-                    categoryNode.Attributes.Append(attributeName);
-                    if (dataGridView1[1, r].Value != null && dataGridView1[1, r].Value.ToString() == "true")
-                    {
-                        XmlAttribute attributeShort = docCategories.CreateAttribute("HasShort");
-                        attributeShort.Value = (string)dataGridView1[1, r].Value;
-                        categoryNode.Attributes.Append(attributeShort);
-                    }
-                    categoryNode.InnerXml = (string)dataGridView1[0, r].Tag;  // Store the InnerXML for each Category
-
-                    docCategories.DocumentElement.AppendChild(categoryNode);
-                }
-                docCategories.Save(Properties.Resources.XML_FILENAME);
+                compEvent2.categoriesAndSegments.Add(cat);
             }
+
+            //Save the file
+            serializeToFile(compEvent2, Properties.Resources.JSON_FILENAME);
 
             //End form
             this.DialogResult = DialogResult.OK;
@@ -89,8 +70,7 @@ namespace SkatersMusicPlayer
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            dataGridView1[2, e.RowIndex].Value = "true";
-            dataGridView1[3, e.RowIndex].Value = 0;
+            dataGridView1[1, e.RowIndex].Value = 0;
         }
 
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)

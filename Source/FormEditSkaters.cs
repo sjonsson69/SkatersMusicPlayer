@@ -1,15 +1,19 @@
 ﻿using NAudio.Wave;
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Xml;
+using static SkatersMusicPlayer.formMusicPlayer;
 
 namespace SkatersMusicPlayer
 {
     public partial class FormEditParticipants : Form
     {
-        private readonly FormMusicPlayer fmp = null;
-        public FormEditParticipants(FormMusicPlayer Owner, string defaultCategory)
+        private readonly formMusicPlayer fmp = null;
+        public FormEditParticipants(formMusicPlayer Owner, string defaultCategory)
         {
             if (Owner != null)
             {
@@ -17,11 +21,14 @@ namespace SkatersMusicPlayer
 
                 fmp = Owner;
                 // Load the categories to the combobox
-                FormMusicPlayer.loadCategories(fmp.doc, this.comboBoxCategory);
-
+                formMusicPlayer.loadCategories(fmp.compEvent, this.comboBoxCategory);
                 try
                 {
                     comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(defaultCategory);
+                    if (comboBoxCategory.SelectedIndex == -1 && comboBoxCategory.Items.Count > 0)
+                    {
+                        comboBoxCategory.SelectedIndex = 0;  // Select first item if default not found
+                    }
                 }
                 catch (Exception)
                 {
@@ -31,7 +38,9 @@ namespace SkatersMusicPlayer
 
         private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FormMusicPlayer.loadParticipantsDV(fmp.doc, comboBoxCategory.SelectedItem.ToString(), dataGridViewParticipants);
+            formMusicPlayer.loadParticipantsDV(fmp.compEvent, comboBoxCategory.SelectedItem.ToString(), dataGridViewParticipants);
+            comboBoxCategory.Enabled = true;
+            buttonSave.Enabled = false;  // Disable save button until something changes
         }
 
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -59,18 +68,19 @@ namespace SkatersMusicPlayer
                     try
                     {
                         // Make the path relative if possible.
-                        if (openFileDialog1.FileName.Substring(0, Application.StartupPath.Length) == Application.StartupPath)
+                        if (openFileDialog1.FileName.Length > Application.StartupPath.Length
+                            && openFileDialog1.FileName.Substring(0, Application.StartupPath.Length) == Application.StartupPath)
                         {// Remove startpath
                             openFileDialog1.FileName = openFileDialog1.FileName.Substring(Application.StartupPath.Length + 1);  //Also remove the backslash from path
                         }
 
                         // Calculate MD5 for musicfile to verify that no other participant already has this file
-                        string MD5 = FormMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
+                        string MD5 = formMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
 
                         // First check so no other participant already has this file
                         for (int i = 0; i < senderGrid.Rows.Count - 1; i++)
                         {
-                            if ((i != e.RowIndex && senderGrid[9, i].Value.ToString() == openFileDialog1.FileName) || (senderGrid[12, i].Value.ToString() == openFileDialog1.FileName))
+                            if ((i != e.RowIndex && senderGrid[9, i].Value.ToString() == openFileDialog1.FileName))
                             {
                                 MessageBox.Show("File already connected to participant " + senderGrid[1, i].Value + " " + senderGrid[2, i].Value + "\n\nFile not connected to this participant!", Properties.Resources.CAPTION_DUPLICATE_USE, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                                 MD5 = string.Empty;  //Remove MD5 to indicate that the file isn't connected
@@ -82,7 +92,7 @@ namespace SkatersMusicPlayer
                         {
                             if (!string.IsNullOrEmpty(MD5))
                             {
-                                if ((i != e.RowIndex && senderGrid[10, i].Value.ToString() == MD5) || (senderGrid[13, i].Value.ToString() == MD5))
+                                if ((i != e.RowIndex && senderGrid[10, i].Value.ToString() == MD5))
                                 {
                                     MessageBox.Show("Identical file content already connected to participant " + senderGrid[1, i].Value + " " + senderGrid[2, i].Value + "\n\nFile not connected to this participant!", Properties.Resources.CAPTION_DUPLICATE_USE, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                                     MD5 = string.Empty;  //Remove MD5 to indicate that the file isn't connected
@@ -98,7 +108,7 @@ namespace SkatersMusicPlayer
                         {
                             senderGrid[8, e.RowIndex].Value = string.Format("{0:00}:{1:00}", (int)audioFileReaderTest.TotalTime.TotalMinutes, audioFileReaderTest.TotalTime.Seconds);
                             senderGrid[9, e.RowIndex].Value = openFileDialog1.FileName;
-                            senderGrid[10, e.RowIndex].Value = FormMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
+                            senderGrid[10, e.RowIndex].Value = formMusicPlayer.getMD5HashFromFile(openFileDialog1.FileName);
                             senderGrid.Rows[e.RowIndex].DefaultCellStyle.ForeColor = SystemColors.ControlText;  // Restore color if it wasn't correct
                         }
                     }
@@ -121,109 +131,65 @@ namespace SkatersMusicPlayer
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (fmp.doc.DocumentElement != null && comboBoxCategory.Text.Length > 5)
+            if (fmp.compEvent != null && comboBoxCategory.Text.Length > 5)
             {
                 // Split selected itemtext into Category and Segment.
                 string MainCategory = comboBoxCategory.Text.Substring(0, comboBoxCategory.Text.Length - 8);
                 string Segment = comboBoxCategory.Text.Substring(comboBoxCategory.Text.Length - 5, 5).Trim();
 
-                // Loop throu all Categoriess to find the selected one
-                foreach (XmlNode tableNode in fmp.doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
+                // Loop throu all Categories to find the selected one
+                foreach (categorySegment catSeg in fmp.compEvent.categoriesAndSegments)
                 {
-                    // Is it the correct category?
-                    if (tableNode.Attributes.GetNamedItem("Name").Value == MainCategory)
+                    if (catSeg.categoryName == comboBoxCategory.Text)
                     {
-                        // Delete all participants
-                        while (tableNode.HasChildNodes)
-                        {
-                            tableNode.RemoveChild(tableNode.FirstChild);
-                        }
+                        // Delete all participants in this category/segment
+                        catSeg.participants.Clear();
+
                         //Loop through all rows and add categories
                         for (int r = 0; r < dataGridViewParticipants.Rows.Count - 1; r++)
                         {
-                            XmlNode participantNode = fmp.doc.CreateElement(Properties.Resources.XMLTAG_PARTICIPANT);
-
-                            XmlAttribute attributeID = fmp.doc.CreateAttribute("ID");
-                            attributeID.Value = (string)dataGridViewParticipants[4, r].Value;
-                            participantNode.Attributes.Append(attributeID);
-                            XmlAttribute attributeBD = fmp.doc.CreateAttribute("BirthDate");
-                            attributeBD.Value = (string)dataGridViewParticipants[5, r].Value;
-                            participantNode.Attributes.Append(attributeBD);
-
-                            createParticipantsElement(participantNode, "FirstName", 1, r);
-                            createParticipantsElement(participantNode, "LastName", 2, r);
-                            createParticipantsElement(participantNode, "Club", 3, r);
-
-                            // Create segment
-                            XmlNode shortNode = fmp.doc.CreateElement("Short");
-                            XmlNode freeNode = fmp.doc.CreateElement("Free");
-                            if (Segment == "Short")
+                            participant p = new participant();
+                            int startNumber = 0;
+                            int.TryParse((string)dataGridViewParticipants[0, r].Value, out startNumber);
+                            if (startNumber != 0)
                             {
-                                createParticipantsElement(shortNode, "StartNo", 0, r);
-                                createParticipantsElement(shortNode, "MusicFile", 9, r, "MD5", 10, r);
-                                createParticipantsElement(shortNode, "MusicName", 6, r);
-                                createParticipantsElement(freeNode, "StartNo", 11, r);
-                                createParticipantsElement(freeNode, "MusicFile", 12, r, "MD5", 13, r);
-                                createParticipantsElement(freeNode, "MusicName", 14, r);
+                                p.startNumber = startNumber;
                             }
-                            else
+                            p.firstName = (string)dataGridViewParticipants[1, r].Value;
+                            p.lastName = (string)dataGridViewParticipants[2, r].Value;
+                            p.club = (string)dataGridViewParticipants[3, r].Value;
+                            if (dataGridViewParticipants[4, r].Value != null)
                             {
-                                createParticipantsElement(shortNode, "StartNo", 11, r);
-                                createParticipantsElement(shortNode, "MusicFile", 12, r, "MD5", 13, r);
-                                createParticipantsElement(shortNode, "MusicName", 14, r);
-                                createParticipantsElement(freeNode, "StartNo", 0, r);
-                                createParticipantsElement(freeNode, "MusicFile", 9, r, "MD5", 10, r);
-                                createParticipantsElement(freeNode, "MusicName", 6, r);
+                                p.id = (Guid)dataGridViewParticipants[4, r].Value;
                             }
+                            if (dataGridViewParticipants[4, r].Value != null)
+                            {
+                                p.birthDate = (DateTime)dataGridViewParticipants[5, r].Value;
+                            }
+                            p.music = new competitionMusic
+                            {
+                                title = (string)dataGridViewParticipants[6, r].Value,
+                                file = (string)dataGridViewParticipants[9, r].Value,
+                                md5 = (string)dataGridViewParticipants[10, r].Value
+                            };
 
-                            participantNode.AppendChild(shortNode);
-                            participantNode.AppendChild(freeNode);
-                            tableNode.AppendChild(participantNode);
+                            catSeg.participants.Add(p);
                         }
-                        fmp.doc.Save(Properties.Resources.XML_FILENAME);
 
                     }
                 }
+
+                serializeToFile(fmp.compEvent, Properties.Resources.JSON_FILENAME);
             }
 
             //End form
             this.DialogResult = DialogResult.OK;
         }
 
-        private void createParticipantsElement(XmlNode participantNode, string name, int col, int row)
+        private void dataGridViewParticipants_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            XmlNode node = fmp.doc.CreateElement(name);
-            string v = (string)dataGridViewParticipants[col, row].Value;
-            if (!string.IsNullOrEmpty(v))
-            {   // Spara bara om det finns ett värde
-                if (col == 0 || col == 10)
-                {// if it is startno, rightjustify value
-                    v = v.PadLeft(3, ' ');
-                }
-                node.InnerText = v;
-                participantNode.AppendChild(node);
-            }
+            comboBoxCategory.Enabled = false;  // Disable changing category until save is done
+            buttonSave.Enabled = true;  // Enable save button  
         }
-
-        private void createParticipantsElement(XmlNode participantNode, string name, int col, int row, string attr, int colAttr, int rowAttr)
-        {
-            string v = (string)dataGridViewParticipants[col, row].Value;
-            if (!string.IsNullOrEmpty(v))
-            {   // Spara bara om det finns ett värde
-                XmlNode node = fmp.doc.CreateElement(name);
-                node.InnerText = (string)dataGridViewParticipants[col, row].Value;
-
-                string va = (string)dataGridViewParticipants[colAttr, rowAttr].Value;
-                if (!string.IsNullOrEmpty(attr) && !string.IsNullOrEmpty(va))
-                {   //Det finns att attribut också
-                    XmlAttribute attribute = fmp.doc.CreateAttribute(attr);
-                    attribute.Value = (string)dataGridViewParticipants[colAttr, rowAttr].Value;
-                    node.Attributes.Append(attribute);
-                }
-
-                participantNode.AppendChild(node);
-            }
-        }
-
     }
 }

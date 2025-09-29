@@ -168,6 +168,9 @@
   <data name="INVALID_FILE" xml:space="preserve">
     <value>Invalid file</value>
   </data>
+  <data name="JSON_FILENAME" xml:space="preserve">
+    <value>event.json</value>
+  </data>
   <data name="NO_FILE" xml:space="preserve">
     <value>No file</value>
   </data>
