@@ -1,12 +1,15 @@
 ﻿using MySqlConnector;
 using NAudio.Wave;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -14,6 +17,90 @@ namespace SkatersMusicPlayer
 {
     public partial class formMusicPlayer : Form
     {
+        // Define the root object representing the entire JSON file
+#nullable enable
+        public class competitionEvent
+        {
+            // The main name of the competition
+            [JsonProperty("competitionName")]
+            public string competitionName { get; set; } = string.Empty;
+
+            // A list of all segments (e.g., "Junior Men - Short Program") in the competition
+            [JsonProperty("categoriesAndSegments")]
+            public List<categorySegment> categoriesAndSegments { get; set; } = new List<categorySegment>();
+
+            // --- Example Usage of Deserialization (Optional, for testing) ---
+            /*
+            public static CompetitionEvent? FromJson(string json)
+            {
+                return JsonConvert.DeserializeObject<CompetitionEvent>(json);
+            }
+            */
+        }
+
+        // Represents a single category/segment within the competition
+        public class categorySegment
+        {
+            [JsonProperty("categoryName")]
+            public string categoryName { get; set; } = string.Empty;
+
+            // The list of participants registered for this specific segment
+            [JsonProperty("participants")]
+            public List<participant> participants { get; set; } = new List<participant>();
+        }
+
+        // Represents a single athlete/participant
+        public class participant
+        {
+            // Using Guid for the ID, which is a good type for UUID strings
+            [JsonProperty("id")]
+            public Guid? id { get; set; }
+
+            // Using nullable integer (int?) because 'startNumber' can be null in the JSON
+            [JsonProperty("startNumber")]
+            public int? startNumber { get; set; }
+
+            [JsonProperty("firstName")]
+            public string? firstName { get; set; }
+
+            [JsonProperty("lastName")]
+            public string? lastName { get; set; }
+
+            // Using DateTime to correctly parse the date string (e.g., "2007-03-22")
+            [JsonProperty("birthDate")]
+            public DateTime? birthDate { get; set; }
+
+            [JsonProperty("club")]
+            public string? club { get; set; }
+
+            // Nested object for music details
+            [JsonProperty("music")]
+            public competitionMusic? music { get; set; }
+        }
+
+        // Represents the music details for a participant's segment
+        public class competitionMusic
+        {
+            // Using nullable string (string?) because 'file', 'md5', and 'title' can be null
+            [JsonProperty("file")]
+            public string? file { get; set; }
+
+            [JsonProperty("md5")]
+            public string? md5 { get; set; }
+
+            [JsonProperty("title")]
+            public string? title { get; set; }
+        }
+#nullable disable
+
+
+
+        public static void serializeToFile(competitionEvent compEvent, string filePath)
+        {
+            var json = JsonConvert.SerializeObject(compEvent, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(filePath, json, Encoding.UTF8);
+        }
+
         public static string getDBString(SQLiteDataReader reader, int column, string defaultValue)
         {
             if (reader.IsDBNull(column))
@@ -136,34 +223,6 @@ namespace SkatersMusicPlayer
 
         }
 
-        private void loadXMLfile()
-        {
-            //Load XmlFile
-            try
-            {
-                doc.Load(Properties.Resources.XML_FILENAME);
-            }
-            catch (FileNotFoundException)
-            {
-                doc.AppendChild(doc.CreateElement("Name"));
-                doc.DocumentElement.SetAttribute("Name", "New competition");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error loading Competition XML-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            // Set competitionname in form header
-            this.Text = "Skaters MusicPlayer - " + doc.DocumentElement.GetAttribute("Name");
-
-            // Empty Listview
-            listViewParticipants.Items.Clear();
-            listViewParticipants.Tag = null;
-
-            // Load categories
-            loadCategories(doc, comboBoxCategory);
-        }
-
         private void loadJsonFile()
         {
             // Load JsonFile
@@ -194,36 +253,6 @@ namespace SkatersMusicPlayer
 
             // Load categories
             loadCategories(compEvent, comboBoxCategory);
-
-        }
-
-        public static void loadCategories(XmlDocument doc, ComboBox CB)
-        {
-            if (doc != null && CB != null)
-            {
-                try
-                {
-                    // Remove all old data
-                    CB.Items.Clear();
-
-                    if (doc.DocumentElement != null)
-                    {
-                        foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
-                        {
-                            // Does the Category have Short?
-                            if (tableNode.Attributes.GetNamedItem("HasShort") != null)
-                            {
-                                CB.Items.Add(tableNode.Attributes.GetNamedItem("Name").Value + " - Short");
-                            }
-                            CB.Items.Add(tableNode.Attributes.GetNamedItem("Name").Value + " - Free "); // Extra space required to be removed when we select a category
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    _ = MessageBox.Show("Error loading categories\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
 
         }
 
@@ -327,7 +356,7 @@ namespace SkatersMusicPlayer
                             toolStripStatusLabel1.Text = "Loading participant:" + par?.firstName + " " + par?.lastName;
                             statusStrip1.Update();
 
-                            ListViewItem I = new ListViewItem(par?.startNumber.ToString());
+                            ListViewItem I = new ListViewItem(par?.startNumber.ToString().PadLeft(3, ' ').TrimEnd());
                             I.SubItems.Add(par?.firstName + " " + par?.lastName);
                             I.SubItems.Add(par?.club);
                             // Returns the music file path or string.Empty if not available
@@ -392,109 +421,6 @@ namespace SkatersMusicPlayer
             }
         }
 
-        public static void loadParticipantsDV(XmlDocument doc, string selected, DataGridView DV)
-        {
-            if (doc != null && selected != null && DV != null)
-            {
-                // Split selected itemtext into Category and Segment
-                string Category = selected.Substring(0, selected.Length - 8);
-                string Segment = selected.Substring(selected.Length - 5, 5).Trim();
-                string OtherSegment = "Short";
-                if (Segment == "Short")
-                {
-                    OtherSegment = "Free";
-                }
-
-                DV.Rows.Clear();
-
-                // Initialize audioreader so we can verify if the files found are playable
-                AudioFileReader audioFileReaderTest = null;
-
-                if (doc.DocumentElement != null)
-                {
-                    // Loop throu all Categorieses to find the selected one
-                    foreach (XmlNode tableNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
-                    {
-                        // Is it the correct category?
-                        if (tableNode.Attributes.GetNamedItem("Name").Value == Category)
-                        {
-                            foreach (XmlNode participant in tableNode.ChildNodes)
-                            {
-
-                                DV.Rows.Add();
-                                int rownr = DV.Rows.Count - 2;
-                                DV[0, rownr].Value = getXMLElement(participant[Segment], "StartNo", string.Empty);
-                                DV[1, rownr].Value = getXMLElement(participant["FirstName"], string.Empty, string.Empty);
-                                DV[2, rownr].Value = getXMLElement(participant["LastName"], string.Empty, string.Empty);
-                                DV[3, rownr].Value = getXMLElement(participant["Club"], string.Empty, string.Empty);
-                                if (participant.Attributes.GetNamedItem("ID") != null)
-                                {
-                                    DV[4, rownr].Value = participant.Attributes.GetNamedItem("ID").Value;
-                                }
-                                if (participant.Attributes.GetNamedItem("BirthDate") != null)
-                                {
-                                    DV[5, rownr].Value = participant.Attributes.GetNamedItem("BirthDate").Value;
-                                }
-
-                                DV[6, rownr].Value = getXMLElement(participant[Segment], "MusicName", string.Empty);
-
-                                // Store information for the other segment, so we can recreate the element when we save
-                                DV[11, rownr].Value = getXMLElement(participant[OtherSegment], "StartNo", string.Empty);
-                                DV[12, rownr].Value = getXMLElement(participant[OtherSegment], "MusicFile", string.Empty);
-                                DV[13, rownr].Value = getXMLElementAttribute(participant[OtherSegment], "MusicFile", "MD5", string.Empty);
-                                DV[14, rownr].Value = getXMLElement(participant[OtherSegment], "MusicName", string.Empty);
-
-                                // Load music file and information, and check the file information
-                                string musicFile = getXMLElement(participant[Segment], "MusicFile", string.Empty);
-                                DV[9, rownr].Value = musicFile;
-                                string MD5Value = getXMLElementAttribute(participant[Segment], "MusicFile", "MD5", string.Empty);
-                                DV[10, rownr].Value = MD5Value;
-                                try
-                                {
-                                    //Try to load the file to see if NAudio can read it. Gives an exception if we can't read it
-                                    audioFileReaderTest = new AudioFileReader(musicFile);
-                                    // Check MD5 for musicfile so there hasn't been a change of file since imported.
-                                    if (string.IsNullOrEmpty(MD5Value) || MD5Value == getMD5HashFromFile(musicFile))
-                                    {// MD5 is correct!
-                                        DV[8, rownr].Value = string.Format("{0:00}:{1:00}", (int)audioFileReaderTest.TotalTime.TotalMinutes, audioFileReaderTest.TotalTime.Seconds);
-                                    }
-                                    else
-                                    {// MD5 doesn't match!
-                                        DV[8, rownr].Value = "Checksum error";
-                                        DV.Rows[rownr].DefaultCellStyle.ForeColor = Color.Orange;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    // Can't read file
-                                    if (string.IsNullOrEmpty(musicFile))
-                                    {
-                                        DV[8, rownr].Value = "No file";
-                                    }
-                                    else
-                                    {
-                                        DV[8, rownr].Value = "Invalid file";
-                                    }
-                                    DV.Rows[rownr].DefaultCellStyle.ForeColor = Color.Red;
-                                }
-                                finally
-                                {
-                                    if (audioFileReaderTest != null)
-                                    {
-                                        // Dispose of the reader
-                                        audioFileReaderTest.Dispose();
-                                        audioFileReaderTest = null;
-                                    }
-                                }
-
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
         public static void loadParticipantsDV(competitionEvent compEvent, string selected, DataGridView DV)
         {
             if (compEvent != null && selected != null && DV != null)
@@ -517,7 +443,7 @@ namespace SkatersMusicPlayer
 
                                 DV.Rows.Add();
                                 int rownr = DV.Rows.Count - 2;
-                                DV[0, rownr].Value = par.startNumber.ToString();
+                                DV[0, rownr].Value = par.startNumber.ToString().PadLeft(3, ' ').TrimEnd();
                                 DV[1, rownr].Value = par?.firstName ?? string.Empty;
                                 DV[2, rownr].Value = par?.lastName ?? string.Empty;
                                 DV[3, rownr].Value = par?.club ?? string.Empty;
@@ -738,377 +664,6 @@ namespace SkatersMusicPlayer
 
         }
 
-        private void loadISUCalcXML(XmlDocument doc, string p)
-        {
-            XmlDocument ISUXML = new XmlDocument() { XmlResolver = null };
-
-            //Load XmlFile
-            try
-            {
-
-                ISUXML.Load(p);
-
-                if (ISUXML.DocumentElement != null)
-                {
-                    // Loop for events
-                    foreach (XmlNode eventNode in ISUXML.DocumentElement.GetElementsByTagName("Event"))
-                    {// Set competition name
-                        //string compName = getXMLElementAttribute(eventNode["Event"], string.Empty, "EVT_NAME", string.Empty);
-                        string compName = eventNode.Attributes.GetNamedItem("EVT_NAME").Value;
-                        doc.DocumentElement.SetAttribute("Name", compName);
-
-
-                        foreach (XmlElement personNodeISU in ISUXML.DocumentElement.GetElementsByTagName("Person_Couple_Team"))
-                        {
-                            // Locate participant for update or create a participant
-                            string ID = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_EXTDT", string.Empty);  //External ID - IdrottonlineID?
-                            string Birthdate = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_BDAY", string.Empty);  //Birthdate - Used to find music
-                            string FirstName = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_GNAME", string.Empty);
-                            string LastName = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_FNAME", string.Empty);
-                            if (string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
-                            {//Inget personnamn. Hämta tävingsnamnet (antagligen Team eller Par)
-                                FirstName = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_CNAME", string.Empty);
-                            }
-                            string Club = getXMLElementAttribute(personNodeISU["Club"], string.Empty, "PCT_CNAME", string.Empty);
-                            string PARID = personNodeISU.ParentNode.Attributes.GetNamedItem("PAR_ID").Value;  //ParticipandID. Used to find startno
-                            string StartNo1 = string.Empty;
-                            string StartNo2 = string.Empty;
-                            string MusicSP = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_SPMNAM", string.Empty);
-                            string MusicFS = getXMLElementAttribute(personNodeISU.ParentNode["Person_Couple_Team"], string.Empty, "PCT_FSMNAM", string.Empty);
-                            bool hasShort = false;
-
-                            string categoryName = personNodeISU.ParentNode.ParentNode.ParentNode.ParentNode.ParentNode.Attributes.GetNamedItem("CAT_NAME").Value;
-
-                            // Loop throu segments to find segments types and startno
-                            foreach (XmlElement segmentNode in personNodeISU.ParentNode.ParentNode.ParentNode.ParentNode)
-                            {
-                                string type = string.Empty;
-                                if (segmentNode.Attributes.GetNamedItem("SCP_TYPE") != null)
-                                {
-                                    type = segmentNode.Attributes.GetNamedItem("SCP_TYPE").Value;
-                                }
-                                if (type == "S")
-                                {
-                                    hasShort = true;
-                                }
-
-                                // Loop throu performmace to find participant and startno
-                                foreach (XmlElement perfNode in segmentNode.GetElementsByTagName("Performance"))
-                                {
-                                    //Do we have a PAR_ID and a Startnum?
-                                    if (perfNode.Attributes.GetNamedItem("PAR_ID") != null && perfNode.Attributes.GetNamedItem("PRF_STNUM") != null)
-                                    {
-                                        //Is it our current participant?
-                                        if (perfNode.Attributes.GetNamedItem("PAR_ID").Value == PARID)
-                                        {
-                                            //Check short or free
-                                            if (type == "S")
-                                            {
-                                                StartNo1 = perfNode.Attributes.GetNamedItem("PRF_STNUM").Value;
-                                            }
-                                            if (type == "F")
-                                            {
-                                                StartNo2 = perfNode.Attributes.GetNamedItem("PRF_STNUM").Value;
-                                            }
-
-                                        }
-                                        type = segmentNode.Attributes.GetNamedItem("SCP_TYPE").Value;
-                                    }
-
-                                }
-                            }
-
-
-                            //Find the category in Competition
-                            XmlNode categoryNode = null;
-                            foreach (XmlNode node in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
-                            {
-                                if (node.Attributes.GetNamedItem("Name").Value == categoryName)
-                                {
-                                    categoryNode = node;
-                                }
-                            }
-
-                            // If category not found, create a new category
-                            if (categoryNode == null)
-                            {//New category. Create structure
-                                categoryNode = doc.CreateElement(Properties.Resources.XMLTAG_CATEGORY);
-                                XmlAttribute attributeName = doc.CreateAttribute("Name");
-                                attributeName.Value = categoryName;
-                                categoryNode.Attributes.Append(attributeName);
-                                if (hasShort)
-                                {
-                                    XmlAttribute attributeShort = doc.CreateAttribute("HasShort");
-                                    attributeShort.Value = "true";
-                                    categoryNode.Attributes.Append(attributeShort);
-                                }
-                                doc.DocumentElement.AppendChild(categoryNode);
-                            }
-
-                            // Update value for HasShort
-                            if (hasShort)
-                            {
-                                categoryNode.Attributes.GetNamedItem("HasShort");
-                                XmlAttribute attributeShort = doc.CreateAttribute("HasShort");
-                                attributeShort.Value = "true";
-                                categoryNode.Attributes.Append(attributeShort);
-                            }
-
-                            // Try to find if participant already present using ID number from indTA and match with ID from Competition
-                            XmlNode personNode = null;
-                            if (categoryNode.HasChildNodes && !string.IsNullOrEmpty(ID))
-                            {
-                                foreach (XmlNode personNodeDoc in categoryNode)
-                                {
-                                    if (personNodeDoc.Attributes.GetNamedItem("ID") != null && personNodeDoc.Attributes.GetNamedItem("ID").Value == ID)
-                                    {
-                                        personNode = personNodeDoc;
-                                    }
-                                }
-                            }
-
-
-                            // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                            if (personNode == null)
-                            {
-                                if (categoryNode.HasChildNodes)
-                                {
-                                    foreach (XmlNode personNodeDoc in categoryNode)
-                                    {
-                                        if (getXMLElement(personNodeDoc["FirstName"], string.Empty, string.Empty) == FirstName &&
-                                            getXMLElement(personNodeDoc["LastName"], string.Empty, string.Empty) == LastName &&
-                                            getXMLElement(personNodeDoc["Club"], string.Empty, string.Empty) == Club)
-                                        {
-                                            personNode = personNodeDoc;
-                                        }
-                                    }
-
-                                }
-                            }
-
-
-                            // If person not found, create a new person
-                            if (personNode == null)
-                            {
-                                personNode = doc.CreateElement(Properties.Resources.XMLTAG_PARTICIPANT);
-                                XmlAttribute attributeID = doc.CreateAttribute("ID");
-                                attributeID.Value = ID;
-                                personNode.Attributes.Append(attributeID);
-                                XmlAttribute attributeBD = doc.CreateAttribute("BirthDate");
-                                attributeBD.Value = Birthdate;
-                                personNode.Attributes.Append(attributeBD);
-
-                                categoryNode.AppendChild(personNode);
-                            }
-
-                            // Make sure we have elements
-                            if (personNode["FirstName"] == null) personNode.AppendChild(doc.CreateElement("FirstName"));
-                            if (personNode["LastName"] == null) personNode.AppendChild(doc.CreateElement("LastName"));
-                            if (personNode["Club"] == null) personNode.AppendChild(doc.CreateElement("Club"));
-                            if (personNode["Short"] == null) personNode.AppendChild(doc.CreateElement("Short"));
-                            if (personNode["Short"]["StartNo"] == null) personNode["Short"].AppendChild(doc.CreateElement("StartNo"));
-                            if (personNode["Short"]["MusicName"] == null && !string.IsNullOrWhiteSpace(MusicSP)) personNode["Short"].AppendChild(doc.CreateElement("MusicName"));
-                            if (personNode["Free"] == null) personNode.AppendChild(doc.CreateElement("Free"));
-                            if (personNode["Free"]["StartNo"] == null) personNode["Free"].AppendChild(doc.CreateElement("StartNo"));
-                            if (personNode["Free"]["MusicName"] == null && !string.IsNullOrWhiteSpace(MusicFS)) personNode["Free"].AppendChild(doc.CreateElement("MusicName"));
-
-                            // Update 
-                            personNode["FirstName"].InnerText = FirstName;
-                            personNode["LastName"].InnerText = LastName;
-                            if (!string.IsNullOrWhiteSpace(Club))
-                            {
-                                personNode["Club"].InnerText = Club;
-                            }
-                            personNode["Short"]["StartNo"].InnerText = StartNo1.PadLeft(3, ' '); ;
-                            if (!string.IsNullOrWhiteSpace(MusicSP))
-                            {
-                                personNode["Short"]["MusicName"].InnerText = MusicSP;
-                            }
-                            personNode["Free"]["StartNo"].InnerText = StartNo2.PadLeft(3, ' '); ;
-                            if (!string.IsNullOrWhiteSpace(MusicFS))
-                            {
-                                personNode["Free"]["MusicName"].InnerText = MusicFS;
-                            }
-
-                        }
-
-
-                    }
-
-
-
-                    doc.Save(Properties.Resources.XML_FILENAME);
-
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error loading ISUCalc XML-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
-        private void loadStarFS(XmlDocument doc, string filename)
-        {
-            //Load StarFS database
-            try
-            {
-                using (SQLiteConnection con = new SQLiteConnection("Data Source=" + filename + "; Version=3; FailIfMissing=True;"))
-                {
-                    con.Open();
-
-                    //Query database for Eventname
-                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT EVENT_NAME, DB_VERSION FROM EVENT", con))
-                    {
-                        string compName = string.Empty;
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                compName = getDBString(reader, "EVENT_NAME", string.Empty);
-                            }
-                            reader.Close();
-                        }
-
-                        //Not an event, use CompetitionName instead
-                        if (String.IsNullOrEmpty(compName))
-                        {
-                            cmd.CommandText = "SELECT COMPETITION_NAME FROM COMPETITION";
-                            using (SQLiteDataReader reader = cmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    compName = getDBString(reader, "COMPETITION_NAME", string.Empty);
-                                }
-                                reader.Close();
-                            }
-                        }
-                        //Store Event/Competition name
-                        doc.DocumentElement.SetAttribute("Name", compName);
-
-                        //Get Participants
-                        cmd.CommandText = "SELECT P.INDTA_ID, BIRTHDATE, FIRSTNAME, LASTNAME, CLUBNAME, CAST(START_NO AS TEXT) AS START_NO, MUSIC, DISCIPLINE, CATEGORY_NAME || CASE WHEN DISCIPLINE='Singel' THEN '' ELSE ' ('||DISCIPLINE||')' END AS CATEGORY_NAME\n"
-                                          + "FROM PARTICIPANT P\n"
-                                          + "INNER JOIN BASEDATA B ON B.CATEGORY_ID = P.CATEGORY_ID\n"
-                                          + "INNER JOIN CATEGORY C ON C.CATEGORY_ID = P.CATEGORY_ID\n"
-                                          + "ORDER BY IFNULL(START_TIME, 'xxxxxx'), B.CATEGORY_ID, P.START_NO";
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                // Locate participant for update or create a participant
-                                string ID = getDBString(reader, "INDTA_ID", string.Empty);  //IdrottonlineID
-                                string Birthdate = getDBString(reader, "BIRTHDATE", string.Empty);  //Birthdate - Used to find music
-                                string FirstName = getDBString(reader, "FIRSTNAME", string.Empty);
-                                string LastName = getDBString(reader, "LASTNAME", string.Empty);
-                                string Club = getDBString(reader, "CLUBNAME", string.Empty);
-                                string StartNo2 = getDBString(reader, "START_NO", string.Empty);
-                                string MusicFS = getDBString(reader, "MUSIC", string.Empty);
-                                string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty);
-
-                                //Find the category in Competition
-                                XmlNode categoryNode = null;
-                                foreach (XmlNode node in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
-                                {
-                                    if (node.Attributes.GetNamedItem("Name").Value == categoryName)
-                                    {
-                                        categoryNode = node;
-                                    }
-                                }
-
-                                // If category not found, create a new category
-                                if (categoryNode == null)
-                                {//New category. Create structure
-                                    categoryNode = doc.CreateElement(Properties.Resources.XMLTAG_CATEGORY);
-                                    XmlAttribute attributeName = doc.CreateAttribute("Name");
-                                    attributeName.Value = categoryName;
-                                    categoryNode.Attributes.Append(attributeName);
-                                    doc.DocumentElement.AppendChild(categoryNode);
-                                }
-
-                                // Try to find if participant already present using ID number from indTA and match with ID from Competition
-                                XmlNode personNode = null;
-                                if (categoryNode.HasChildNodes && !string.IsNullOrEmpty(ID))
-                                {
-                                    foreach (XmlNode personNodeDoc in categoryNode)
-                                    {
-                                        if (personNodeDoc.Attributes.GetNamedItem("ID") != null && personNodeDoc.Attributes.GetNamedItem("ID").Value == ID)
-                                        {
-                                            personNode = personNodeDoc;
-                                        }
-                                    }
-                                }
-
-
-                                // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                                if (personNode == null)
-                                {
-                                    if (categoryNode.HasChildNodes)
-                                    {
-                                        foreach (XmlNode personNodeDoc in categoryNode)
-                                        {
-                                            if (getXMLElement(personNodeDoc["FirstName"], string.Empty, string.Empty) == FirstName &&
-                                                getXMLElement(personNodeDoc["LastName"], string.Empty, string.Empty) == LastName &&
-                                                getXMLElement(personNodeDoc["Club"], string.Empty, string.Empty) == Club)
-                                            {
-                                                personNode = personNodeDoc;
-                                            }
-                                        }
-
-                                    }
-                                }
-
-
-                                // If person not found, create a new person
-                                if (personNode == null)
-                                {
-                                    personNode = doc.CreateElement(Properties.Resources.XMLTAG_PARTICIPANT);
-                                    XmlAttribute attributeID = doc.CreateAttribute("ID");
-                                    attributeID.Value = ID;
-                                    personNode.Attributes.Append(attributeID);
-                                    XmlAttribute attributeBD = doc.CreateAttribute("BirthDate");
-                                    attributeBD.Value = Birthdate;
-                                    personNode.Attributes.Append(attributeBD);
-
-                                    categoryNode.AppendChild(personNode);
-                                }
-
-                                // Make sure we have elements
-                                if (personNode["FirstName"] == null) personNode.AppendChild(doc.CreateElement("FirstName"));
-                                if (personNode["LastName"] == null) personNode.AppendChild(doc.CreateElement("LastName"));
-                                if (personNode["Club"] == null) personNode.AppendChild(doc.CreateElement("Club"));
-                                if (personNode["Free"] == null) personNode.AppendChild(doc.CreateElement("Free"));
-                                if (personNode["Free"]["StartNo"] == null) personNode["Free"].AppendChild(doc.CreateElement("StartNo"));
-                                if (personNode["Free"]["MusicName"] == null && !string.IsNullOrWhiteSpace(MusicFS)) personNode["Free"].AppendChild(doc.CreateElement("MusicName"));
-
-                                // Update 
-                                personNode["FirstName"].InnerText = FirstName;
-                                personNode["LastName"].InnerText = LastName;
-                                if (!string.IsNullOrWhiteSpace(Club))
-                                {
-                                    personNode["Club"].InnerText = Club;
-                                }
-                                personNode["Free"]["StartNo"].InnerText = StartNo2.PadLeft(3, ' '); ;
-                                if (!string.IsNullOrWhiteSpace(MusicFS))
-                                {
-                                    personNode["Free"]["MusicName"].InnerText = MusicFS;
-                                }
-
-                            }  //while reader-Participants
-
-                            //Save updates Musicplayer-XML
-                            doc.Save(Properties.Resources.XML_FILENAME);
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error loading StarFS database\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-        }
-
         private void loadFSM(XmlDocument doc, string database)
         {
             //Load StarFS database
@@ -1267,6 +822,152 @@ namespace SkatersMusicPlayer
             catch (Exception e)
             {
                 MessageBox.Show("Error loading FS Manager database\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void loadStarFS(competitionEvent compEvent, string filename)
+        {
+            //Load StarFS database
+            try
+            {
+                using (SQLiteConnection con = new SQLiteConnection("Data Source=" + filename + "; Version=3; FailIfMissing=True;"))
+                {
+                    con.Open();
+
+                    //Query database for Eventname
+                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT EVENT_NAME, DB_VERSION FROM EVENT", con))
+                    {
+                        //Get competition name from database
+                        string compName = string.Empty;
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                compName = getDBString(reader, "EVENT_NAME", string.Empty);
+                            }
+                            reader.Close();
+                        }
+
+                        //Not an event, use CompetitionName instead
+                        if (String.IsNullOrEmpty(compName))
+                        {
+                            cmd.CommandText = "SELECT COMPETITION_NAME FROM COMPETITION";
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    compName = getDBString(reader, "COMPETITION_NAME", string.Empty);
+                                }
+                                reader.Close();
+                            }
+                        }
+                        //Store Event/Competition name
+                        compEvent.competitionName = compName;
+
+                        //Get Participants
+                        cmd.CommandText = "SELECT P.INDTA_ID, BIRTHDATE, FIRSTNAME, LASTNAME, CLUBNAME, CAST(START_NO AS TEXT) AS START_NO, MUSIC, DISCIPLINE, CATEGORY_NAME || CASE WHEN DISCIPLINE='Singelåkning' THEN '' ELSE ' ('||DISCIPLINE||')' END AS CATEGORY_NAME\n"
+                                          + "FROM PARTICIPANT P\n"
+                                          + "INNER JOIN BASEDATA B ON B.CATEGORY_ID = P.CATEGORY_ID\n"
+                                          + "INNER JOIN CATEGORY C ON C.CATEGORY_ID = P.CATEGORY_ID\n"
+                                          + "ORDER BY IFNULL(START_TIME, 'xxxxxx'), B.CATEGORY_ID, P.START_NO";
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // Locate participant for update or create a participant
+                                Guid? ID = null;
+                                if (Guid.TryParse(getDBString(reader, "INDTA_ID", string.Empty), out Guid tempId))
+                                {
+                                    ID = tempId;
+                                }
+
+                                DateTime? Birthdate = null;
+                                if (DateTime.TryParse(getDBString(reader, "BIRTHDATE", string.Empty), out DateTime tempBD))
+                                {
+                                    Birthdate = tempBD;
+                                }
+                                string FirstName = getDBString(reader, "FIRSTNAME", string.Empty);
+                                string LastName = getDBString(reader, "LASTNAME", string.Empty);
+                                string Club = getDBString(reader, "CLUBNAME", string.Empty);
+                                int? StartNo = null;
+                                if (int.TryParse(getDBString(reader, "START_NO", string.Empty), out int tempSN))
+                                {
+                                    StartNo = tempSN;
+                                }
+                                string MusicTitle = getDBString(reader, "MUSIC", string.Empty);
+                                string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty) + " - Free Skating";
+
+                                //Find category in competition object compEvent
+                                categorySegment category = null;
+                                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
+                                {
+                                    if (catSeg.categoryName == categoryName)
+                                    {
+                                        category = catSeg;
+                                    }
+                                }
+                                // If category not found, create a new category
+                                if (category == null)
+                                {//New category. Create structure
+                                    category = new categorySegment
+                                    {
+                                        categoryName = categoryName,
+                                        participants = new List<participant>()
+                                    };
+                                    compEvent.categoriesAndSegments.Add(category);
+                                }
+
+                                // Locate participant in category via ID
+                                participant participant = null;
+                                foreach (participant par in category.participants)
+                                {
+                                    if (par.id == ID)
+                                    {
+                                        participant = par;
+                                    }
+                                }
+                                // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                if (participant == null)
+                                {
+                                    foreach (participant par in category.participants)
+                                    {
+                                        if (par.firstName == FirstName &&
+                                            par.lastName == LastName &&
+                                            par.club == Club)
+                                        {
+                                            participant = par;
+                                        }
+                                    }
+                                }
+                                // If person not found, create a new person
+                                if (participant == null)
+                                {
+                                    participant = new participant
+                                    {
+                                        id = ID,
+                                        birthDate = Birthdate,
+                                        music = new competitionMusic()
+                                    };
+                                    category.participants.Add(participant);
+                                }
+                                // Update
+                                participant.startNumber = StartNo;
+                                participant.firstName = FirstName;
+                                participant.lastName = LastName;
+                                participant.club = Club;
+                                participant.music.title = MusicTitle;
+                            }  //while reader-Participants
+
+                            //Save updates Musicplayer-XML
+                            serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading StarFS database\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }

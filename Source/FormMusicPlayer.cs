@@ -14,86 +14,6 @@ namespace SkatersMusicPlayer
 {
     public partial class formMusicPlayer : Form
     {
-
-
-        // Define the root object representing the entire JSON file
-#nullable enable
-        public class competitionEvent
-        {
-            // The main name of the competition
-            [JsonProperty("competitionName")]
-            public string competitionName { get; set; } = string.Empty;
-
-            // A list of all segments (e.g., "Junior Men - Short Program") in the competition
-            [JsonProperty("categoriesAndSegments")]
-            public List<categorySegment> categoriesAndSegments { get; set; } = new List<categorySegment>();
-
-            // --- Example Usage of Deserialization (Optional, for testing) ---
-            /*
-            public static CompetitionEvent? FromJson(string json)
-            {
-                return JsonConvert.DeserializeObject<CompetitionEvent>(json);
-            }
-            */
-        }
-
-        // Represents a single category/segment within the competition
-        public class categorySegment
-        {
-            [JsonProperty("categoryName")]
-            public string categoryName { get; set; } = string.Empty;
-
-            // The list of participants registered for this specific segment
-            [JsonProperty("participants")]
-            public List<participant> participants { get; set; } = new List<participant>();
-        }
-
-        // Represents a single athlete/participant
-        public class participant
-        {
-            // Using Guid for the ID, which is a good type for UUID strings
-            [JsonProperty("id")]
-            public Guid? id { get; set; }
-
-            // Using nullable integer (int?) because 'startNumber' can be null in the JSON
-            [JsonProperty("startNumber")]
-            public int? startNumber { get; set; }
-
-            [JsonProperty("firstName")]
-            public string? firstName { get; set; }
-
-            [JsonProperty("lastName")]
-            public string? lastName { get; set; }
-
-            // Using DateTime to correctly parse the date string (e.g., "2007-03-22")
-            [JsonProperty("birthDate")]
-            public DateTime? birthDate { get; set; }
-
-            [JsonProperty("club")]
-            public string? club { get; set; }
-
-            // Nested object for music details
-            [JsonProperty("music")]
-            public competitionMusic? music { get; set; }
-        }
-
-#nullable enable
-        // Represents the music details for a participant's segment
-        public class competitionMusic
-        {
-            // Using nullable string (string?) because 'file', 'md5', and 'title' can be null
-            [JsonProperty("file")]
-            public string? file { get; set; }
-
-            [JsonProperty("md5")]
-            public string? md5 { get; set; }
-
-            [JsonProperty("title")]
-            public string? title { get; set; }
-        }
-#nullable disable
-
-
         enum player { Nothing, Participant, Warmup, Break, Spotify };
 
         //Constants for messages
@@ -897,18 +817,7 @@ namespace SkatersMusicPlayer
             if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
             {
                 loadIndTA2(doc, openFileDialogIndTA.FileName);
-                loadXMLfile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
-            }
-        }
-
-        private void importFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogISUCalcXML.ShowDialog() == DialogResult.OK)
-            {
-                loadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
-                loadXMLfile();
+                loadJsonFile();
                 _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 editCategoriesMenuItem_Click(sender, e);
             }
@@ -927,7 +836,7 @@ namespace SkatersMusicPlayer
                     if (FFSMD.ShowDialog() == DialogResult.OK)
                     {
                         loadFSM(doc, FFSMD.Tag.ToString());
-                        loadXMLfile();
+                        loadJsonFile();
                         _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         editCategoriesMenuItem_Click(sender, e);
                     }
@@ -948,8 +857,8 @@ namespace SkatersMusicPlayer
         {
             if (openFileDialogStarFS.ShowDialog() == DialogResult.OK)
             {
-                loadStarFS(doc, openFileDialogStarFS.FileName);
-                loadXMLfile();
+                loadStarFS(compEvent, openFileDialogStarFS.FileName);
+                loadJsonFile();
                 _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -985,7 +894,7 @@ namespace SkatersMusicPlayer
                 category = comboBoxCategory.SelectedItem.ToString();
             }
             autoconnectMusic();
-            loadXMLfile();
+            loadJsonFile();
             try
             {//Try to reload category
                 comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
@@ -1012,12 +921,6 @@ namespace SkatersMusicPlayer
             {
                 ab.ShowDialog();
             }
-        }
-        // Add this method inside the competitionEvent class
-        public static void serializeToFile(competitionEvent compEvent, string filePath)
-        {
-            var json = JsonConvert.SerializeObject(compEvent, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(filePath, json, Encoding.UTF8);
         }
         #endregion
 
