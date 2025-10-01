@@ -208,65 +208,51 @@
     <value>Categories and Participants loaded from file. Edit Categories will now open to verify if category has Short</value>
   </data>
   <data name="SQL_FSM_PARTICIPANTS" xml:space="preserve">
-    <value>-- Singel
-select	p.FederationId,
+    <value>SELECT	case c.type
+				WHEN 0 THEN CASE WHEN c.Level=5
+										THEN 'Adult'
+										ELSE 'Singelåkning'
+									END
+				WHEN 1 THEN CASE WHEN c.Level=5
+										THEN 'Adult'
+										ELSE 'Singelåkning'
+									END
+				WHEN 2 THEN 'Paråkning'
+				WHEN 3 THEN 'Isdans'
+				WHEN 4 THEN 'Synkroniserad konståkning'
+				WHEN 5 THEN 'Soloisdans'
+			END as Discipline,
+			TRIM(c.Name) AS Category,
+			s.Name as Segment,
+			p.FederationId,
 			SUBSTRING(CAST(p.BirthDate AS char),1,10) AS BirthDate,
-			P.FirstName,
+			p.FirstName,
 			p.LastName,
-			cl.Name AS CLUBNAME,
-			ms.Title as MusicShort,
-			mf.Title as MusicFree,
-			CAST(crs.StartNumber AS char) as StartNoShort,
-			CAST(crf.StartNumber AS char) as StartNoFree,
-			c.Name as CategoryName
-from		person p
-			left outer join club cl on cl.ShortName=p.Club
-			inner join single s on s.Person_Id=p.Id								-- Koppling från Person till CompetitorID
-			inner join entry e on e.Competitor_Id=s.Competitor_Id_Pk			-- Koppling från singel till Tävling, länk till Category (även status??)
-			inner join category c on c.Id=e.Category_Id							-- Klass via Entry
-			inner join competitor cm on cm.Id=s.Competitor_Id_Pk				-- Koppling till musik
-			left outer join music ms on ms.Id=cm.ShortMusik_Id					-- Musik från competitor
-			left outer join music mf on mf.Id=cm.FreeMusik_Id					-- Musik från competitor
-			left outer join competitorresult crs									-- Startnummer Kortprogram
-				on crs.Entry_Id=e.Id
-				and crs.Segment_Id IN (select Id from segment where SegmentType=0)
-			left outer join competitorresult crf									-- Startnummer Friåkning
-				on crf.Entry_Id=e.Id
-				and crf.Segment_Id IN (select Id from segment where SegmentType=1)
-
-UNION
-
-
-/* Couple */
-select	co.FederationId,
-			NULL,
-			CONCAT(pf.FirstName,' ',pf.LastName,' / ',pm.FirstName,' ',pm.LastName) AS FirstName,
-			NULL AS LastName,
-			NULL AS CLUBNAME,
-			ms.Title as MusicShort,
-			mf.Title as MusicFree,
-			CAST(crs.StartNumber AS char) as StartNoShort,
-			CAST(crf.StartNumber AS char) as StartNoFree,
-			CONCAT(c.Name,
-				CASE c.`Type`
-					WHEN	2	THEN ' (Par)'
-					WHEN	3	THEN ' (Isdans)'
-					WHEN	4	THEN ' (Synkroniserad konståkning)'
-				END) as CategoryName
-from		couple co
-			inner join person pf on pf.Id=co.PersonLady_Id
-			inner join person pm on pm.Id=co.PersonMale_Id
-			inner join entry e on e.Competitor_Id=co.Competitor_Id_Pk		-- Koppling från couple till Tävling, länk till Category (även status??)
-			inner join category c on c.Id=e.Category_Id							-- Klass via Entry
-			inner join competitor cm on cm.Id=co.Competitor_Id_Pk				-- Koppling till musik
-			left outer join music ms on ms.Id=cm.ShortMusik_Id					-- Musik från competitor
-			left outer join music mf on mf.Id=cm.FreeMusik_Id					-- Musik från competitor
-			left outer join competitorresult crs									-- Startnummer Kortprogram
-				on crs.Entry_Id=e.Id
-				and crs.Segment_Id IN (select Id from segment where SegmentType=0)
-			left outer join competitorresult crf									-- Startnummer Friåkning
-				on crf.Entry_Id=e.Id
-				and crf.Segment_Id IN (select Id from segment where SegmentType=1)</value>
+			p.Club,
+			CAST(cr.StartNumber AS char) AS StartNumber,
+			m.Title
+FROM category c
+		inner join competition comp
+		  on comp.Id=c.Competition_Id
+		inner join odfcompetition oc
+		  on oc.CompetitionSetting_Id=comp.Setting_Id
+		inner join segment s
+		  on s.Category_Id=c.Id
+		inner join entry e
+		  on e.Category_Id=c.Id
+		inner join single si
+		  on si.Competitor_Id_Pk=e.Competitor_Id
+		inner join person p
+		  on p.Id=si.Person_Id
+		left outer join competitorresult cr
+		  on cr.Entry_Id=e.Id
+		  and cr.Segment_Id=s.Id
+		inner join competitor co
+		  on co.Id=si.Competitor_Id_Pk
+		left outer join music m
+		  on (m.Id=co.ShortMusik_Id and s.SegmentType=0)
+		  or (m.Id=co.FreeMusik_Id and s.SegmentType=1)
+ORDER BY comp.Name, c.Name, s.SortOrder</value>
   </data>
   <data name="XMLTAG_CATEGORY" xml:space="preserve">
     <value>Category</value>

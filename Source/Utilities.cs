@@ -850,6 +850,152 @@ namespace SkatersMusicPlayer
 
         }
 
+        private void loadFSM(competitionEvent compEvent, string database)
+        {
+            //Load FSM database
+            try
+            {
+                var conString = new MySqlConnectionStringBuilder
+                {
+                    Server = settings.FSMServer,
+                    Port = settings.FSMPort,
+                    UserID = settings.FSMUsername,
+                    Password = settings.FSMPassword,
+                    Database = database
+                };
+                using (MySqlConnection con = new MySqlConnection(conString.ToString()))
+                {
+                    con.Open();
+
+                    //Query database for CompetitionName
+                    using (MySqlCommand cmd = new MySqlCommand("SELECT Name FROM competition", con))
+                    {
+                        string compName = string.Empty;
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                compName = compName + (string.IsNullOrEmpty(compName) ? "" : ", ") + getDBString(reader, "Name", string.Empty);
+                            }
+                            reader.Close();
+                        }
+
+                        //Store Event/Competition name
+                        compEvent.competitionName = compName;
+
+                        //Get Participants
+                        cmd.CommandText = Properties.Resources.SQL_FSM_PARTICIPANTS;
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // Locate participant for update or create a participant
+                                string discipline = getDBString(reader, "Discipline", string.Empty);
+                                string categoryName = getDBString(reader, "Category", string.Empty);
+                                string segment = getDBString(reader, "Segment", string.Empty);
+                                Guid? ID = null;
+                                if (Guid.TryParse(getDBString(reader, "FederationId", string.Empty), out Guid tempId))
+                                {
+                                    ID = tempId;
+                                }
+
+                                DateTime? Birthdate = null;
+                                if (DateTime.TryParse(getDBString(reader, "BirthDate", string.Empty), out DateTime tempBD))
+                                {
+                                    Birthdate = tempBD;
+                                }
+                                string FirstName = getDBString(reader, "FirstName", string.Empty);
+                                string LastName = getDBString(reader, "LastName", string.Empty);
+                                string Club = getDBString(reader, "Club", string.Empty);
+                                int? StartNo = null;
+                                if (int.TryParse(getDBString(reader, "StartNumber", string.Empty), out int tempSN))
+                                {
+                                    StartNo = tempSN;
+                                }
+                                string MusicTitle = getDBString(reader, "Title", string.Empty);
+
+
+                                //Find category in competition object compEvent
+                                categorySegment category = null;
+                                foreach (categorySegment cat in compEvent.categoriesAndSegments)
+                                {
+                                    if (cat.discipline == discipline &&
+                                        cat.category == categoryName &&
+                                        cat.segment == segment)
+                                    {
+                                        category = cat;
+                                    }
+                                }
+                                // If category not found, create a new category
+                                if (category == null)
+                                {//New category. Create structure
+                                    category = new categorySegment
+                                    {
+                                        discipline = discipline,
+                                        category = categoryName,
+                                        segment = segment,
+                                        participants = new List<participant>()
+                                    };
+                                    compEvent.categoriesAndSegments.Add(category);
+                                }
+
+                                // Locate participant in category via ID
+                                participant participant = null;
+                                if (ID != null)
+                                {
+                                    foreach (participant par in category.participants)
+                                    {
+                                        if (par.id == ID)
+                                        {
+                                            participant = par;
+                                        }
+                                    }
+                                }
+                                // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                if (participant == null)
+                                {
+                                    foreach (participant par in category.participants)
+                                    {
+                                        if (par.firstName == FirstName &&
+                                            par.lastName == LastName &&
+                                            par.club == Club)
+                                        {
+                                            participant = par;
+                                        }
+                                    }
+                                }
+                                // If person not found, create a new person
+                                if (participant == null)
+                                {
+                                    participant = new participant
+                                    {
+                                        id = ID,
+                                        birthDate = Birthdate,
+                                        music = new competitionMusic()
+                                    };
+                                    category.participants.Add(participant);
+                                }
+                                // Update
+                                participant.startNumber = StartNo;
+                                participant.firstName = FirstName;
+                                participant.lastName = LastName;
+                                participant.club = Club;
+                                participant.music.title = MusicTitle;
+                            }  //while reader-Participants
+
+                            //Save updates Musicplayer JSON file
+                            serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading FS Manager database\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
         private void loadStarFS(competitionEvent compEvent, string filename)
         {
             //Load StarFS database
@@ -950,11 +1096,14 @@ namespace SkatersMusicPlayer
 
                                 // Locate participant in category via ID
                                 participant participant = null;
-                                foreach (participant par in category.participants)
+                                if (ID != null) //Must have ID to search for participant
                                 {
-                                    if (par.id == ID)
+                                    foreach (participant par in category.participants)
                                     {
-                                        participant = par;
+                                        if (par.id == ID)
+                                        {
+                                            participant = par;
+                                        }
                                     }
                                 }
                                 // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
@@ -989,7 +1138,7 @@ namespace SkatersMusicPlayer
                                 participant.music.title = MusicTitle;
                             }  //while reader-Participants
 
-                            //Save updates Musicplayer-XML
+                            //Save updates Musicplayer JSON file
                             serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
                         }
                     }

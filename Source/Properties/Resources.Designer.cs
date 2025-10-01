@@ -331,21 +331,24 @@ namespace SkatersMusicPlayer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to -- Singel
-        ///select	p.FederationId,
-        ///			SUBSTRING(CAST(p.BirthDate AS char),1,10) AS BirthDate,
-        ///			P.FirstName,
-        ///			p.LastName,
-        ///			cl.Name AS CLUBNAME,
-        ///			ms.Title as MusicShort,
-        ///			mf.Title as MusicFree,
-        ///			CAST(crs.StartNumber AS char) as StartNoShort,
-        ///			CAST(crf.StartNumber AS char) as StartNoFree,
-        ///			c.Name as CategoryName
-        ///from		person p
-        ///			left outer join club cl on cl.ShortName=p.Club
-        ///			inner join single s on s.Person_Id=p.Id								-- Koppling från Person till CompetitorID
-        ///			inner join en [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to SELECT	case c.type
+        ///				WHEN 0 THEN CASE WHEN c.Level=5
+        ///										THEN &apos;Adult&apos;
+        ///										ELSE &apos;Singelåkning&apos;
+        ///									END
+        ///				WHEN 1 THEN CASE WHEN c.Level=5
+        ///										THEN &apos;Adult&apos;
+        ///										ELSE &apos;Singelåkning&apos;
+        ///									END
+        ///				WHEN 2 THEN &apos;Paråkning&apos;
+        ///				WHEN 3 THEN &apos;Isdans&apos;
+        ///				WHEN 4 THEN &apos;Synkroniserad konståkning&apos;
+        ///				WHEN 5 THEN &apos;Soloisdans&apos;
+        ///			END as Discipline,
+        ///			TRIM(c.Name) AS Category,
+        ///			s.Name as Segment,
+        ///			p.FederationId,
+        ///			SUBSTRING(CAST(p.BirthDate AS char),1,10) AS BirthD [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SQL_FSM_PARTICIPANTS {
             get {

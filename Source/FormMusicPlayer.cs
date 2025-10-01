@@ -835,10 +835,9 @@ namespace SkatersMusicPlayer
                     //Ask what database we should import (database selected is stored in the tag of the form)
                     if (FFSMD.ShowDialog() == DialogResult.OK)
                     {
-                        loadFSM(doc, FFSMD.Tag.ToString());
+                        loadFSM(compEvent, FFSMD.Tag.ToString());
                         loadJsonFile();
-                        _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        editCategoriesMenuItem_Click(sender, e);
+                        _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
