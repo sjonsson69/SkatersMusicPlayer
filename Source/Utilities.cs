@@ -41,8 +41,14 @@ namespace SkatersMusicPlayer
         // Represents a single category/segment within the competition
         public class categorySegment
         {
-            [JsonProperty("categoryName")]
-            public string categoryName { get; set; } = string.Empty;
+            [JsonProperty("discipline")]
+            public string discipline { get; set; } = string.Empty;
+
+            [JsonProperty("category")]
+            public string category { get; set; } = string.Empty;
+
+            [JsonProperty("segment")]
+            public string segment { get; set; } = string.Empty;
 
             // The list of participants registered for this specific segment
             [JsonProperty("participants")]
@@ -268,9 +274,9 @@ namespace SkatersMusicPlayer
                     if (compEvent.categoriesAndSegments.Count != 0)
                     {
                         //Loop for all categories
-                        foreach (var category in compEvent.categoriesAndSegments)
+                        foreach (categorySegment cat in compEvent.categoriesAndSegments)
                         {
-                            CB.Items.Add(category.categoryName);
+                            CB.Items.Add(combinedCategoryDisciplineSegmentName(cat));
                         }
                     }
                 }
@@ -280,6 +286,24 @@ namespace SkatersMusicPlayer
                 }
             }
 
+        }
+
+        public static string combinedCategoryDisciplineSegmentName(categorySegment cat)
+        {
+            //Build a name for the category with discipline, category and segment
+            string categoryName = cat.category;
+
+            // Add discipline if not singelåkning :TODO Fix for other languages
+            if (!string.IsNullOrEmpty(cat.discipline) && cat.discipline != "Singelåkning")
+            {
+                categoryName = categoryName + " (" + cat.discipline + ")";
+            }
+            if (!string.IsNullOrEmpty(cat.segment))
+            {
+                categoryName = categoryName + " - " + cat.segment;
+            }
+
+            return categoryName;
         }
 
         private static string getXMLElement(XmlElement element, string ChildElement, string defaultValue)
@@ -345,12 +369,12 @@ namespace SkatersMusicPlayer
             if (compEvent != null)
             {
                 // Loop throu all Categories to find the selected one
-                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
+                foreach (categorySegment cat in compEvent.categoriesAndSegments)
                 {
                     // Is it the correct category?
-                    if (catSeg.categoryName == selected)
+                    if (combinedCategoryDisciplineSegmentName(cat) == selected)
                     {
-                        foreach (participant par in catSeg.participants)
+                        foreach (participant par in cat.participants)
                         {
                             // Update infotext that we are working...
                             toolStripStatusLabel1.Text = "Loading participant:" + par?.firstName + " " + par?.lastName;
@@ -433,12 +457,12 @@ namespace SkatersMusicPlayer
                 if (compEvent.categoriesAndSegments.Count != 0)
                 {
                     // Loop throu all Categorieses to find the selected one
-                    foreach (categorySegment catseg in compEvent.categoriesAndSegments)
+                    foreach (categorySegment cat in compEvent.categoriesAndSegments)
                     {
                         // Is it the correct category?
-                        if (catseg.categoryName == selected)
+                        if (combinedCategoryDisciplineSegmentName(cat) == selected)
                         {
-                            foreach (participant par in catseg.participants)
+                            foreach (participant par in cat.participants)
                             {
 
                                 DV.Rows.Add();
@@ -866,7 +890,7 @@ namespace SkatersMusicPlayer
                         compEvent.competitionName = compName;
 
                         //Get Participants
-                        cmd.CommandText = "SELECT P.INDTA_ID, BIRTHDATE, FIRSTNAME, LASTNAME, CLUBNAME, CAST(START_NO AS TEXT) AS START_NO, MUSIC, DISCIPLINE, CATEGORY_NAME || CASE WHEN DISCIPLINE='Singelåkning' THEN '' ELSE ' ('||DISCIPLINE||')' END AS CATEGORY_NAME\n"
+                        cmd.CommandText = "SELECT P.INDTA_ID, BIRTHDATE, FIRSTNAME, LASTNAME, CLUBNAME, CAST(START_NO AS TEXT) AS START_NO, MUSIC, DISCIPLINE, CATEGORY_NAME\n"
                                           + "FROM PARTICIPANT P\n"
                                           + "INNER JOIN BASEDATA B ON B.CATEGORY_ID = P.CATEGORY_ID\n"
                                           + "INNER JOIN CATEGORY C ON C.CATEGORY_ID = P.CATEGORY_ID\n"
@@ -896,15 +920,19 @@ namespace SkatersMusicPlayer
                                     StartNo = tempSN;
                                 }
                                 string MusicTitle = getDBString(reader, "MUSIC", string.Empty);
-                                string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty) + " - Free Skating";
+                                string discipline = getDBString(reader, "DISCIPLINE", string.Empty);
+                                string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty);
+                                string segment = "Free Skating";
 
                                 //Find category in competition object compEvent
                                 categorySegment category = null;
-                                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
+                                foreach (categorySegment cat in compEvent.categoriesAndSegments)
                                 {
-                                    if (catSeg.categoryName == categoryName)
+                                    if (cat.discipline == discipline &&
+                                        cat.category == categoryName &&
+                                        cat.segment == segment)
                                     {
-                                        category = catSeg;
+                                        category = cat;
                                     }
                                 }
                                 // If category not found, create a new category
@@ -912,7 +940,9 @@ namespace SkatersMusicPlayer
                                 {//New category. Create structure
                                     category = new categorySegment
                                     {
-                                        categoryName = categoryName,
+                                        discipline = discipline,
+                                        category = categoryName,
+                                        segment = segment,
                                         participants = new List<participant>()
                                     };
                                     compEvent.categoriesAndSegments.Add(category);

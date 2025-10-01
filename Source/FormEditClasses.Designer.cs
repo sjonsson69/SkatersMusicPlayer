@@ -32,7 +32,9 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
+            this.Discipline = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Category = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Segment = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NumberOfParticipants = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -44,7 +46,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Discipline,
             this.Category,
+            this.Segment,
             this.NumberOfParticipants});
             this.dataGridView1.Location = new System.Drawing.Point(12, 12);
             this.dataGridView1.MultiSelect = false;
@@ -76,11 +80,23 @@
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
+            // Discipline
+            // 
+            this.Discipline.HeaderText = "Discipline";
+            this.Discipline.Name = "Discipline";
+            this.Discipline.Width = 160;
+            // 
             // Category
             // 
             this.Category.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Category.HeaderText = "Category";
             this.Category.Name = "Category";
+            // 
+            // Segment
+            // 
+            this.Segment.HeaderText = "Segment";
+            this.Segment.Name = "Segment";
+            this.Segment.Width = 160;
             // 
             // NumberOfParticipants
             // 
@@ -118,7 +134,9 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Discipline;
         private System.Windows.Forms.DataGridViewTextBoxColumn Category;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Segment;
         private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfParticipants;
     }
 }

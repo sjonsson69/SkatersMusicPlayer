@@ -138,12 +138,12 @@ namespace SkatersMusicPlayer
                 string Segment = comboBoxCategory.Text.Substring(comboBoxCategory.Text.Length - 5, 5).Trim();
 
                 // Loop throu all Categories to find the selected one
-                foreach (categorySegment catSeg in fmp.compEvent.categoriesAndSegments)
+                foreach (categorySegment cat in fmp.compEvent.categoriesAndSegments)
                 {
-                    if (catSeg.categoryName == comboBoxCategory.Text)
+                    if (combinedCategoryDisciplineSegmentName(cat) == comboBoxCategory.Text)
                     {
                         // Delete all participants in this category/segment
-                        catSeg.participants.Clear();
+                        cat.participants.Clear();
 
                         //Loop through all rows and add categories
                         for (int r = 0; r < dataGridViewParticipants.Rows.Count - 1; r++)
@@ -173,7 +173,7 @@ namespace SkatersMusicPlayer
                                 md5 = (string)dataGridViewParticipants[10, r].Value
                             };
 
-                            catSeg.participants.Add(p);
+                            cat.participants.Add(p);
                         }
 
                     }

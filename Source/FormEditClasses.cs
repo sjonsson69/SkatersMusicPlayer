@@ -26,8 +26,10 @@ namespace SkatersMusicPlayer
                         {
                             DV.Rows.Add();
                             DV[0, DV.Rows.Count - 2].Tag = cat.participants;  // Store the participants for each Category
-                            DV[0, DV.Rows.Count - 2].Value = cat.categoryName;
-                            DV[1, DV.Rows.Count - 2].Value = cat.participants.Count; // Number of participants in category
+                            DV[0, DV.Rows.Count - 2].Value = cat.discipline;
+                            DV[1, DV.Rows.Count - 2].Value = cat.category;
+                            DV[2, DV.Rows.Count - 2].Value = cat.segment;
+                            DV[3, DV.Rows.Count - 2].Value = cat.participants.Count; // Number of participants in category
                         }
                     }
                 }
@@ -53,7 +55,9 @@ namespace SkatersMusicPlayer
             for (int r = 0; r < dataGridView1.Rows.Count - 1; r++)
             {
                 categorySegment cat = new categorySegment();
-                cat.categoryName = (string)dataGridView1[0, r].Value;
+                cat.discipline = (string)dataGridView1[0, r].Value;
+                cat.category = (string)dataGridView1[1, r].Value;
+                cat.segment = (string)dataGridView1[2, r].Value;
                 if (dataGridView1[0, r].Tag != null)
                 {
                     cat.participants = (List<participant>)dataGridView1[0, r].Tag;  // Retrieve the participants for each Category
@@ -70,7 +74,7 @@ namespace SkatersMusicPlayer
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            dataGridView1[1, e.RowIndex].Value = 0;
+            dataGridView1[3, e.RowIndex].Value = 0;
         }
 
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)

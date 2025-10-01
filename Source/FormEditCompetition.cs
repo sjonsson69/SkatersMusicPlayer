@@ -8,7 +8,9 @@ namespace SkatersMusicPlayer
 {
     public partial class FormEditEvent : Form
     {
+#nullable enable
         public competitionEvent? compEvent2 = null;
+#nullable disable
 
 
         public FormEditEvent(competitionEvent compEvent)
