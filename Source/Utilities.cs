@@ -8,10 +8,12 @@ using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using static SkatersMusicPlayer.formMusicPlayer;
 
 namespace SkatersMusicPlayer
 {
@@ -1069,6 +1071,10 @@ namespace SkatersMusicPlayer
                                 string discipline = getDBString(reader, "DISCIPLINE", string.Empty);
                                 string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty);
                                 string segment = "Free Skating";
+                                if (discipline=="Isdans" || discipline=="Soloisdans")
+                                {
+                                    segment = "Free Dance";
+                                }
 
                                 //Find category in competition object compEvent
                                 categorySegment category = null;
@@ -1151,159 +1157,133 @@ namespace SkatersMusicPlayer
 
         }
 
+
+        //Dictionary for translation of segment names
+        private static readonly Dictionary<string, string> _translations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Free skating", "Friåkning" },
+            { "Short program", "Kortprogram" },
+            { "Pattern Dance (With Key Points)", "Mönsterdans 1" },
+            { "Pattern Dance (Without Key Points)", "Mönsterdans 2" },
+            { "Rhythm Dance", "Rytmdans" },
+            { "Free Dance", "Fridans" },
+
+        };
+
+        public static string Translate(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+
+            return _translations.TryGetValue(input.Trim(), out var translated)
+                ? translated
+                : input; // Fallback: return original if not found
+        }
+
+
+        private static Dictionary<string, string> GetDataMap(categorySegment catSeg, participant p)
+        {
+            string normalize(string s) => new string(s?.Where(c => !Path.GetInvalidFileNameChars().Contains(c) && !char.IsWhiteSpace(c)).ToArray() ?? Array.Empty<char>());
+            string normalizeDate(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyy-MM-dd") : string.Empty;
+            string normalizeDateYYYYMMDD(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyyMMdd") : string.Empty;
+            string normalizeGuid(Guid? g) => g.HasValue ? g.Value.ToString() : string.Empty;
+
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "{Discipline}", normalize(catSeg.discipline) },
+                { "{Category}", normalize(catSeg.category) },
+                { "{Segment}", normalize(catSeg.segment) },
+                { "{SegmentNoSpace}", normalize(catSeg.segment.Replace(" ","")) },
+                { "{SegmentSWE}", Translate(catSeg.segment) },
+                { "{FirstName}", normalize(p.firstName.Trim()) },
+                { "{FirstNameDash}", normalize(p.firstName.Trim().Replace(" ","-")) },
+                { "{LastName}", normalize(p.lastName.Trim()) },
+                { "{LastNameDash}", normalize(p.lastName.Trim().Replace(" ","-")) },
+                { "{Club}", normalize(p.club) },
+                { "{Birthdate}", normalizeDate(p.birthDate) },
+                { "{BirthdateYYYYMMDD}", normalizeDateYYYYMMDD(p.birthDate) },
+                { "{ID}", normalizeGuid(p.id) }
+            };
+        }
+
         private void autoconnectMusic()
         {
             string MissingFiles = string.Empty;
 
-            foreach (XmlNode participantNode in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_PARTICIPANT))
+            // Loop all competition participants and try to find music files for them
+            foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
             {
-                string BirthDate = string.Empty;
-                if (participantNode.Attributes.GetNamedItem("BirthDate") != null)
+                string discipline = catSeg.discipline;
+                string category = catSeg.category;
+                string segment = catSeg.segment;
+
+                foreach (participant part in catSeg.participants)
                 {
-                    BirthDate = participantNode.Attributes.GetNamedItem("BirthDate").Value.Replace("-", string.Empty);
-                    if (string.IsNullOrEmpty(BirthDate))
+                    // Update infotext that we are working...
+                    toolStripStatusLabel1.Text = "Connecting music for " + part.firstName + " " + part.lastName;
+                    statusStrip1.Update();
+
+                    // Map values for lookup patterns
+                    var datamap = GetDataMap(catSeg, part);
+
+                    //Loop trough all lookup patterns
+                    foreach (var pattern in settings.musicLookup)
                     {
-                        BirthDate = "*";
-                    }
-                    else
-                    {
-                        BirthDate += "xxxx";
-                    }
-                }
-                string ID = string.Empty;
-                if (participantNode.Attributes.GetNamedItem("ID") != null)
-                {
-                    ID = participantNode.Attributes.GetNamedItem("ID").Value;
-                }
-
-                // Update infotext that we are working...
-                toolStripStatusLabel1.Text = "Connecting music for " + getXMLElement(participantNode["FirstName"], string.Empty, string.Empty) + " " + getXMLElement(participantNode["LastName"], string.Empty, string.Empty);
-                statusStrip1.Update();
-
-                //Syncro?
-                if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
-                {//No last name, probably Syncro or Pair
-
-                }
-
-                // Free music
-                // Search for music
-                FileInfo[] fiArray = null;
-                string FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
-                //Syncro/Pair?
-                if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
-                {//No last name, probably Syncro or Pair
-                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_Friåkning.*").Replace(" ", "_").Replace("/", "_");
-                }
-
-                try
-                {
-                    fiArray = new DirectoryInfo(Properties.Resources.PARTICIPANT_MUSIC_DIRECTORY).GetFiles(FileToFind);
-                }
-                catch (Exception)
-                {
-                }
-
-                if (fiArray != null && fiArray.Length != 0)
-                {// We have a match
-
-                    string SearchFile = fiArray[0].FullName;
-                    // Make the path relative if possible.
-                    if (SearchFile.Substring(0, Application.StartupPath.Length) == Application.StartupPath)
-                    {// Remove startpath
-                        SearchFile = SearchFile.Substring(Application.StartupPath.Length + 1);  //Also remove the backslash from path
-                    }
-
-                    string MD5 = verifyMusicFile(SearchFile);
-                    if (string.IsNullOrEmpty(MD5))
-                    {
-                        MissingFiles = MissingFiles + "File:" + SearchFile + " is not a valid music file\n";
-                    }
-                    else
-                    {
-                        if (MD5.Substring(0, 4) == "MD5:")
+                        string FileToFind = pattern;
+                        foreach (var kvp in datamap)
                         {
-                            MissingFiles = MissingFiles + "File:" + SearchFile + " Identical file with " + MD5.Substring(4) + "\n";
-                        }
-                        else
-                        {
-                            // Make sure we have the nodes
-                            if (participantNode["Free"] == null) participantNode.AppendChild(doc.CreateElement("Free"));
-                            if (participantNode["Free"]["MusicFile"] == null) participantNode["Free"].AppendChild(doc.CreateElement("MusicFile"));
-
-                            participantNode["Free"]["MusicFile"].InnerText = SearchFile;
-                            participantNode["Free"]["MusicFile"].SetAttribute("MD5", MD5);
-                        }
-                    }
-                }
-                else
-                {
-                    MissingFiles = MissingFiles + Properties.Resources.PARTICIPANT_MUSIC_DIRECTORY + FileToFind + "\n";
-                }
-
-
-
-                // Does the Category have Short?
-                if (participantNode.ParentNode.Attributes.GetNamedItem("HasShort") != null)
-                {
-                    // Short music
-                    // Search for music
-                    fiArray = null;
-                    FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + getXMLElement(participantNode["LastName"], string.Empty, string.Empty).Replace(" ", "-") + "_" + BirthDate + "_" + (string.IsNullOrEmpty(ID) ? "*" : ID) + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
-                    if (string.IsNullOrEmpty(getXMLElement(participantNode["LastName"], string.Empty, string.Empty)))
-                    {//No last name, probably Syncro or Pair
-                        FileToFind = (getXMLElement(participantNode["FirstName"], string.Empty, string.Empty).Replace(" ", "-") + "_Kortprogram.*").Replace(" ", "_").Replace("/", "_");
-                    }
-                    try
-                    {
-                        fiArray = new DirectoryInfo(Properties.Resources.PARTICIPANT_MUSIC_DIRECTORY).GetFiles(FileToFind);
-                    }
-                    catch (Exception)
-                    {
-                    }
-
-                    if (fiArray != null && fiArray.Length != 0)
-                    {// We have a match
-
-
-                        string SearchFile = fiArray[0].FullName;
-                        // Make the path relative if possible.
-                        if (SearchFile.Substring(0, Application.StartupPath.Length) == Application.StartupPath)
-                        {// Remove startpath
-                            SearchFile = SearchFile.Substring(Application.StartupPath.Length + 1);  //Also remove the backslash from path
+                            FileToFind = FileToFind.Replace(kvp.Key, kvp.Value);
                         }
 
-                        string MD5 = verifyMusicFile(SearchFile);
-                        if (string.IsNullOrEmpty(MD5))
+                        //Look for file in music directory
+                        FileInfo[] fiArray = null;
+                        try
                         {
-                            MissingFiles = MissingFiles + "File:" + SearchFile + " is not a valid music file\n";
+                            fiArray = new DirectoryInfo(Properties.Resources.PARTICIPANT_MUSIC_DIRECTORY).GetFiles(FileToFind);
                         }
-                        else
+                        catch (Exception)
                         {
-                            if (MD5.Substring(0, 4) == "MD5:")
+                        }
+                        if (fiArray != null && fiArray.Length != 0)
+                        {// We have a match
+                            string SearchFile = fiArray[0].FullName;
+                            // Make the path relative if possible.
+                            if (SearchFile.Substring(0, Application.StartupPath.Length) == Application.StartupPath)
+                            {// Remove startpath
+                                SearchFile = SearchFile.Substring(Application.StartupPath.Length + 1);  //Also remove the backslash from path
+                            }
+                            string MD5 = verifyMusicFile(SearchFile);
+                            if (string.IsNullOrEmpty(MD5))
                             {
-                                MissingFiles = MissingFiles + "File:" + SearchFile + " Identical file with " + MD5.Substring(4) + "\n";
+                                MissingFiles = MissingFiles + "File:" + SearchFile + " is not a valid music file\n";
                             }
                             else
                             {
-                                // Make sure we have the nodes
-                                if (participantNode["Short"] == null) participantNode.AppendChild(doc.CreateElement("Short"));
-                                if (participantNode["Short"]["MusicFile"] == null) participantNode["Short"].AppendChild(doc.CreateElement("MusicFile"));
-
-                                participantNode["Short"]["MusicFile"].InnerText = SearchFile;
-                                participantNode["Short"]["MusicFile"].SetAttribute("MD5", MD5);
+                                if (MD5.Substring(0, 4) == "MD5:")
+                                {
+                                    MissingFiles = MissingFiles + "File:" + SearchFile + " Identical file with " + MD5.Substring(4) + "\n";
+                                }
+                                else
+                                {//Store music file and MD5 in participant, and exit loop
+                                    part.music.file = SearchFile;
+                                    part.music.md5 = MD5;
+                                    break;
+                                }
                             }
                         }
                     }
-                    else
+                    //Did we find a file?
+                    if (string.IsNullOrEmpty(part.music.file))
                     {
-                        MissingFiles = MissingFiles + Properties.Resources.PARTICIPANT_MUSIC_DIRECTORY + FileToFind + "\n";
+                        MissingFiles = MissingFiles + "No music found for " + part.firstName + " " + part.lastName + "," + part.club + ": " + catSeg.category + "," + catSeg.segment + "\n";
                     }
+
                 }
+            }
 
+            //Save updates Musicplayer JSON file
+            serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
 
-
-            } // foreach participantNode
 
             // Inform user of missing files or if all participants are connected
             if (!string.IsNullOrEmpty(MissingFiles))
@@ -1315,7 +1295,6 @@ namespace SkatersMusicPlayer
                 _ = MessageBox.Show(Properties.Resources.ALL_PARTICIPANTS_AUTOCONNECTED, Properties.Resources.CAPTION_AUTOCONNECT, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
-            doc.Save(Properties.Resources.XML_FILENAME);
         }
 
         private string verifyMusicFile(string fileName)
@@ -1327,14 +1306,14 @@ namespace SkatersMusicPlayer
                 //Try to load the file to see if NAudio can read it. Gives an exception if we can't read it
                 audioFileReaderTest = new AudioFileReader(fileName);
                 MD5 = getMD5HashFromFile(fileName);
-                //TODO:Check MD5 for alla participants to verify no dublicates
-                foreach (XmlNode MusicFileNode in doc.DocumentElement.GetElementsByTagName("MusicFile"))
+                //Check MD5 for alla participants to verify no dublicates
+                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
                 {
-                    if (fileName != MusicFileNode.InnerText)
+                    foreach (participant part in catSeg.participants)
                     {
-                        if (MusicFileNode.Attributes.GetNamedItem("MD5") != null && MD5 == MusicFileNode.Attributes.GetNamedItem("MD5").Value.ToString())
+                        if (part.music.md5 == MD5 && part.music.file != fileName)
                         {
-                            MD5 = "MD5:" + MusicFileNode.InnerText;
+                            MD5 = "MD5:" + part.music.file; // Mark as duplicate
                         }
                     }
                 }
