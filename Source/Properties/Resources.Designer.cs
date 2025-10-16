@@ -331,7 +331,8 @@ namespace SkatersMusicPlayer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT	case c.type
+        ///   Looks up a localized string similar to SELECT	comp.Name AS CompetitionName,
+        ///			case c.type
         ///				WHEN 0 THEN CASE WHEN c.Level=5
         ///										THEN &apos;Adult&apos;
         ///										ELSE &apos;Singelåkning&apos;
@@ -346,9 +347,10 @@ namespace SkatersMusicPlayer.Properties {
         ///				WHEN 5 THEN &apos;Soloisdans&apos;
         ///			END as Discipline,
         ///			TRIM(c.Name) AS Category,
+        ///			s.SortOrder,			
         ///			s.Name as Segment,
         ///			p.FederationId,
-        ///			SUBSTRING(CAST(p.BirthDate AS char),1,10) AS BirthD [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SQL_FSM_PARTICIPANTS {
             get {
