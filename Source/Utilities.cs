@@ -4,11 +4,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -100,6 +102,295 @@ namespace SkatersMusicPlayer
             public string? title { get; set; }
         }
 #nullable disable
+
+        #region SportTAJO Classes
+        public class SportTAJO
+        {
+            [JsonProperty("ExportedAt")]
+            public DateTime? ExportedAt { get; set; }
+
+            [JsonProperty("ExportedBy")]
+            public Guid? ExportedBy { get; set; }
+
+            [JsonProperty("Event")]
+            public Event Event { get; set; }
+        }
+
+        public class Event
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+
+            [JsonProperty("Organizer")]
+            public Organization Organizer { get; set; }
+
+            [JsonProperty("Location")]
+            public string Location { get; set; }
+
+            [JsonProperty("Competitions")]
+            public List<Competition> Competitions { get; set; }
+        }
+
+        public class Organization
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+        }
+
+        public class Competition
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+
+            [JsonProperty("Category")]
+            public string Category { get; set; }
+
+            [JsonProperty("StartDate")]
+            public DateTime? StartDate { get; set; }
+
+            [JsonProperty("EndDate")]
+            public DateTime? EndDate { get; set; }
+
+            [JsonProperty("Classes")]
+            public List<Class> Classes { get; set; }
+        }
+
+        public class Class
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+
+            [JsonProperty("Discipline")]
+            public string Discipline { get; set; }
+
+            [JsonProperty("Type")]
+            public string Type { get; set; }
+
+            [JsonProperty("Groups")]
+            public List<Group> Groups { get; set; }
+
+            [JsonProperty("Reserves")]
+            public List<Reserve> Reserves { get; set; }
+        }
+
+        public class Group
+        {
+            [JsonProperty("Index")]
+            public int Index { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+
+            [JsonProperty("Persons")]
+            public List<Person> Persons { get; set; }
+
+            [JsonProperty("Pairs")]
+            public List<Pair> Pairs { get; set; } // For "Type": "Par"
+
+            [JsonProperty("Teams")]
+            public List<Team> Teams { get; set; } // For "Type": "Lag"
+
+            [JsonProperty("Officials")]
+            public List<Official> Officials { get; set; }
+        }
+
+        public class Reserve
+        {
+            [JsonProperty("Persons")]
+            public List<Person> Persons { get; set; }
+
+            [JsonProperty("Pairs")]
+            public List<Pair> Pairs { get; set; } // For "Type": "Par"
+
+            [JsonProperty("Teams")]
+            public List<Team> Teams { get; set; } // For "Type": "Lag"
+
+        }
+
+        public class Person
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("FirstName")]
+            public string FirstName { get; set; }
+
+            [JsonProperty("LastName")]
+            public string LastName { get; set; }
+
+            [JsonProperty("BirthDate")]
+            public DateTime? BirthDate { get; set; }
+
+            [JsonProperty("Sex")]
+            public string Sex { get; set; }
+
+            [JsonProperty("Nationality")]
+            public string Nationality { get; set; }
+
+            [JsonProperty("Organization")]
+            public Organization Organization { get; set; }
+
+            [JsonProperty("District")]
+            public District District { get; set; }
+
+            [JsonProperty("EntryDate")]
+            public DateTime? EntryDate { get; set; }
+
+            [JsonProperty("EntryId")]
+            public Guid? EntryId { get; set; }
+
+            [JsonProperty("Ppcs")]
+            public List<Ppc> Ppcs { get; set; }
+
+            [JsonProperty("Role")]
+            public string Role { get; set; } // Only present in "Teams"
+
+            [JsonProperty("Result")]
+            public Result Result { get; set; }
+
+        }
+
+        public class Pair
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Organization")]
+            public Organization Organization { get; set; }
+
+            [JsonProperty("District")]
+            public District District { get; set; }
+
+            [JsonProperty("EntryDate")]
+            public DateTime EntryDate { get; set; }
+
+            [JsonProperty("EntryId")]
+            public Guid EntryId { get; set; }
+
+            [JsonProperty("Ppcs")]
+            public List<Ppc> Ppcs { get; set; }
+
+            [JsonProperty("Persons")]
+            public List<Person> Persons { get; set; }
+        }
+
+        public class Team
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+
+            [JsonProperty("Organization")]
+            public Organization Organization { get; set; }
+
+            [JsonProperty("District")]
+            public District District { get; set; }
+
+            [JsonProperty("EntryDate")]
+            public DateTime EntryDate { get; set; }
+
+            [JsonProperty("EntryId")]
+            public Guid EntryId { get; set; }
+
+            [JsonProperty("Ppcs")]
+            public List<Ppc> Ppcs { get; set; }
+
+            [JsonProperty("Persons")]
+            public List<Person> Persons { get; set; }
+        }
+
+        public class Result
+        {
+            [JsonProperty("Placement")]
+            public int? Placement { get; set; }
+
+            [JsonProperty("TotalPoints")]
+            public string TotalPoints { get; set; }
+
+            [JsonProperty("Type")]
+            public string Type { get; set; } //1=normal result, 2=Withdrawn
+        }
+
+        public class District
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+        }
+
+        public class Ppc
+        {
+            [JsonProperty("Type")]
+            public string Type { get; set; }
+
+            [JsonProperty("Discipline")]
+            public string Discipline { get; set; }
+
+            [JsonProperty("Ppc")] // Note: This property name is "Ppc" in JSON
+            public string PpcValue { get; set; } // Changed to PpcValue to avoid name conflict with class
+
+            [JsonProperty("Coach")]
+            public string Coach { get; set; }
+
+            [JsonProperty("Music")]
+            public Music Music { get; set; }
+        }
+
+        public class Music
+        {
+            [JsonProperty("Compositor")]
+            public string Compositor { get; set; }
+
+            [JsonProperty("Title")]
+            public string Title { get; set; }
+        }
+
+        public class Official
+        {
+            [JsonProperty("Id")]
+            public Guid Id { get; set; }
+
+            [JsonProperty("FirstName")]
+            public string FirstName { get; set; }
+
+            [JsonProperty("LastName")]
+            public string LastName { get; set; }
+
+            [JsonProperty("Role")]
+            public string Role { get; set; }
+
+            [JsonProperty("Sex")]
+            public string Sex { get; set; }
+
+            [JsonProperty("Nationality")]
+            public string Nationality { get; set; }
+
+            [JsonProperty("Representing")]
+            public string Representing { get; set; }
+
+            [JsonProperty("Organization")]
+            public Organization Organization { get; set; }
+
+            [JsonProperty("District")]
+            public District District { get; set; }
+        }
+        #endregion
 
 
 
@@ -690,164 +981,291 @@ namespace SkatersMusicPlayer
 
         }
 
-        private void loadFSM(XmlDocument doc, string database)
+        private void loadSportTA(competitionEvent compEvent, string filename)
         {
-            //Load StarFS database
+            //Load Json
             try
             {
-                var conString = new MySqlConnectionStringBuilder
-                {
-                    Server = settings.FSMServer,
-                    Port = settings.FSMPort,
-                    UserID = settings.FSMUsername,
-                    Password = settings.FSMPassword,
-                    Database = database
-                };
-                using (MySqlConnection con = new MySqlConnection(conString.ToString()))
-                {
-                    con.Open();
+                //Number of competitions in file, to be able to inform the user if there are none.
+                int nrOfCompetitions = 0;
 
-                    //Query database for CompetitionName
-                    using (MySqlCommand cmd = new MySqlCommand("SELECT Name FROM competition", con))
+                //Import and deserialize SportTAJO data
+                SportTAJO sportTAJOData = JsonConvert.DeserializeObject<SportTAJO>(File.ReadAllText(filename));
+
+                //Store Event/Competition name
+                compEvent.competitionName = sportTAJOData.Event.Name;
+
+                //-------------------------------------------------------------------------------
+                //Loop for all competitions
+                foreach (Competition comp in sportTAJOData.Event.Competitions)
+                {
+                    //Get Competition data
+                    string CompetitionType = comp.Category.Trim();
+                    string CompetitionName = comp.Name.Trim();
+
+                    //Count number of competitions in file
+                    nrOfCompetitions++;
+
+
+
+
+                    //Loop categories(classes)
+                    foreach (Class cat in comp.Classes)
                     {
-                        string compName = string.Empty;
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        //Loop for all groups in category
+                        foreach (Group grp in cat.Groups)
                         {
-                            while (reader.Read())
+                            string categoryName = grp.Name;
+                            string discipline = cat.Discipline;
+                            string segment = "Free Skating"; //:TODO Fix routin for differend segments per discipline
+
+                            //Find category in competition object compEvent
+                            categorySegment category = null;
+                            foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
                             {
-                                compName = getDBString(reader, "Name", string.Empty);
+                                if (catSeg.discipline == discipline &&
+                                    catSeg.category == categoryName &&
+                                    catSeg.segment == segment)
+                                {
+                                    category = catSeg;
+                                }
                             }
-                            reader.Close();
-                        }
+                            // If category not found, create a new category
+                            if (category == null)
+                            {//New category. Create structure
+                                category = new categorySegment
+                                {
+                                    discipline = discipline,
+                                    category = categoryName,
+                                    segment = segment,
+                                    participants = new List<participant>()
+                                };
+                                compEvent.categoriesAndSegments.Add(category);
+                            }
 
-                        //Store Event/Competition name
-                        doc.DocumentElement.SetAttribute("Name", compName);
 
-                        //Get Participants
-                        cmd.CommandText = Properties.Resources.SQL_FSM_PARTICIPANTS;
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
+                            //Loop for all persons in group
+                            if (grp.Persons != null)
                             {
-                                // Locate participant for update or create a participant
-                                string ID = getDBString(reader, "FederationId", string.Empty);  //IdrottonlineID
-                                string Birthdate = getDBString(reader, "BirthDate", string.Empty);  //Birthdate - Used to find music
-                                string FirstName = getDBString(reader, "FirstName", string.Empty);
-                                string LastName = getDBString(reader, "LastName", string.Empty);
-                                string Club = getDBString(reader, "CLUBNAME", string.Empty);
-                                string StartNo1 = getDBString(reader, "StartNoShort", string.Empty);
-                                string MusicSP = getDBString(reader, "MusicShort", string.Empty);
-                                string StartNo2 = getDBString(reader, "StartNoFree", string.Empty);
-                                string MusicFS = getDBString(reader, "MusicFree", string.Empty);
-                                string categoryName = getDBString(reader, "CategoryName", string.Empty);
-
-                                //Find the category in Competition
-                                XmlNode categoryNode = null;
-                                foreach (XmlNode node in doc.DocumentElement.GetElementsByTagName(Properties.Resources.XMLTAG_CATEGORY))
+                                foreach (Person person in grp.Persons)
                                 {
-                                    if (node.Attributes.GetNamedItem("Name").Value == categoryName)
+                                    Guid? ID = person.Id;
+                                    DateTime? Birthdate = person.BirthDate;
+                                    string FirstName = person.FirstName.Trim();
+                                    string LastName = person.LastName.Trim();
+                                    string ClubName = string.Empty;
+                                    string MusicTitle = string.Empty;
+
+                                    //Get organization name
+                                    if (person.Organization != null && person.Organization.Name != null)
                                     {
-                                        categoryNode = node;
+                                        ClubName = person.Organization.Name.Trim();
                                     }
-                                }
 
-                                // If category not found, create a new category
-                                if (categoryNode == null)
-                                {//New category. Create structure
-                                    categoryNode = doc.CreateElement(Properties.Resources.XMLTAG_CATEGORY);
-                                    XmlAttribute attributeName = doc.CreateAttribute("Name");
-                                    attributeName.Value = categoryName;
-                                    categoryNode.Attributes.Append(attributeName);
-                                    doc.DocumentElement.AppendChild(categoryNode);
-                                }
-
-                                // Try to find if participant already present using ID number from indTA and match with ID from Competition
-                                XmlNode personNode = null;
-                                if (categoryNode.HasChildNodes && !string.IsNullOrEmpty(ID))
-                                {
-                                    foreach (XmlNode personNodeDoc in categoryNode)
+                                    //Get PPC for Friåkning for music and coach
+                                    foreach (var ppc in from Ppc ppc in person.Ppcs
+                                                        where ppc.Type == translateSegmentToSWE(segment)
+                                                        select ppc)
                                     {
-                                        if (personNodeDoc.Attributes.GetNamedItem("ID") != null && personNodeDoc.Attributes.GetNamedItem("ID").Value == ID)
+                                        if (ppc.Music != null && ppc.Music.Title != null)
                                         {
-                                            personNode = personNodeDoc;
+                                            MusicTitle = ppc.Music.Title.Trim();
                                         }
                                     }
-                                }
 
-
-                                // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                                if (personNode == null)
-                                {
-                                    if (categoryNode.HasChildNodes)
+                                    // Locate participant in category via ID
+                                    participant participant = null;
+                                    if (ID != null) //Must have ID to search for participant
                                     {
-                                        foreach (XmlNode personNodeDoc in categoryNode)
+                                        foreach (participant par in category.participants)
                                         {
-                                            if (getXMLElement(personNodeDoc["FirstName"], string.Empty, string.Empty) == FirstName &&
-                                                getXMLElement(personNodeDoc["LastName"], string.Empty, string.Empty) == LastName &&
-                                                getXMLElement(personNodeDoc["Club"], string.Empty, string.Empty) == Club)
+                                            if (par.id == ID)
                                             {
-                                                personNode = personNodeDoc;
+                                                participant = par;
                                             }
                                         }
-
                                     }
-                                }
+                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                    if (participant == null)
+                                    {
+                                        foreach (participant par in category.participants)
+                                        {
+                                            if (par.firstName == FirstName &&
+                                                par.lastName == LastName &&
+                                                par.club == ClubName &&
+                                                par.birthDate == Birthdate)
+                                            {
+                                                participant = par;
+                                            }
+                                        }
+                                    }
+                                    // If person not found, create a new person
+                                    if (participant == null)
+                                    {
+                                        participant = new participant
+                                        {
+                                            id = ID,
+                                            birthDate = Birthdate,
+                                            music = new competitionMusic()
+                                        };
+                                        category.participants.Add(participant);
+                                    }
+                                    // Update
+                                    participant.firstName = FirstName;
+                                    participant.lastName = LastName;
+                                    participant.club = ClubName;
+                                    participant.music.title = MusicTitle;
+                                } //foreach Person in Group
+                            } //if grp.Persons != null
 
-
-                                // If person not found, create a new person
-                                if (personNode == null)
+                            //Loop for all pairs in group
+                            if (grp.Pairs != null)
+                            {
+                                foreach (Pair pair in grp.Pairs)
                                 {
-                                    personNode = doc.CreateElement(Properties.Resources.XMLTAG_PARTICIPANT);
-                                    XmlAttribute attributeID = doc.CreateAttribute("ID");
-                                    attributeID.Value = ID;
-                                    personNode.Attributes.Append(attributeID);
-                                    XmlAttribute attributeBD = doc.CreateAttribute("BirthDate");
-                                    attributeBD.Value = Birthdate;
-                                    personNode.Attributes.Append(attributeBD);
+                                    Guid? ID = pair.Id;
+                                    string FirstName = pair.Persons?[0].FirstName.Trim() + " " + pair.Persons?[0].LastName.Trim() + ", " +
+                                        pair.Persons?[1].FirstName.Trim() + " " + pair.Persons?[1].LastName.Trim();
+                                    string ClubName = string.Empty;
+                                    string MusicTitle = string.Empty;
 
-                                    categoryNode.AppendChild(personNode);
-                                }
+                                    //Get organization name
+                                    if (pair.Organization != null && pair.Organization.Name != null)
+                                    {
+                                        ClubName = pair.Organization.Name.Trim();
+                                    }
 
-                                // Make sure we have elements
-                                if (personNode["FirstName"] == null) personNode.AppendChild(doc.CreateElement("FirstName"));
-                                if (personNode["LastName"] == null) personNode.AppendChild(doc.CreateElement("LastName"));
-                                if (personNode["Club"] == null) personNode.AppendChild(doc.CreateElement("Club"));
-                                if (personNode["Short"] == null) personNode.AppendChild(doc.CreateElement("Short"));
-                                if (personNode["Short"]["StartNo"] == null) personNode["Short"].AppendChild(doc.CreateElement("StartNo"));
-                                if (personNode["Short"]["MusicName"] == null && !string.IsNullOrWhiteSpace(MusicSP)) personNode["Short"].AppendChild(doc.CreateElement("MusicName"));
-                                if (personNode["Free"] == null) personNode.AppendChild(doc.CreateElement("Free"));
-                                if (personNode["Free"]["StartNo"] == null) personNode["Free"].AppendChild(doc.CreateElement("StartNo"));
-                                if (personNode["Free"]["MusicName"] == null && !string.IsNullOrWhiteSpace(MusicFS)) personNode["Free"].AppendChild(doc.CreateElement("MusicName"));
+                                    //Get PPC for Friåkning for music and coach
+                                    foreach (var ppc in from Ppc ppc in pair.Ppcs
+                                                        where ppc.Type == translateSegmentToSWE(segment)
+                                                        select ppc)
+                                    {
+                                        if (ppc.Music != null && ppc.Music.Title != null)
+                                        {
+                                            MusicTitle = ppc.Music.Title.Trim();
+                                        }
+                                    }
 
-                                // Update 
-                                personNode["FirstName"].InnerText = FirstName;
-                                personNode["LastName"].InnerText = LastName;
-                                if (!string.IsNullOrWhiteSpace(Club))
+                                    // Locate participant in category via ID
+                                    participant participant = null;
+                                    if (ID != null) //Must have ID to search for participant
+                                    {
+                                        foreach (participant par in category.participants)
+                                        {
+                                            if (par.id == ID)
+                                            {
+                                                participant = par;
+                                            }
+                                        }
+                                    }
+                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                    if (participant == null)
+                                    {
+                                        foreach (participant par in category.participants)
+                                        {
+                                            if (par.firstName == FirstName &&
+                                                par.club == ClubName)
+                                            {
+                                                participant = par;
+                                            }
+                                        }
+                                    }
+                                    // If person not found, create a new person
+                                    if (participant == null)
+                                    {
+                                        participant = new participant
+                                        {
+                                            id = ID,
+                                            music = new competitionMusic()
+                                        };
+                                        category.participants.Add(participant);
+                                    }
+                                    // Update
+                                    participant.firstName = FirstName;
+                                    participant.club = ClubName;
+                                    participant.music.title = MusicTitle;
+                                } //foreach Pair in Group
+                            } //if grp.Pairs != null
+
+                            //Loop for all pairs in group
+                            if (grp.Teams != null)
+                            {
+                                foreach (Team team in grp.Teams)
                                 {
-                                    personNode["Club"].InnerText = Club;
-                                }
-                                personNode["Short"]["StartNo"].InnerText = StartNo1.PadLeft(3, ' ').TrimEnd();
-                                if (!string.IsNullOrWhiteSpace(MusicSP))
-                                {
-                                    personNode["Short"]["MusicName"].InnerText = MusicSP;
-                                }
-                                personNode["Free"]["StartNo"].InnerText = StartNo2.PadLeft(3, ' ').TrimEnd();
-                                if (!string.IsNullOrWhiteSpace(MusicFS))
-                                {
-                                    personNode["Free"]["MusicName"].InnerText = MusicFS;
-                                }
+                                    Guid? ID = team.Id;
+                                    string FirstName = team.Name.Trim();
+                                    string ClubName = string.Empty;
+                                    string MusicTitle = string.Empty;
 
-                            }  //while reader-Participants
+                                    //Get organization name
+                                    if (team.Organization != null && team.Organization.Name != null)
+                                    {
+                                        ClubName = team.Organization.Name.Trim();
+                                    }
 
-                            //Save updates Musicplayer-XML
-                            doc.Save(Properties.Resources.XML_FILENAME);
-                        }
-                    }
-                }
+                                    //Get PPC for Friåkning for music and coach
+                                    foreach (var ppc in from Ppc ppc in team.Ppcs
+                                                        where ppc.Type == translateSegmentToSWE(segment)
+                                                        select ppc)
+                                    {
+                                        if (ppc.Music != null && ppc.Music.Title != null)
+                                        {
+                                            MusicTitle = ppc.Music.Title.Trim();
+                                        }
+                                    }
+
+                                    // Locate participant in category via ID
+                                    participant participant = null;
+                                    if (ID != null) //Must have ID to search for participant
+                                    {
+                                        foreach (participant par in category.participants)
+                                        {
+                                            if (par.id == ID)
+                                            {
+                                                participant = par;
+                                            }
+                                        }
+                                    }
+                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                    if (participant == null)
+                                    {
+                                        foreach (participant par in category.participants)
+                                        {
+                                            if (par.firstName == FirstName &&
+                                                par.club == ClubName)
+                                            {
+                                                participant = par;
+                                            }
+                                        }
+                                    }
+                                    // If person not found, create a new person
+                                    if (participant == null)
+                                    {
+                                        participant = new participant
+                                        {
+                                            id = ID,
+                                            music = new competitionMusic()
+                                        };
+                                        category.participants.Add(participant);
+                                    }
+                                    // Update
+                                    participant.firstName = FirstName;
+                                    participant.club = ClubName;
+                                    participant.music.title = MusicTitle;
+                                } //foreach Team in Group
+                            } //if grp.Teams != null
+
+                        } //foreach Groups
+                    } //foreach Categories
+                }//foreach competition
+
+                //Save updates Musicplayer JSON file
+                serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
+
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error loading FS Manager database\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading IndTA XML-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -1071,7 +1489,7 @@ namespace SkatersMusicPlayer
                                 string discipline = getDBString(reader, "DISCIPLINE", string.Empty);
                                 string categoryName = getDBString(reader, "CATEGORY_NAME", string.Empty);
                                 string segment = "Free Skating";
-                                if (discipline=="Isdans" || discipline=="Soloisdans")
+                                if (discipline == "Isdans" || discipline == "Soloisdans")
                                 {
                                     segment = "Free Dance";
                                 }
@@ -1157,29 +1575,49 @@ namespace SkatersMusicPlayer
 
         }
 
-
-        //Dictionary for translation of segment names
-        private static readonly Dictionary<string, string> _translations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        //Translate segment from ENG to SWE
+        private static string translateSegmentToSWE(string segmentENG)
         {
-            { "Free skating", "Friåkning" },
-            { "Short program", "Kortprogram" },
-            { "Pattern Dance (With Key Points)", "Mönsterdans 1" },
-            { "Pattern Dance (Without Key Points)", "Mönsterdans 2" },
-            { "Rhythm Dance", "Rytmdans" },
-            { "Free Dance", "Fridans" },
-
-        };
-
-        public static string Translate(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return input;
-
-            return _translations.TryGetValue(input.Trim(), out var translated)
-                ? translated
-                : input; // Fallback: return original if not found
+            switch (segmentENG.ToUpper())
+            {
+                case "FREE SKATING":
+                    return "Friåkning";
+                case "SHORT PROGRAM":
+                    return "Kortprogram";
+                case "PATTERN DANCE 1":
+                    return "Mönsterdans 1";
+                case "PATTERN DANCE 2":
+                    return "Mönsterdans 2";
+                case "RHYTHM DANCE":
+                    return "Rytmdans";
+                case "FREE DANCE":
+                    return "Fridans";
+                default:
+                    return segmentENG;
+            }
         }
 
+        //Translate segment from SWE to ENG
+        private static string translateSegmentToENG(string segmentSWE)
+        {
+            switch (segmentSWE)
+            {
+                case "Friåkning":
+                    return "Free skating";
+                case "Kortprogram":
+                    return "Short program";
+                case "Mönsterdans 1":
+                    return "Pattern Dance 1";
+                case "Mönsterdans 2":
+                    return "Pattern Dance 2";
+                case "Rytmdans":
+                    return "Rhythm Dance";
+                case "Fridans":
+                    return "Free Dance";
+                default:
+                    return segmentSWE;
+            }
+        }
 
         private static Dictionary<string, string> GetDataMap(categorySegment catSeg, participant p)
         {
@@ -1194,12 +1632,12 @@ namespace SkatersMusicPlayer
                 { "{Category}", normalize(catSeg.category) },
                 { "{Segment}", normalize(catSeg.segment) },
                 { "{SegmentNoSpace}", normalize(catSeg.segment.Replace(" ","")) },
-                { "{SegmentSWE}", Translate(catSeg.segment) },
+                { "{SegmentSWE}", translateSegmentToSWE(catSeg.segment) },
                 { "{FirstName}", normalize(p.firstName.Trim()) },
-                { "{FirstNameDash}", normalize(p.firstName.Trim().Replace(" ","-")) },
-                { "{LastName}", normalize(p.lastName.Trim()) },
-                { "{LastNameDash}", normalize(p.lastName.Trim().Replace(" ","-")) },
-                { "{Club}", normalize(p.club) },
+                { "{FirstNameDash}", normalize(p.firstName?.Trim().Replace(" ","-")) },
+                { "{LastName}", normalize(p.lastName?.Trim()) },
+                { "{LastNameDash}", normalize(p.lastName?.Trim().Replace(" ","-")) },
+                { "{Club}", normalize(p.club?.Trim()) },
                 { "{Birthdate}", normalizeDate(p.birthDate) },
                 { "{BirthdateYYYYMMDD}", normalizeDateYYYYMMDD(p.birthDate) },
                 { "{ID}", normalizeGuid(p.id) }

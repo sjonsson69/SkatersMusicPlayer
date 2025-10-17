@@ -77,6 +77,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uppdateringFinnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBoxSoundLevels = new System.Windows.Forms.GroupBox();
@@ -97,7 +98,8 @@
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
-            this.uppdateringFinnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sportTAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileDialogSportTA = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -478,6 +480,7 @@
             // 
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromIndTA2ToolStripMenuItem,
+            this.sportTAToolStripMenuItem,
             this.fSManagerToolStripMenuItem,
             this.importFromStarFSToolStripMenuItem,
             this.toolStripSeparator3,
@@ -554,9 +557,19 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // uppdateringFinnsToolStripMenuItem
+            // 
+            this.uppdateringFinnsToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.uppdateringFinnsToolStripMenuItem.BackColor = System.Drawing.Color.Red;
+            this.uppdateringFinnsToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uppdateringFinnsToolStripMenuItem.Name = "uppdateringFinnsToolStripMenuItem";
+            this.uppdateringFinnsToolStripMenuItem.Size = new System.Drawing.Size(169, 24);
+            this.uppdateringFinnsToolStripMenuItem.Text = "Uppdatering finns!";
+            this.uppdateringFinnsToolStripMenuItem.Click += new System.EventHandler(this.uppdateringFinnsToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -792,15 +805,18 @@
             this.openFileDialogStarFS.Filter = "StarFS competitiondatabase|*.db|All files|*.*";
             this.openFileDialogStarFS.RestoreDirectory = true;
             // 
-            // uppdateringFinnsToolStripMenuItem
+            // sportTAToolStripMenuItem
             // 
-            this.uppdateringFinnsToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.uppdateringFinnsToolStripMenuItem.BackColor = System.Drawing.Color.Red;
-            this.uppdateringFinnsToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uppdateringFinnsToolStripMenuItem.Name = "uppdateringFinnsToolStripMenuItem";
-            this.uppdateringFinnsToolStripMenuItem.Size = new System.Drawing.Size(169, 24);
-            this.uppdateringFinnsToolStripMenuItem.Text = "Uppdatering finns!";
-            this.uppdateringFinnsToolStripMenuItem.Click += new System.EventHandler(this.uppdateringFinnsToolStripMenuItem_Click);
+            this.sportTAToolStripMenuItem.Name = "sportTAToolStripMenuItem";
+            this.sportTAToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.sportTAToolStripMenuItem.Text = "SportTA";
+            this.sportTAToolStripMenuItem.Click += new System.EventHandler(this.sportTAToolStripMenuItem_Click);
+            // 
+            // openFileDialogSportTA
+            // 
+            this.openFileDialogSportTA.Filter = "Anmälningsfil|*.json|Alla filer|*.*";
+            this.openFileDialogSportTA.RestoreDirectory = true;
+            this.openFileDialogSportTA.Title = "Öppna anmälningsfil från SportTA";
             // 
             // formMusicPlayer
             // 
@@ -908,6 +924,8 @@
         private System.Windows.Forms.OpenFileDialog openFileDialogStarFS;
         private System.Windows.Forms.ToolStripMenuItem fSManagerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uppdateringFinnsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sportTAToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialogSportTA;
     }
 }
 
