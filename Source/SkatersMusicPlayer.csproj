@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>mp3.ico</ApplicationIcon>
@@ -170,6 +170,12 @@
     <Compile Include="FormEditSkaters.Designer.cs">
       <DependentUpon>FormEditSkaters.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMissingMusic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMissingMusic.Designer.cs">
+      <DependentUpon>FormMissingMusic.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMusicPlayer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -205,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormEditSkaters.resx">
       <DependentUpon>FormEditSkaters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMissingMusic.resx">
+      <DependentUpon>FormMissingMusic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMusicPlayer.resx">
       <DependentUpon>FormMusicPlayer.cs</DependentUpon>

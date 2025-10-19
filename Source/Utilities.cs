@@ -1779,7 +1779,7 @@ namespace SkatersMusicPlayer
                             {
                                 if (MD5.Substring(0, 4) == "MD5:")
                                 {
-                                    MissingFiles = MissingFiles + "File:" + SearchFile + " Identical file with " + MD5.Substring(4) + "\n";
+                                    MissingFiles = MissingFiles + "File: " + SearchFile + ", Identical file with " + MD5.Substring(4) + Environment.NewLine;
                                 }
                                 else
                                 {//Store music file and MD5 in participant, and exit loop
@@ -1793,7 +1793,7 @@ namespace SkatersMusicPlayer
                     //Did we find a file?
                     if (string.IsNullOrEmpty(part.music.file))
                     {
-                        MissingFiles = MissingFiles + "No music found for " + part.firstName + " " + part.lastName + "," + part.club + ": " + catSeg.category + "," + catSeg.segment + "\n";
+                        MissingFiles = MissingFiles + "No music found for: " + part.firstName + " " + part.lastName + "," + part.club + ": " + catSeg.category + "," + catSeg.segment + Environment.NewLine;
                     }
 
                 }
@@ -1806,7 +1806,9 @@ namespace SkatersMusicPlayer
             // Inform user of missing files or if all participants are connected
             if (!string.IsNullOrEmpty(MissingFiles))
             {
-                _ = MessageBox.Show(MissingFiles, Properties.Resources.CAPTION_MISSING_MUSIC_FILES, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Show missing files
+                FormMissingMusic frmMissing = new FormMissingMusic(MissingFiles);
+                frmMissing.ShowDialog(this);
             }
             else
             {
