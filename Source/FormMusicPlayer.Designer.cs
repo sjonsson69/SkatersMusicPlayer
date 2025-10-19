@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -68,6 +68,7 @@
             this.editParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sportTAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fSManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromStarFSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,7 +99,6 @@
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
-            this.sportTAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogSportTA = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
@@ -123,7 +123,7 @@
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(100, 35);
             this.buttonPlay.TabIndex = 5;
-            this.buttonPlay.Text = "Play";
+            this.buttonPlay.Text = "&Play";
             this.buttonPlay.UseVisualStyleBackColor = false;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
@@ -138,7 +138,7 @@
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(100, 35);
             this.buttonStop.TabIndex = 7;
-            this.buttonStop.Text = "Stop";
+            this.buttonStop.Text = "&Stop";
             this.buttonStop.UseVisualStyleBackColor = false;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
@@ -353,7 +353,7 @@
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size(100, 35);
             this.buttonPause.TabIndex = 6;
-            this.buttonPause.Text = "Pause";
+            this.buttonPause.Text = "Pa&use";
             this.buttonPause.UseVisualStyleBackColor = false;
             this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
             // 
@@ -458,21 +458,21 @@
             // editEventtoolStripMenuItem
             // 
             this.editEventtoolStripMenuItem.Name = "editEventtoolStripMenuItem";
-            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editEventtoolStripMenuItem.Text = "&Event";
             this.editEventtoolStripMenuItem.Click += new System.EventHandler(this.editEventMenuItem_Click);
             // 
             // editCategoriesMenuItem
             // 
             this.editCategoriesMenuItem.Name = "editCategoriesMenuItem";
-            this.editCategoriesMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editCategoriesMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editCategoriesMenuItem.Text = "&Categories";
             this.editCategoriesMenuItem.Click += new System.EventHandler(this.editCategoriesMenuItem_Click);
             // 
             // editParticipantsToolStripMenuItem
             // 
             this.editParticipantsToolStripMenuItem.Name = "editParticipantsToolStripMenuItem";
-            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editParticipantsToolStripMenuItem.Text = "&Participants";
             this.editParticipantsToolStripMenuItem.Click += new System.EventHandler(this.editParticipantsToolStripMenuItem_Click);
             // 
@@ -497,6 +497,13 @@
             this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
             this.importFromIndTA2ToolStripMenuItem.Visible = false;
             this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
+            // 
+            // sportTAToolStripMenuItem
+            // 
+            this.sportTAToolStripMenuItem.Name = "sportTAToolStripMenuItem";
+            this.sportTAToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.sportTAToolStripMenuItem.Text = "SportTA";
+            this.sportTAToolStripMenuItem.Click += new System.EventHandler(this.sportTAToolStripMenuItem_Click);
             // 
             // fSManagerToolStripMenuItem
             // 
@@ -637,7 +644,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3});
+            listViewItem1});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -723,7 +730,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4});
+            listViewItem2});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -804,13 +811,6 @@
             // 
             this.openFileDialogStarFS.Filter = "StarFS competitiondatabase|*.db|All files|*.*";
             this.openFileDialogStarFS.RestoreDirectory = true;
-            // 
-            // sportTAToolStripMenuItem
-            // 
-            this.sportTAToolStripMenuItem.Name = "sportTAToolStripMenuItem";
-            this.sportTAToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.sportTAToolStripMenuItem.Text = "SportTA";
-            this.sportTAToolStripMenuItem.Click += new System.EventHandler(this.sportTAToolStripMenuItem_Click);
             // 
             // openFileDialogSportTA
             // 
