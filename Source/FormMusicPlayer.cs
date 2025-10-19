@@ -894,8 +894,7 @@ namespace SkatersMusicPlayer
                 logger.Trace("Importing from SportTA file: " + openFileDialogSportTA.FileName);
                 loadSportTA(compEvent, openFileDialogSportTA.FileName);
                 loadJsonFile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

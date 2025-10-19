@@ -981,6 +981,81 @@ namespace SkatersMusicPlayer
 
         }
 
+        // The default list of segments to return if no specific rule is found.
+        private static readonly List<string> _defaultSegments = new List<string> { "Free skating" };
+        private static readonly Dictionary<string, List<string>> _segmentMap = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
+    {
+        // Add all your specific rules here.
+        // Key: "Discipline/Category"
+        // Value: List<string> of segments
+        
+        { "Singelåkning/Senior Damer", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Senior Herrar", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Senior Nationell Damer", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Junior Damer", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Junior Herrar", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Ungdom 16 Flickor", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Ungdom 16 Pojkar", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Ungdom 13 Flickor", new List<string> { "Short program", "Free skating" } },
+        { "Singelåkning/Ungdom 13 Pojkar", new List<string> { "Short program", "Free skating" } },
+        { "Paråkning/Senior", new List<string> { "Short program", "Free skating" } },
+        { "Paråkning/Junior", new List<string> { "Short program", "Free skating" } },
+        { "Paråkning/Advanced Novice", new List<string> { "Short program", "Free skating" } },
+        { "Isdans/Senior", new List<string> { "Rhythm dance","Free dance" } },
+        { "Isdans/Junior", new List<string> { "Rhythm dance","Free dance" } },
+        { "Isdans/Advanced Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Isdans/Intermediate Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Isdans/Basic Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Isdans/Juvenile", new List<string> { "Pattern dance 1","Free dance" } },
+        { "Isdans/Vit", new List<string> { "Free dance" } },
+        { "Soloisdans/Senior", new List<string> { "Rhythm dance","Free dance" } },
+        { "Soloisdans/Junior", new List<string> { "Rhythm dance","Free dance" } },
+        { "Soloisdans/Advanced Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Soloisdans/Intermediate Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Soloisdans/Basic Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
+        { "Soloisdans/Juvenile", new List<string> { "Pattern dance 1","Free dance" } },
+        { "Soloisdans/Vit", new List<string> { "Free dance" } },
+        { "Synkroniserad konståkning/Senior Elite 12", new List<string> { "Short program","Free skating" } },
+        { "Synkroniserad konståkning/Senior", new List<string> { "Short program","Free skating" } },
+        { "Synkroniserad konståkning/Junior", new List<string> { "Short program","Free skating" } },
+        
+        // Example for a category with 0 segments
+        //{ "Synchro/Pre-Juvenile", new List<string>() }
+    };
+
+        /// <summary>
+        /// Gets the list of segments for a given discipline and category.
+        /// </summary>
+        /// <param name="discipline">The event discipline (e.g., "Icedance")</param>
+        /// <param name="category">The event category (e.g., "Senior")</param>
+        /// <returns>A list of segment names. Returns ["Free skating"] if no specific rule is found.</returns>
+        public static List<string> getSegments(string competitionType, string discipline, string category)
+        {
+            // Create the combined key. Using a '/' separator as in your example.
+            string key = $"{discipline}/{category}";
+
+            // TryGetValue is the most efficient way to look in a dictionary.
+            // It tries to find the key and, if successful, puts the value into the 'segments' variable.
+            if (_segmentMap.TryGetValue(key, out List<string> segments))
+            {
+                // We found a specific rule for this key.
+                // If CompetitionType="Systme 1" only return the last value from segments
+                if (competitionType.Equals("System 1", StringComparison.OrdinalIgnoreCase) && segments.Count > 0)
+                {
+                    return new List<string> { segments[segments.Count - 1] };
+                }
+                else
+                {
+                    return segments;
+                }
+            }
+            else
+            {
+                // No rule was found. Return the default list.
+                return _defaultSegments;
+            }
+        }
+
         private void loadSportTA(competitionEvent compEvent, string filename)
         {
             //Load Json
@@ -1017,244 +1092,249 @@ namespace SkatersMusicPlayer
                         {
                             string categoryName = grp.Name;
                             string discipline = cat.Discipline;
-                            string segment = "Free Skating"; //:TODO Fix routin for differend segments per discipline
 
-                            //Find category in competition object compEvent
-                            categorySegment category = null;
-                            foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
+                            //Get a list of segments to process for the current discipline and category
+                            List<string> segmentsToProcess = getSegments(CompetitionType, discipline, categoryName);
+
+                            //Loop for all segments defined for the current discipline and category
+                            foreach (string segment in segmentsToProcess)
                             {
-                                if (catSeg.discipline == discipline &&
-                                    catSeg.category == categoryName &&
-                                    catSeg.segment == segment)
+                                //Find category in competition object compEvent
+                                categorySegment category = null;
+                                foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
                                 {
-                                    category = catSeg;
+                                    if (catSeg.discipline == discipline &&
+                                        catSeg.category == categoryName &&
+                                        catSeg.segment == segment)
+                                    {
+                                        category = catSeg;
+                                    }
                                 }
-                            }
-                            // If category not found, create a new category
-                            if (category == null)
-                            {//New category. Create structure
-                                category = new categorySegment
+                                // If category not found, create a new category
+                                if (category == null)
+                                {//New category. Create structure
+                                    category = new categorySegment
+                                    {
+                                        discipline = discipline,
+                                        category = categoryName,
+                                        segment = segment,
+                                        participants = new List<participant>()
+                                    };
+                                    compEvent.categoriesAndSegments.Add(category);
+                                }
+
+
+                                //Loop for all persons in group
+                                if (grp.Persons != null)
                                 {
-                                    discipline = discipline,
-                                    category = categoryName,
-                                    segment = segment,
-                                    participants = new List<participant>()
-                                };
-                                compEvent.categoriesAndSegments.Add(category);
-                            }
+                                    foreach (Person person in grp.Persons)
+                                    {
+                                        Guid? ID = person.Id;
+                                        DateTime? Birthdate = person.BirthDate;
+                                        string FirstName = person.FirstName.Trim();
+                                        string LastName = person.LastName.Trim();
+                                        string ClubName = string.Empty;
+                                        string MusicTitle = string.Empty;
 
+                                        //Get organization name
+                                        if (person.Organization != null && person.Organization.Name != null)
+                                        {
+                                            ClubName = person.Organization.Name.Trim();
+                                        }
 
-                            //Loop for all persons in group
-                            if (grp.Persons != null)
-                            {
-                                foreach (Person person in grp.Persons)
+                                        //Get PPC for Friåkning for music and coach
+                                        foreach (var ppc in from Ppc ppc in person.Ppcs
+                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            select ppc)
+                                        {
+                                            if (ppc.Music != null && ppc.Music.Title != null)
+                                            {
+                                                MusicTitle = ppc.Music.Title.Trim();
+                                            }
+                                        }
+
+                                        // Locate participant in category via ID
+                                        participant participant = null;
+                                        if (ID != null) //Must have ID to search for participant
+                                        {
+                                            foreach (participant par in category.participants)
+                                            {
+                                                if (par.id == ID)
+                                                {
+                                                    participant = par;
+                                                }
+                                            }
+                                        }
+                                        // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                        if (participant == null)
+                                        {
+                                            foreach (participant par in category.participants)
+                                            {
+                                                if (par.firstName == FirstName &&
+                                                    par.lastName == LastName &&
+                                                    par.club == ClubName &&
+                                                    par.birthDate == Birthdate)
+                                                {
+                                                    participant = par;
+                                                }
+                                            }
+                                        }
+                                        // If person not found, create a new person
+                                        if (participant == null)
+                                        {
+                                            participant = new participant
+                                            {
+                                                id = ID,
+                                                birthDate = Birthdate,
+                                                music = new competitionMusic()
+                                            };
+                                            category.participants.Add(participant);
+                                        }
+                                        // Update
+                                        participant.firstName = FirstName;
+                                        participant.lastName = LastName;
+                                        participant.club = ClubName;
+                                        participant.music.title = MusicTitle;
+                                    } //foreach Person in Group
+                                } //if grp.Persons != null
+
+                                //Loop for all pairs in group
+                                if (grp.Pairs != null)
                                 {
-                                    Guid? ID = person.Id;
-                                    DateTime? Birthdate = person.BirthDate;
-                                    string FirstName = person.FirstName.Trim();
-                                    string LastName = person.LastName.Trim();
-                                    string ClubName = string.Empty;
-                                    string MusicTitle = string.Empty;
-
-                                    //Get organization name
-                                    if (person.Organization != null && person.Organization.Name != null)
+                                    foreach (Pair pair in grp.Pairs)
                                     {
-                                        ClubName = person.Organization.Name.Trim();
-                                    }
+                                        Guid? ID = pair.Id;
+                                        string FirstName = pair.Persons?[0].FirstName.Trim() + " " + pair.Persons?[0].LastName.Trim() + ", " +
+                                            pair.Persons?[1].FirstName.Trim() + " " + pair.Persons?[1].LastName.Trim();
+                                        string ClubName = string.Empty;
+                                        string MusicTitle = string.Empty;
 
-                                    //Get PPC for Friåkning for music and coach
-                                    foreach (var ppc in from Ppc ppc in person.Ppcs
-                                                        where ppc.Type == translateSegmentToSWE(segment)
-                                                        select ppc)
-                                    {
-                                        if (ppc.Music != null && ppc.Music.Title != null)
+                                        //Get organization name
+                                        if (pair.Organization != null && pair.Organization.Name != null)
                                         {
-                                            MusicTitle = ppc.Music.Title.Trim();
+                                            ClubName = pair.Organization.Name.Trim();
                                         }
-                                    }
 
-                                    // Locate participant in category via ID
-                                    participant participant = null;
-                                    if (ID != null) //Must have ID to search for participant
-                                    {
-                                        foreach (participant par in category.participants)
+                                        //Get PPC for Friåkning for music and coach
+                                        foreach (var ppc in from Ppc ppc in pair.Ppcs
+                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            select ppc)
                                         {
-                                            if (par.id == ID)
+                                            if (ppc.Music != null && ppc.Music.Title != null)
                                             {
-                                                participant = par;
+                                                MusicTitle = ppc.Music.Title.Trim();
                                             }
                                         }
-                                    }
-                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                                    if (participant == null)
-                                    {
-                                        foreach (participant par in category.participants)
+
+                                        // Locate participant in category via ID
+                                        participant participant = null;
+                                        if (ID != null) //Must have ID to search for participant
                                         {
-                                            if (par.firstName == FirstName &&
-                                                par.lastName == LastName &&
-                                                par.club == ClubName &&
-                                                par.birthDate == Birthdate)
+                                            foreach (participant par in category.participants)
                                             {
-                                                participant = par;
+                                                if (par.id == ID)
+                                                {
+                                                    participant = par;
+                                                }
                                             }
                                         }
-                                    }
-                                    // If person not found, create a new person
-                                    if (participant == null)
-                                    {
-                                        participant = new participant
+                                        // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                        if (participant == null)
                                         {
-                                            id = ID,
-                                            birthDate = Birthdate,
-                                            music = new competitionMusic()
-                                        };
-                                        category.participants.Add(participant);
-                                    }
-                                    // Update
-                                    participant.firstName = FirstName;
-                                    participant.lastName = LastName;
-                                    participant.club = ClubName;
-                                    participant.music.title = MusicTitle;
-                                } //foreach Person in Group
-                            } //if grp.Persons != null
+                                            foreach (participant par in category.participants)
+                                            {
+                                                if (par.firstName == FirstName &&
+                                                    par.club == ClubName)
+                                                {
+                                                    participant = par;
+                                                }
+                                            }
+                                        }
+                                        // If person not found, create a new person
+                                        if (participant == null)
+                                        {
+                                            participant = new participant
+                                            {
+                                                id = ID,
+                                                music = new competitionMusic()
+                                            };
+                                            category.participants.Add(participant);
+                                        }
+                                        // Update
+                                        participant.firstName = FirstName;
+                                        participant.club = ClubName;
+                                        participant.music.title = MusicTitle;
+                                    } //foreach Pair in Group
+                                } //if grp.Pairs != null
 
-                            //Loop for all pairs in group
-                            if (grp.Pairs != null)
-                            {
-                                foreach (Pair pair in grp.Pairs)
+                                //Loop for all pairs in group
+                                if (grp.Teams != null)
                                 {
-                                    Guid? ID = pair.Id;
-                                    string FirstName = pair.Persons?[0].FirstName.Trim() + " " + pair.Persons?[0].LastName.Trim() + ", " +
-                                        pair.Persons?[1].FirstName.Trim() + " " + pair.Persons?[1].LastName.Trim();
-                                    string ClubName = string.Empty;
-                                    string MusicTitle = string.Empty;
-
-                                    //Get organization name
-                                    if (pair.Organization != null && pair.Organization.Name != null)
+                                    foreach (Team team in grp.Teams)
                                     {
-                                        ClubName = pair.Organization.Name.Trim();
-                                    }
+                                        Guid? ID = team.Id;
+                                        string FirstName = team.Name.Trim();
+                                        string ClubName = string.Empty;
+                                        string MusicTitle = string.Empty;
 
-                                    //Get PPC for Friåkning for music and coach
-                                    foreach (var ppc in from Ppc ppc in pair.Ppcs
-                                                        where ppc.Type == translateSegmentToSWE(segment)
-                                                        select ppc)
-                                    {
-                                        if (ppc.Music != null && ppc.Music.Title != null)
+                                        //Get organization name
+                                        if (team.Organization != null && team.Organization.Name != null)
                                         {
-                                            MusicTitle = ppc.Music.Title.Trim();
+                                            ClubName = team.Organization.Name.Trim();
                                         }
-                                    }
 
-                                    // Locate participant in category via ID
-                                    participant participant = null;
-                                    if (ID != null) //Must have ID to search for participant
-                                    {
-                                        foreach (participant par in category.participants)
+                                        //Get PPC for Friåkning for music and coach
+                                        foreach (var ppc in from Ppc ppc in team.Ppcs
+                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            select ppc)
                                         {
-                                            if (par.id == ID)
+                                            if (ppc.Music != null && ppc.Music.Title != null)
                                             {
-                                                participant = par;
+                                                MusicTitle = ppc.Music.Title.Trim();
                                             }
                                         }
-                                    }
-                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                                    if (participant == null)
-                                    {
-                                        foreach (participant par in category.participants)
+
+                                        // Locate participant in category via ID
+                                        participant participant = null;
+                                        if (ID != null) //Must have ID to search for participant
                                         {
-                                            if (par.firstName == FirstName &&
-                                                par.club == ClubName)
+                                            foreach (participant par in category.participants)
                                             {
-                                                participant = par;
+                                                if (par.id == ID)
+                                                {
+                                                    participant = par;
+                                                }
                                             }
                                         }
-                                    }
-                                    // If person not found, create a new person
-                                    if (participant == null)
-                                    {
-                                        participant = new participant
+                                        // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
+                                        if (participant == null)
                                         {
-                                            id = ID,
-                                            music = new competitionMusic()
-                                        };
-                                        category.participants.Add(participant);
-                                    }
-                                    // Update
-                                    participant.firstName = FirstName;
-                                    participant.club = ClubName;
-                                    participant.music.title = MusicTitle;
-                                } //foreach Pair in Group
-                            } //if grp.Pairs != null
-
-                            //Loop for all pairs in group
-                            if (grp.Teams != null)
-                            {
-                                foreach (Team team in grp.Teams)
-                                {
-                                    Guid? ID = team.Id;
-                                    string FirstName = team.Name.Trim();
-                                    string ClubName = string.Empty;
-                                    string MusicTitle = string.Empty;
-
-                                    //Get organization name
-                                    if (team.Organization != null && team.Organization.Name != null)
-                                    {
-                                        ClubName = team.Organization.Name.Trim();
-                                    }
-
-                                    //Get PPC for Friåkning for music and coach
-                                    foreach (var ppc in from Ppc ppc in team.Ppcs
-                                                        where ppc.Type == translateSegmentToSWE(segment)
-                                                        select ppc)
-                                    {
-                                        if (ppc.Music != null && ppc.Music.Title != null)
-                                        {
-                                            MusicTitle = ppc.Music.Title.Trim();
-                                        }
-                                    }
-
-                                    // Locate participant in category via ID
-                                    participant participant = null;
-                                    if (ID != null) //Must have ID to search for participant
-                                    {
-                                        foreach (participant par in category.participants)
-                                        {
-                                            if (par.id == ID)
+                                            foreach (participant par in category.participants)
                                             {
-                                                participant = par;
+                                                if (par.firstName == FirstName &&
+                                                    par.club == ClubName)
+                                                {
+                                                    participant = par;
+                                                }
                                             }
                                         }
-                                    }
-                                    // If we didn't find participant with ID, try to find if participant already present using First-, Lastname and Club to match from Competition
-                                    if (participant == null)
-                                    {
-                                        foreach (participant par in category.participants)
+                                        // If person not found, create a new person
+                                        if (participant == null)
                                         {
-                                            if (par.firstName == FirstName &&
-                                                par.club == ClubName)
+                                            participant = new participant
                                             {
-                                                participant = par;
-                                            }
+                                                id = ID,
+                                                music = new competitionMusic()
+                                            };
+                                            category.participants.Add(participant);
                                         }
-                                    }
-                                    // If person not found, create a new person
-                                    if (participant == null)
-                                    {
-                                        participant = new participant
-                                        {
-                                            id = ID,
-                                            music = new competitionMusic()
-                                        };
-                                        category.participants.Add(participant);
-                                    }
-                                    // Update
-                                    participant.firstName = FirstName;
-                                    participant.club = ClubName;
-                                    participant.music.title = MusicTitle;
-                                } //foreach Team in Group
-                            } //if grp.Teams != null
-
+                                        // Update
+                                        participant.firstName = FirstName;
+                                        participant.club = ClubName;
+                                        participant.music.title = MusicTitle;
+                                    } //foreach Team in Group
+                                } //if grp.Teams != null
+                            } //foreach Segments
                         } //foreach Groups
                     } //foreach Categories
                 }//foreach competition
