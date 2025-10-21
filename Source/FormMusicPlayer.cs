@@ -1,16 +1,11 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace SkatersMusicPlayer
 {
@@ -19,9 +14,6 @@ namespace SkatersMusicPlayer
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         enum player { Nothing, Participant, Warmup, Break, Spotify };
-
-        //Constants for messages
-        public XmlDocument doc = new XmlDocument() { XmlResolver = null };
 
         //Json object for event
 #nullable enable
@@ -62,7 +54,7 @@ namespace SkatersMusicPlayer
                     client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
 
                     //Try to load versioninfo
-                    string tempresult = client.GetStringAsync("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/smp/").Result;
+                    string tempresult = client.GetStringAsync("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player/").Result;
                     //Find Body (we don't want to find version in Meta data)
                     int i = tempresult.IndexOf("<body");
                     tempresult = tempresult.Substring(i);
@@ -789,7 +781,7 @@ namespace SkatersMusicPlayer
 
         private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //loadParticipants(doc, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
+            logger.Trace("ComboBoxCategory_SelectedIndexChanged", e);
             loadParticipants(compEvent, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
             if (listViewParticipants.Items.Count != 0)
             {// Select first participant
@@ -801,6 +793,7 @@ namespace SkatersMusicPlayer
         #region MenuItems
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("NewToolStripMenuItem_Click");
             if (MessageBox.Show(Properties.Resources.QUESTION_DELETE_COMPETITION, Properties.Resources.CAPTION_NEW_COMPETITION, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
                 // create a new Json file
@@ -819,6 +812,7 @@ namespace SkatersMusicPlayer
 
         private void editEventMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("EditEventMenuItem_Click");
             using (FormEditEvent EC = new FormEditEvent(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
@@ -830,6 +824,7 @@ namespace SkatersMusicPlayer
 
         private void editCategoriesMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("EditCategoriesMenuItem_Click");
             using (formEditCategories EC = new formEditCategories(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
@@ -841,6 +836,7 @@ namespace SkatersMusicPlayer
 
         private void editParticipantsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("EditParticipantsToolStripMenuItem_Click");
             string category = string.Empty;
             if (comboBoxCategory.SelectedItem != null)
             {
@@ -872,17 +868,6 @@ namespace SkatersMusicPlayer
             if (MessageBox.Show(Properties.Resources.QUESTION_END_PROGRAM, Properties.Resources.CAPTION_END_PROGRAM, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
             {
                 e.Cancel = true;
-            }
-        }
-
-        private void importFromIndTA2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
-            {
-                loadIndTA2(doc, openFileDialogIndTA.FileName);
-                loadJsonFile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
             }
         }
 
@@ -948,6 +933,7 @@ namespace SkatersMusicPlayer
             if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
             {
                 int NumberOfFiles = 0;
+                logger.Trace("Unzip file: " + openFileDialogMusicarchive.FileName);
 
                 // Unzip the file
                 NumberOfFiles = unzipMusicFiles(NumberOfFiles, openFileDialogMusicarchive.FileName);
@@ -1009,7 +995,7 @@ namespace SkatersMusicPlayer
         private void uppdateringFinnsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             logger.Trace("UppdateringFinnsToolStripMenuItem_Click");
-            System.Diagnostics.Process.Start("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/smp/");
+            System.Diagnostics.Process.Start("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player");
         }
     }
 }

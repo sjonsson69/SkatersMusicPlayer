@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Xml;
 using static SkatersMusicPlayer.formMusicPlayer;
 
 namespace SkatersMusicPlayer

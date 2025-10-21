@@ -1,11 +1,7 @@
 ﻿using NAudio.Wave;
 using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Security.Cryptography;
 using System.Windows.Forms;
-using System.Xml;
 using static SkatersMusicPlayer.formMusicPlayer;
 
 namespace SkatersMusicPlayer

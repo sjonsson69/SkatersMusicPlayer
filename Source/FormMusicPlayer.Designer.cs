@@ -67,7 +67,6 @@
             this.editCategoriesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sportTAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fSManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromStarFSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -479,7 +478,6 @@
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromIndTA2ToolStripMenuItem,
             this.sportTAToolStripMenuItem,
             this.fSManagerToolStripMenuItem,
             this.importFromStarFSToolStripMenuItem,
@@ -489,14 +487,6 @@
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
             this.importToolStripMenuItem.Text = "&Import";
-            // 
-            // importFromIndTA2ToolStripMenuItem
-            // 
-            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
-            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
-            this.importFromIndTA2ToolStripMenuItem.Visible = false;
-            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
             // 
             // sportTAToolStripMenuItem
             // 
@@ -916,7 +906,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromIndTA2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToParticipantsToolStripMenuItem;
