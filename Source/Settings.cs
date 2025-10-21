@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Text;
 
 namespace SkatersMusicPlayer
@@ -148,6 +149,19 @@ namespace SkatersMusicPlayer
             set
             {
                 saveAppSettings("FSMPassword", Crypt.crypt.kryptera(value, string.Empty, true));
+            }
+        }
+
+        public static string[] musicLookup
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["MusicLookup"];
+                return value.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            set
+            {
+                saveAppSettings("MusicLookup", string.Join("\r\n", value));
             }
         }
 

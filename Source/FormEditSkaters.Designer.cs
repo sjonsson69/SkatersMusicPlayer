@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.comboBoxCategory = new System.Windows.Forms.ComboBox();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.dataGridViewParticipants = new System.Windows.Forms.DataGridView();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.ColumnStartNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnLName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -46,11 +47,6 @@
             this.ColumnLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnMusic = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnChecksum = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnStartNoSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnMusicFileSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnChecksumSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MusicTitleSecond = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewParticipants)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,18 +101,21 @@
             this.ColumnSelectFile,
             this.ColumnLength,
             this.ColumnMusic,
-            this.ColumnChecksum,
-            this.ColumnStartNoSecond,
-            this.ColumnMusicFileSecond,
-            this.ColumnChecksumSecond,
-            this.MusicTitleSecond});
+            this.ColumnChecksum});
             this.dataGridViewParticipants.Location = new System.Drawing.Point(12, 47);
             this.dataGridViewParticipants.MultiSelect = false;
             this.dataGridViewParticipants.Name = "dataGridViewParticipants";
             this.dataGridViewParticipants.Size = new System.Drawing.Size(984, 507);
             this.dataGridViewParticipants.TabIndex = 1;
             this.dataGridViewParticipants.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewParticipants_CellContentClick);
+            this.dataGridViewParticipants.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewParticipants_CellValueChanged);
             this.dataGridViewParticipants.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.RestoreDirectory = true;
+            this.openFileDialog1.Title = "Select music file";
             // 
             // ColumnStartNo
             // 
@@ -149,13 +148,14 @@
             // ColumnID
             // 
             this.ColumnID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ColumnID.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.ColumnID.DefaultCellStyle = dataGridViewCellStyle7;
             this.ColumnID.HeaderText = "ID#";
             this.ColumnID.Name = "ColumnID";
             this.ColumnID.ReadOnly = true;
             this.ColumnID.Visible = false;
+            this.ColumnID.Width = 60;
             // 
             // ColumnBirthDate
             // 
@@ -164,6 +164,7 @@
             this.ColumnBirthDate.Name = "ColumnBirthDate";
             this.ColumnBirthDate.ReadOnly = true;
             this.ColumnBirthDate.Visible = false;
+            this.ColumnBirthDate.Width = 102;
             // 
             // MusicTitle
             // 
@@ -181,9 +182,9 @@
             // ColumnLength
             // 
             this.ColumnLength.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ColumnLength.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.ColumnLength.DefaultCellStyle = dataGridViewCellStyle8;
             this.ColumnLength.HeaderText = "Length";
             this.ColumnLength.Name = "ColumnLength";
             this.ColumnLength.ReadOnly = true;
@@ -192,10 +193,10 @@
             // ColumnMusic
             // 
             this.ColumnMusic.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnMusic.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnMusic.DefaultCellStyle = dataGridViewCellStyle9;
             this.ColumnMusic.HeaderText = "Music file";
             this.ColumnMusic.Name = "ColumnMusic";
             this.ColumnMusic.ReadOnly = true;
@@ -208,39 +209,7 @@
             this.ColumnChecksum.Name = "ColumnChecksum";
             this.ColumnChecksum.ReadOnly = true;
             this.ColumnChecksum.Visible = false;
-            // 
-            // ColumnStartNoSecond
-            // 
-            this.ColumnStartNoSecond.HeaderText = "StartNoSecond";
-            this.ColumnStartNoSecond.Name = "ColumnStartNoSecond";
-            this.ColumnStartNoSecond.ReadOnly = true;
-            this.ColumnStartNoSecond.Visible = false;
-            // 
-            // ColumnMusicFileSecond
-            // 
-            this.ColumnMusicFileSecond.HeaderText = "MusicFileSecond";
-            this.ColumnMusicFileSecond.Name = "ColumnMusicFileSecond";
-            this.ColumnMusicFileSecond.ReadOnly = true;
-            this.ColumnMusicFileSecond.Visible = false;
-            // 
-            // ColumnChecksumSecond
-            // 
-            this.ColumnChecksumSecond.HeaderText = "ChecksumSecond";
-            this.ColumnChecksumSecond.Name = "ColumnChecksumSecond";
-            this.ColumnChecksumSecond.ReadOnly = true;
-            this.ColumnChecksumSecond.Visible = false;
-            // 
-            // MusicTitleSecond
-            // 
-            this.MusicTitleSecond.HeaderText = "Music title Second";
-            this.MusicTitleSecond.Name = "MusicTitleSecond";
-            this.MusicTitleSecond.Visible = false;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.RestoreDirectory = true;
-            this.openFileDialog1.Title = "Select music file";
+            this.ColumnChecksum.Width = 109;
             // 
             // FormEditParticipants
             // 
@@ -282,9 +251,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnLength;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMusic;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnChecksum;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStartNoSecond;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnMusicFileSecond;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnChecksumSecond;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MusicTitleSecond;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SkatersMusicPlayer
 {
-    partial class FormMusicPlayer
+    partial class formMusicPlayer
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMusicPlayer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMusicPlayer));
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
@@ -67,7 +67,7 @@
             this.editCategoriesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editParticipantsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromIndTA2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sportTAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fSManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromStarFSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -77,6 +77,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uppdateringFinnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBoxSoundLevels = new System.Windows.Forms.GroupBox();
@@ -97,6 +98,7 @@
             this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialogSportTA = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxParticipantMusic.SuspendLayout();
             this.groupBoxAutoPauseMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPause)).BeginInit();
@@ -120,7 +122,7 @@
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(100, 35);
             this.buttonPlay.TabIndex = 5;
-            this.buttonPlay.Text = "Play";
+            this.buttonPlay.Text = "&Play";
             this.buttonPlay.UseVisualStyleBackColor = false;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
@@ -135,7 +137,7 @@
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(100, 35);
             this.buttonStop.TabIndex = 7;
-            this.buttonStop.Text = "Stop";
+            this.buttonStop.Text = "&Stop";
             this.buttonStop.UseVisualStyleBackColor = false;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
@@ -350,7 +352,7 @@
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size(100, 35);
             this.buttonPause.TabIndex = 6;
-            this.buttonPause.Text = "Pause";
+            this.buttonPause.Text = "Pa&use";
             this.buttonPause.UseVisualStyleBackColor = false;
             this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
             // 
@@ -402,7 +404,8 @@
             this.editToolStripMenuItem,
             this.importToolStripMenuItem,
             this.toolsToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.uppdateringFinnsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1264, 28);
@@ -454,28 +457,28 @@
             // editEventtoolStripMenuItem
             // 
             this.editEventtoolStripMenuItem.Name = "editEventtoolStripMenuItem";
-            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editEventtoolStripMenuItem.Text = "&Event";
             this.editEventtoolStripMenuItem.Click += new System.EventHandler(this.editEventMenuItem_Click);
             // 
             // editCategoriesMenuItem
             // 
             this.editCategoriesMenuItem.Name = "editCategoriesMenuItem";
-            this.editCategoriesMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editCategoriesMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editCategoriesMenuItem.Text = "&Categories";
             this.editCategoriesMenuItem.Click += new System.EventHandler(this.editCategoriesMenuItem_Click);
             // 
             // editParticipantsToolStripMenuItem
             // 
             this.editParticipantsToolStripMenuItem.Name = "editParticipantsToolStripMenuItem";
-            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(161, 24);
+            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.editParticipantsToolStripMenuItem.Text = "&Participants";
             this.editParticipantsToolStripMenuItem.Click += new System.EventHandler(this.editParticipantsToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromIndTA2ToolStripMenuItem,
+            this.sportTAToolStripMenuItem,
             this.fSManagerToolStripMenuItem,
             this.importFromStarFSToolStripMenuItem,
             this.toolStripSeparator3,
@@ -485,12 +488,12 @@
             this.importToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
             this.importToolStripMenuItem.Text = "&Import";
             // 
-            // importFromIndTA2ToolStripMenuItem
+            // sportTAToolStripMenuItem
             // 
-            this.importFromIndTA2ToolStripMenuItem.Name = "importFromIndTA2ToolStripMenuItem";
-            this.importFromIndTA2ToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.importFromIndTA2ToolStripMenuItem.Text = "&IndTA 2.0";
-            this.importFromIndTA2ToolStripMenuItem.Click += new System.EventHandler(this.importFromIndTA2ToolStripMenuItem_Click);
+            this.sportTAToolStripMenuItem.Name = "sportTAToolStripMenuItem";
+            this.sportTAToolStripMenuItem.Size = new System.Drawing.Size(318, 24);
+            this.sportTAToolStripMenuItem.Text = "SportTA";
+            this.sportTAToolStripMenuItem.Click += new System.EventHandler(this.sportTAToolStripMenuItem_Click);
             // 
             // fSManagerToolStripMenuItem
             // 
@@ -554,6 +557,16 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // uppdateringFinnsToolStripMenuItem
+            // 
+            this.uppdateringFinnsToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.uppdateringFinnsToolStripMenuItem.BackColor = System.Drawing.Color.Red;
+            this.uppdateringFinnsToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uppdateringFinnsToolStripMenuItem.Name = "uppdateringFinnsToolStripMenuItem";
+            this.uppdateringFinnsToolStripMenuItem.Size = new System.Drawing.Size(169, 24);
+            this.uppdateringFinnsToolStripMenuItem.Text = "Uppdatering finns!";
+            this.uppdateringFinnsToolStripMenuItem.Click += new System.EventHandler(this.uppdateringFinnsToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -780,7 +793,7 @@
             // 
             // openFileDialogMusicarchive
             // 
-            this.openFileDialogMusicarchive.Filter = "Musicfiles|musikfil*.zip|zip-files|*.zip|All files|*.*";
+            this.openFileDialogMusicarchive.Filter = "zip-files|*.zip|All files|*.*";
             this.openFileDialogMusicarchive.ReadOnlyChecked = true;
             this.openFileDialogMusicarchive.RestoreDirectory = true;
             // 
@@ -789,7 +802,13 @@
             this.openFileDialogStarFS.Filter = "StarFS competitiondatabase|*.db|All files|*.*";
             this.openFileDialogStarFS.RestoreDirectory = true;
             // 
-            // FormMusicPlayer
+            // openFileDialogSportTA
+            // 
+            this.openFileDialogSportTA.Filter = "Anmälningsfil|*.json|Alla filer|*.*";
+            this.openFileDialogSportTA.RestoreDirectory = true;
+            this.openFileDialogSportTA.Title = "Öppna anmälningsfil från SportTA";
+            // 
+            // formMusicPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -805,7 +824,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.Name = "FormMusicPlayer";
+            this.Name = "formMusicPlayer";
             this.Text = "Skaters MusicPlayer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMusicPlayer_FormClosing);
             this.groupBoxParticipantMusic.ResumeLayout(false);
@@ -887,13 +906,15 @@
         private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromIndTA2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem UnzipMusicfiletoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoconnectMusicToParticipantsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFromStarFSToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogStarFS;
         private System.Windows.Forms.ToolStripMenuItem fSManagerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uppdateringFinnsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sportTAToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialogSportTA;
     }
 }
 

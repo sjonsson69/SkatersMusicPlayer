@@ -1,18 +1,24 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Net.Http;
+using System.Reflection;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace SkatersMusicPlayer
 {
-    public partial class FormMusicPlayer : Form
+    public partial class formMusicPlayer : Form
     {
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         enum player { Nothing, Participant, Warmup, Break, Spotify };
 
-        //Constants for messages
-        public XmlDocument doc = new XmlDocument() { XmlResolver = null };
+        //Json object for event
+#nullable enable
+        public competitionEvent? compEvent = null;
+#nullable disable   
 
         private IWavePlayer waveOutDeviceParticipant = null;
         private AudioFileReader audioFileReaderParticipant = null;
@@ -28,17 +34,75 @@ namespace SkatersMusicPlayer
         private AudioFileReader audioFileReaderBreak = null;
         private Action<float> setVolumeDelegateBreak;
 
-        public FormMusicPlayer()
+        public formMusicPlayer()
         {
             InitializeComponent();
 
             labelCurrentTime.Text = string.Empty;
             labelTotalTime.Text = string.Empty;
 
+            //Disable version update menu item by default
+            uppdateringFinnsToolStripMenuItem.Visible = false;
+            string result = string.Empty;
+
+            //Check for latest version from skatesweden 
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    //Set user agent since skatesweden.se blocks requests without user agent
+                    client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+
+                    //Try to load versioninfo
+                    string tempresult = client.GetStringAsync("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player/").Result;
+                    //Find Body (we don't want to find version in Meta data)
+                    int i = tempresult.IndexOf("<body");
+                    tempresult = tempresult.Substring(i);
+
+                    //Find FSManager2SportTA (So we check the right program version)
+                    i = tempresult.IndexOf("Skaters Music Player");
+                    tempresult = tempresult.Substring(i);
+
+                    //Find text "Senaste version: "
+                    i = tempresult.IndexOf("Senaste version: ");
+                    tempresult = tempresult.Substring(i + 17, 1000);
+                    i = tempresult.IndexOf("<");
+                    result = tempresult.Substring(0, i);
+                }
+            }
+            catch (Exception)
+            {
+                //Do nothing if we can't check version
+            }
+
+            if (result == string.Empty)
+            {
+                //Check for latest version
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        //Try to load versioninfo
+                        result = client.GetStringAsync("https://skate.webbplatsen.net/program/SkatersMusicPlayer.version").Result;
+                    }
+                }
+                catch (Exception)
+                {
+                    //Do nothing if we can't check version
+                }
+            }
+
+            if (result != string.Empty)
+            {
+                //Check version against current version and show/don't show menuitem for upgrade
+                string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                uppdateringFinnsToolStripMenuItem.Visible = (assemblyVersion.CompareTo(result) < 0);
+            }
+
+
             loadSettings();
 
-            loadXMLfile();
-
+            loadJsonFile();
         }
 
         // Load settings from config-file
@@ -100,10 +164,7 @@ namespace SkatersMusicPlayer
         #region CloseWaveOut
         private void closeWaveOutParticipant()
         {
-            if (waveOutDeviceParticipant != null)
-            {
-                waveOutDeviceParticipant.Stop();
-            }
+            waveOutDeviceParticipant?.Stop();
             if (audioFileReaderParticipant != null)
             {
                 // this one really closes the file and ACM conversion
@@ -120,10 +181,7 @@ namespace SkatersMusicPlayer
 
         private void closeWaveOutWarmup()
         {
-            if (waveOutDeviceWarmup != null)
-            {
-                waveOutDeviceWarmup.Stop();
-            }
+            waveOutDeviceWarmup?.Stop();
             if (audioFileReaderWarmup != null)
             {
                 // this one really closes the file and ACM conversion
@@ -140,10 +198,7 @@ namespace SkatersMusicPlayer
 
         private void closeWaveOutBreak()
         {
-            if (waveOutDeviceBreak != null)
-            {
-                waveOutDeviceBreak.Stop();
-            }
+            waveOutDeviceBreak?.Stop();
             if (audioFileReaderBreak != null)
             {
                 // this one really closes the file and ACM conversion
@@ -726,7 +781,8 @@ namespace SkatersMusicPlayer
 
         private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            loadParticipants(doc, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
+            logger.Info("ComboBoxCategory_SelectedIndexChanged:" + comboBoxCategory.SelectedItem.ToString());
+            loadParticipants(compEvent, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
             if (listViewParticipants.Items.Count != 0)
             {// Select first participant
                 listViewParticipants.Items[0].Selected = true;
@@ -737,45 +793,50 @@ namespace SkatersMusicPlayer
         #region MenuItems
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("NewToolStripMenuItem_Click");
             if (MessageBox.Show(Properties.Resources.QUESTION_DELETE_COMPETITION, Properties.Resources.CAPTION_NEW_COMPETITION, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                // Remove all categories from XML tree
-                while (doc.DocumentElement.HasChildNodes)
+                // create a new Json file
+                compEvent = new competitionEvent
                 {
-                    // Remove category from XML tree
-                    doc.DocumentElement.RemoveChild(doc.DocumentElement.FirstChild);
-                    doc.DocumentElement.SetAttribute("Name", "New event");
-                    doc.Save(Properties.Resources.XML_FILENAME);
-                    loadXMLfile();
-                }
+                    competitionName = "New event",
+                    categoriesAndSegments = new List<categorySegment>()
+                };
+                serializeToFile(compEvent, Properties.Resources.JSON_FILENAME);
+
+                //reload json file
+                loadJsonFile();
             }
 
         }
 
         private void editEventMenuItem_Click(object sender, EventArgs e)
         {
-            using (FormEditEvent EC = new FormEditEvent(doc))
+            logger.Trace("EditEventMenuItem_Click");
+            using (FormEditEvent EC = new FormEditEvent(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                 }
             }
         }
 
         private void editCategoriesMenuItem_Click(object sender, EventArgs e)
         {
-            using (formEditCategories EC = new formEditCategories(doc))
+            logger.Trace("EditCategoriesMenuItem_Click");
+            using (formEditCategories EC = new formEditCategories(compEvent))
             {
                 if (EC.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                 }
             }
         }
 
         private void editParticipantsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("EditParticipantsToolStripMenuItem_Click");
             string category = string.Empty;
             if (comboBoxCategory.SelectedItem != null)
             {
@@ -785,7 +846,7 @@ namespace SkatersMusicPlayer
             {
                 if (ES.ShowDialog() == DialogResult.OK)
                 {
-                    loadXMLfile();
+                    loadJsonFile();
                     try
                     {//Try to reload category
                         comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
@@ -810,30 +871,21 @@ namespace SkatersMusicPlayer
             }
         }
 
-        private void importFromIndTA2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void sportTAToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogIndTA.ShowDialog() == DialogResult.OK)
+            logger.Trace("SportTAToolStripMenuItem_Click");
+            if (openFileDialogSportTA.ShowDialog() == DialogResult.OK)
             {
-                loadIndTA2(doc, openFileDialogIndTA.FileName);
-                loadXMLfile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
-            }
-        }
-
-        private void importFromISUCalcFSXMLtoolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogISUCalcXML.ShowDialog() == DialogResult.OK)
-            {
-                loadISUCalcXML(doc, openFileDialogISUCalcXML.FileName);
-                loadXMLfile();
-                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                editCategoriesMenuItem_Click(sender, e);
+                logger.Trace("Importing from SportTA file: " + openFileDialogSportTA.FileName);
+                loadSportTA(compEvent, openFileDialogSportTA.FileName);
+                loadJsonFile();
+                _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void fSManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("FSManagerToolStripMenuItem_Click");
             //try to connect to server
             try
             {
@@ -844,10 +896,10 @@ namespace SkatersMusicPlayer
                     //Ask what database we should import (database selected is stored in the tag of the form)
                     if (FFSMD.ShowDialog() == DialogResult.OK)
                     {
-                        loadFSM(doc, FFSMD.Tag.ToString());
-                        loadXMLfile();
-                        _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED_VERIFY_SHORT, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        editCategoriesMenuItem_Click(sender, e);
+                        logger.Trace("Importing from FS Manager database: " + FFSMD.Tag.ToString());
+                        loadFSM(compEvent, FFSMD.Tag.ToString());
+                        loadJsonFile();
+                        _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -864,20 +916,24 @@ namespace SkatersMusicPlayer
 
         private void importFromStarFSToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("ImportFromStarFSToolStripMenuItem_Click");
             if (openFileDialogStarFS.ShowDialog() == DialogResult.OK)
             {
-                loadStarFS(doc, openFileDialogStarFS.FileName);
-                loadXMLfile();
+                logger.Trace("Importing from StarFS file: " + openFileDialogStarFS.FileName);
+                loadStarFS(compEvent, openFileDialogStarFS.FileName);
+                loadJsonFile();
                 _ = MessageBox.Show(Properties.Resources.QUESTION_IMPORTED, Properties.Resources.CAPTION_FILE_IMPORTED, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void unzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("UnzipMusicfiletoolStripMenuItem_Click");
             // Get Filename to unpack
             if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
             {
                 int NumberOfFiles = 0;
+                logger.Trace("Unzip file: " + openFileDialogMusicarchive.FileName);
 
                 // Unzip the file
                 NumberOfFiles = unzipMusicFiles(NumberOfFiles, openFileDialogMusicarchive.FileName);
@@ -897,13 +953,14 @@ namespace SkatersMusicPlayer
 
         private void autoconnectMusicToParticipantsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("AutoconnectMusicToParticipantsToolStripMenuItem_Click");
             string category = string.Empty;
             if (comboBoxCategory.SelectedItem != null)
             {
                 category = comboBoxCategory.SelectedItem.ToString();
             }
             autoconnectMusic();
-            loadXMLfile();
+            loadJsonFile();
             try
             {//Try to reload category
                 comboBoxCategory.SelectedIndex = comboBoxCategory.FindStringExact(category);
@@ -915,6 +972,7 @@ namespace SkatersMusicPlayer
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("OptionsToolStripMenuItem_Click");
             using (formOptions FO = new formOptions())
             {
                 if (FO.ShowDialog() == DialogResult.OK)
@@ -926,6 +984,7 @@ namespace SkatersMusicPlayer
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            logger.Trace("aboutToolStripMenuItem_Click");
             using (AboutBox.aboutBox ab = new AboutBox.aboutBox())
             {
                 ab.ShowDialog();
@@ -933,5 +992,10 @@ namespace SkatersMusicPlayer
         }
         #endregion
 
+        private void uppdateringFinnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logger.Trace("UppdateringFinnsToolStripMenuItem_Click");
+            System.Diagnostics.Process.Start("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player");
+        }
     }
 }
