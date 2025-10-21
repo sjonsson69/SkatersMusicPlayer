@@ -781,7 +781,7 @@ namespace SkatersMusicPlayer
 
         private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logger.Trace("ComboBoxCategory_SelectedIndexChanged", e);
+            logger.Info("ComboBoxCategory_SelectedIndexChanged:" + comboBoxCategory.SelectedItem.ToString());
             loadParticipants(compEvent, comboBoxCategory.SelectedItem.ToString(), listViewParticipants);
             if (listViewParticipants.Items.Count != 0)
             {// Select first participant
