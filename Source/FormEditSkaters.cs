@@ -156,7 +156,7 @@ namespace SkatersMusicPlayer
                             p.club = (string)dataGridViewParticipants[3, r].Value;
                             if (dataGridViewParticipants[4, r].Value != null)
                             {
-                                p.id = (Guid)dataGridViewParticipants[4, r].Value;
+                                p.id = (string)dataGridViewParticipants[4, r].Value;
                             }
                             if (dataGridViewParticipants[4, r].Value != null)
                             {
