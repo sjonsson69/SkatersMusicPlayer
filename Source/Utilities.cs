@@ -60,7 +60,7 @@ namespace SkatersMusicPlayer
         {
             // Using Guid for the ID, which is a good type for UUID strings
             [JsonProperty("id")]
-            public Guid? id { get; set; }
+            public string? id { get; set; }
 
             // Using nullable integer (int?) because 'startNumber' can be null in the JSON
             [JsonProperty("startNumber")]
@@ -930,7 +930,7 @@ namespace SkatersMusicPlayer
                                 {
                                     foreach (Person person in grp.Persons)
                                     {
-                                        Guid? ID = person.Id;
+                                        string ID = person.Id.ToString();
                                         DateTime? Birthdate = person.BirthDate;
                                         string FirstName = person.FirstName.Trim();
                                         string LastName = person.LastName.Trim();
@@ -1004,7 +1004,7 @@ namespace SkatersMusicPlayer
                                 {
                                     foreach (Pair pair in grp.Pairs)
                                     {
-                                        Guid? ID = pair.Id;
+                                        string ID = pair.Id.ToString();
                                         string FirstName = pair.Persons?[0].FirstName.Trim() + " " + pair.Persons?[0].LastName.Trim() + ", " +
                                             pair.Persons?[1].FirstName.Trim() + " " + pair.Persons?[1].LastName.Trim();
                                         string ClubName = string.Empty;
@@ -1073,7 +1073,7 @@ namespace SkatersMusicPlayer
                                 {
                                     foreach (Team team in grp.Teams)
                                     {
-                                        Guid? ID = team.Id;
+                                        string ID = team.Id.ToString();
                                         string FirstName = team.Name.Trim();
                                         string ClubName = string.Empty;
                                         string MusicTitle = string.Empty;
@@ -1194,11 +1194,7 @@ namespace SkatersMusicPlayer
                                 string discipline = getDBString(reader, "Discipline", string.Empty);
                                 string categoryName = getDBString(reader, "Category", string.Empty);
                                 string segment = getDBString(reader, "Segment", string.Empty);
-                                Guid? ID = null;
-                                if (Guid.TryParse(getDBString(reader, "FederationId", string.Empty), out Guid tempId))
-                                {
-                                    ID = tempId;
-                                }
+                                string ID = getDBString(reader, "FederationId", string.Empty);
 
                                 DateTime? Birthdate = null;
                                 if (DateTime.TryParse(getDBString(reader, "BirthDate", string.Empty), out DateTime tempBD))
@@ -1347,12 +1343,7 @@ namespace SkatersMusicPlayer
                             while (reader.Read())
                             {
                                 // Locate participant for update or create a participant
-                                Guid? ID = null;
-                                if (Guid.TryParse(getDBString(reader, "INDTA_ID", string.Empty), out Guid tempId))
-                                {
-                                    ID = tempId;
-                                }
-
+                                string ID = getDBString(reader, "INDTA_ID", string.Empty);
                                 DateTime? Birthdate = null;
                                 if (DateTime.TryParse(getDBString(reader, "BIRTHDATE", string.Empty), out DateTime tempBD))
                                 {
@@ -1483,7 +1474,6 @@ namespace SkatersMusicPlayer
             string normalize(string s) => new string(s?.Where(c => !Path.GetInvalidFileNameChars().Contains(c) && !char.IsWhiteSpace(c)).ToArray() ?? Array.Empty<char>());
             string normalizeDate(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyy-MM-dd") : string.Empty;
             string normalizeDateYYYYMMDD(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyyMMdd") : string.Empty;
-            string normalizeGuid(Guid? g) => g.HasValue ? g.Value.ToString() : string.Empty;
 
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -1499,7 +1489,7 @@ namespace SkatersMusicPlayer
                 { "{Club}", normalize(p.club?.Trim()) },
                 { "{Birthdate}", normalizeDate(p.birthDate) },
                 { "{BirthdateYYYYMMDD}", normalizeDateYYYYMMDD(p.birthDate) },
-                { "{ID}", normalizeGuid(p.id) }
+                { "{ID}", normalize(p.id) }
             };
         }
 
