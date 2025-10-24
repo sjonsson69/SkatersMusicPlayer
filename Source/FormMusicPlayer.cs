@@ -3,6 +3,7 @@ using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Windows.Forms;
@@ -874,6 +875,10 @@ namespace SkatersMusicPlayer
         private void sportTAToolStripMenuItem_Click(object sender, EventArgs e)
         {
             logger.Trace("SportTAToolStripMenuItem_Click");
+            //Set initial directory to Download directory (since the files are downloaded)
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            openFileDialogSportTA.InitialDirectory = path;
+
             if (openFileDialogSportTA.ShowDialog() == DialogResult.OK)
             {
                 logger.Trace("Importing from SportTA file: " + openFileDialogSportTA.FileName);
@@ -929,6 +934,10 @@ namespace SkatersMusicPlayer
         private void unzipMusicfiletoolStripMenuItem_Click(object sender, EventArgs e)
         {
             logger.Trace("UnzipMusicfiletoolStripMenuItem_Click");
+            //Set initial directory to Download directory (since the files are downloaded)
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            openFileDialogMusicarchive.InitialDirectory = path;
+
             // Get Filename to unpack
             if (openFileDialogMusicarchive.ShowDialog() == DialogResult.OK)
             {

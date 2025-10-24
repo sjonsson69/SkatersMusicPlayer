@@ -777,42 +777,42 @@ namespace SkatersMusicPlayer
         }
 
         // The default list of segments to return if no specific rule is found.
-        private static readonly List<string> _defaultSegments = new List<string> { "Free skating" };
+        private static readonly List<string> _defaultSegments = new List<string> { "Free Skating" };
         private static readonly Dictionary<string, List<string>> _segmentMap = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
     {
         // Add all your specific rules here.
         // Key: "Discipline/Category"
         // Value: List<string> of segments
         
-        { "Singelåkning/Senior Damer", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Senior Herrar", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Senior Nationell Damer", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Junior Damer", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Junior Herrar", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Ungdom 16 Flickor", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Ungdom 16 Pojkar", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Ungdom 13 Flickor", new List<string> { "Short program", "Free skating" } },
-        { "Singelåkning/Ungdom 13 Pojkar", new List<string> { "Short program", "Free skating" } },
-        { "Paråkning/Senior", new List<string> { "Short program", "Free skating" } },
-        { "Paråkning/Junior", new List<string> { "Short program", "Free skating" } },
-        { "Paråkning/Advanced Novice", new List<string> { "Short program", "Free skating" } },
-        { "Isdans/Senior", new List<string> { "Rhythm dance","Free dance" } },
-        { "Isdans/Junior", new List<string> { "Rhythm dance","Free dance" } },
-        { "Isdans/Advanced Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Isdans/Intermediate Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Isdans/Basic Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Isdans/Juvenile", new List<string> { "Pattern dance 1","Free dance" } },
-        { "Isdans/Vit", new List<string> { "Free dance" } },
-        { "Soloisdans/Senior", new List<string> { "Rhythm dance","Free dance" } },
-        { "Soloisdans/Junior", new List<string> { "Rhythm dance","Free dance" } },
-        { "Soloisdans/Advanced Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Soloisdans/Intermediate Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Soloisdans/Basic Novice", new List<string> { "Pattern dance 1","Pattern dance 2","Free dance" } },
-        { "Soloisdans/Juvenile", new List<string> { "Pattern dance 1","Free dance" } },
-        { "Soloisdans/Vit", new List<string> { "Free dance" } },
-        { "Synkroniserad konståkning/Senior Elite 12", new List<string> { "Short program","Free skating" } },
-        { "Synkroniserad konståkning/Senior", new List<string> { "Short program","Free skating" } },
-        { "Synkroniserad konståkning/Junior", new List<string> { "Short program","Free skating" } },
+        { "Singelåkning/Senior Damer", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Senior Herrar", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Senior Nationell Damer", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Junior Damer", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Junior Herrar", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Ungdom 16 Flickor", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Ungdom 16 Pojkar", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Ungdom 13 Flickor", new List<string> { "Short Program", "Free Skating" } },
+        { "Singelåkning/Ungdom 13 Pojkar", new List<string> { "Short Program", "Free Skating" } },
+        { "Paråkning/Senior", new List<string> { "Short Program", "Free Skating" } },
+        { "Paråkning/Junior", new List<string> { "Short Program", "Free Skating" } },
+        { "Paråkning/Advanced Novice", new List<string> { "Short Program", "Free Skating" } },
+        { "Isdans/Senior", new List<string> { "Rhythm Dance","Free Dance" } },
+        { "Isdans/Junior", new List<string> { "Rhythm Dance","Free Dance" } },
+        { "Isdans/Advanced Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Isdans/Intermediate Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Isdans/Basic Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Isdans/Juvenile", new List<string> { "Pattern Dance 1","Free Dance" } },
+        { "Isdans/Vit", new List<string> { "Free Dance" } },
+        { "Soloisdans/Senior", new List<string> { "Rhythm Dance","Free Dance" } },
+        { "Soloisdans/Junior", new List<string> { "Rhythm Dance","Free Dance" } },
+        { "Soloisdans/Advanced Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Soloisdans/Intermediate Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Soloisdans/Basic Novice", new List<string> { "Pattern Dance 1","Pattern Dance 2","Free Dance" } },
+        { "Soloisdans/Juvenile", new List<string> { "Pattern Dance 1","Free Dance" } },
+        { "Soloisdans/Vit", new List<string> { "Free Dance" } },
+        { "Synkroniserad konståkning/Senior Elite 12", new List<string> { "Short Program","Free Skating" } },
+        { "Synkroniserad konståkning/Senior", new List<string> { "Short Program","Free Skating" } },
+        { "Synkroniserad konståkning/Junior", new List<string> { "Short Program","Free Skating" } },
         
         // Example for a category with 0 segments
         //{ "Synchro/Pre-Juvenile", new List<string>() }
@@ -821,9 +821,9 @@ namespace SkatersMusicPlayer
         /// <summary>
         /// Gets the list of segments for a given discipline and category.
         /// </summary>
-        /// <param name="discipline">The event discipline (e.g., "Icedance")</param>
+        /// <param name="discipline">The event discipline (e.g., "IceDance")</param>
         /// <param name="category">The event category (e.g., "Senior")</param>
-        /// <returns>A list of segment names. Returns ["Free skating"] if no specific rule is found.</returns>
+        /// <returns>A list of segment names. Returns ["Free Skating"] if no specific rule is found.</returns>
         public static List<string> getSegments(string competitionType, string discipline, string category)
         {
             // Create the combined key. Using a '/' separator as in your example.
@@ -904,9 +904,9 @@ namespace SkatersMusicPlayer
                                 categorySegment category = null;
                                 foreach (categorySegment catSeg in compEvent.categoriesAndSegments)
                                 {
-                                    if (catSeg.discipline == discipline &&
-                                        catSeg.category == categoryName &&
-                                        catSeg.segment == segment)
+                                    if (catSeg.discipline.ToUpper() == discipline.ToUpper() &&
+                                        catSeg.category.ToUpper() == categoryName.ToUpper() &&
+                                        catSeg.segment.ToUpper() == segment.ToUpper())
                                     {
                                         category = catSeg;
                                     }
@@ -945,7 +945,7 @@ namespace SkatersMusicPlayer
 
                                         //Get PPC for Friåkning for music and coach
                                         foreach (var ppc in from Ppc ppc in person.Ppcs
-                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            where ppc.Type == translateSegmentToSWE(segment, categoryName)
                                                             select ppc)
                                         {
                                             if (ppc.Music != null && ppc.Music.Title != null)
@@ -1018,7 +1018,7 @@ namespace SkatersMusicPlayer
 
                                         //Get PPC for Friåkning for music and coach
                                         foreach (var ppc in from Ppc ppc in pair.Ppcs
-                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            where ppc.Type == translateSegmentToSWE(segment, categoryName)
                                                             select ppc)
                                         {
                                             if (ppc.Music != null && ppc.Music.Title != null)
@@ -1086,7 +1086,7 @@ namespace SkatersMusicPlayer
 
                                         //Get PPC for Friåkning for music and coach
                                         foreach (var ppc in from Ppc ppc in team.Ppcs
-                                                            where ppc.Type == translateSegmentToSWE(segment)
+                                                            where ppc.Type == translateSegmentToSWE(segment, categoryName)
                                                             select ppc)
                                         {
                                             if (ppc.Music != null && ppc.Music.Title != null)
@@ -1146,7 +1146,7 @@ namespace SkatersMusicPlayer
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error loading IndTA XML-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading SportTA Json-file\n" + e.Message, Properties.Resources.CAPTION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -1216,9 +1216,9 @@ namespace SkatersMusicPlayer
                                 categorySegment category = null;
                                 foreach (categorySegment cat in compEvent.categoriesAndSegments)
                                 {
-                                    if (cat.discipline == discipline &&
-                                        cat.category == categoryName &&
-                                        cat.segment == segment)
+                                    if (cat.discipline.ToUpper() == discipline.ToUpper() &&
+                                        cat.category.ToUpper() == categoryName.ToUpper() &&
+                                        cat.segment.ToUpper() == segment.ToUpper())
                                     {
                                         category = cat;
                                     }
@@ -1370,9 +1370,9 @@ namespace SkatersMusicPlayer
                                 categorySegment category = null;
                                 foreach (categorySegment cat in compEvent.categoriesAndSegments)
                                 {
-                                    if (cat.discipline == discipline &&
-                                        cat.category == categoryName &&
-                                        cat.segment == segment)
+                                    if (cat.discipline.ToUpper() == discipline.ToUpper() &&
+                                        cat.category.ToUpper() == categoryName.ToUpper() &&
+                                        cat.segment.ToUpper() == segment.ToUpper())
                                     {
                                         category = cat;
                                     }
@@ -1448,12 +1448,20 @@ namespace SkatersMusicPlayer
         }
 
         //Translate segment from ENG to SWE
-        private static string translateSegmentToSWE(string segmentENG)
+        private static string translateSegmentToSWE(string segmentENG, string category)
         {
             switch (segmentENG.ToUpper())
             {
                 case "FREE SKATING":
-                    return "Friåkning";
+                    if (category.ToUpper().Contains("ARTISTI"))
+                    {
+                        return "Artistisk åkning";
+                    }
+                    else
+                    {
+                        return "Friåkning";
+                    }
+                    ;
                 case "SHORT PROGRAM":
                     return "Kortprogram";
                 case "PATTERN DANCE 1":
@@ -1481,7 +1489,7 @@ namespace SkatersMusicPlayer
                 { "{Category}", normalize(catSeg.category) },
                 { "{Segment}", normalize(catSeg.segment) },
                 { "{SegmentNoSpace}", normalize(catSeg.segment.Replace(" ","")) },
-                { "{SegmentSWE}", translateSegmentToSWE(catSeg.segment) },
+                { "{SegmentSWE}", translateSegmentToSWE(catSeg.segment, catSeg.category) },
                 { "{FirstName}", normalize(p.firstName.Trim()) },
                 { "{FirstNameDash}", normalize(p.firstName?.Trim().Replace(" ","-")) },
                 { "{LastName}", normalize(p.lastName?.Trim()) },
