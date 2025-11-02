@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMusicPlayer));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfasdf");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdfasdf");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("asdfasdf");
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
@@ -94,8 +94,6 @@
             this.buttonBreakStop = new System.Windows.Forms.Button();
             this.buttonBreakPause = new System.Windows.Forms.Button();
             this.buttonBreakPlay = new System.Windows.Forms.Button();
-            this.openFileDialogIndTA = new System.Windows.Forms.OpenFileDialog();
-            this.openFileDialogISUCalcXML = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogMusicarchive = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogStarFS = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogSportTA = new System.Windows.Forms.OpenFileDialog();
@@ -457,21 +455,21 @@
             // editEventtoolStripMenuItem
             // 
             this.editEventtoolStripMenuItem.Name = "editEventtoolStripMenuItem";
-            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editEventtoolStripMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editEventtoolStripMenuItem.Text = "&Event";
             this.editEventtoolStripMenuItem.Click += new System.EventHandler(this.editEventMenuItem_Click);
             // 
             // editCategoriesMenuItem
             // 
             this.editCategoriesMenuItem.Name = "editCategoriesMenuItem";
-            this.editCategoriesMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editCategoriesMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editCategoriesMenuItem.Text = "&Categories";
             this.editCategoriesMenuItem.Click += new System.EventHandler(this.editCategoriesMenuItem_Click);
             // 
             // editParticipantsToolStripMenuItem
             // 
             this.editParticipantsToolStripMenuItem.Name = "editParticipantsToolStripMenuItem";
-            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.editParticipantsToolStripMenuItem.Size = new System.Drawing.Size(161, 24);
             this.editParticipantsToolStripMenuItem.Text = "&Participants";
             this.editParticipantsToolStripMenuItem.Click += new System.EventHandler(this.editParticipantsToolStripMenuItem_Click);
             // 
@@ -518,7 +516,7 @@
             // 
             this.UnzipMusicfiletoolStripMenuItem.Name = "UnzipMusicfiletoolStripMenuItem";
             this.UnzipMusicfiletoolStripMenuItem.Size = new System.Drawing.Size(318, 24);
-            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from IndTA";
+            this.UnzipMusicfiletoolStripMenuItem.Text = "&Unzip musicfile from SportTA";
             this.UnzipMusicfiletoolStripMenuItem.Click += new System.EventHandler(this.unzipMusicfiletoolStripMenuItem_Click);
             // 
             // autoconnectMusicToParticipantsToolStripMenuItem
@@ -634,7 +632,7 @@
             this.columnHeader5});
             this.listViewWarmupMusic.HideSelection = false;
             this.listViewWarmupMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem3});
             this.listViewWarmupMusic.Location = new System.Drawing.Point(7, 21);
             this.listViewWarmupMusic.MultiSelect = false;
             this.listViewWarmupMusic.Name = "listViewWarmupMusic";
@@ -720,7 +718,7 @@
             this.columnHeader6});
             this.listViewBreakMusic.HideSelection = false;
             this.listViewBreakMusic.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem4});
             this.listViewBreakMusic.Location = new System.Drawing.Point(7, 23);
             this.listViewBreakMusic.MultiSelect = false;
             this.listViewBreakMusic.Name = "listViewBreakMusic";
@@ -780,16 +778,6 @@
             this.buttonBreakPlay.Text = "Play";
             this.buttonBreakPlay.UseVisualStyleBackColor = false;
             this.buttonBreakPlay.Click += new System.EventHandler(this.buttonBreakPlay_Click);
-            // 
-            // openFileDialogIndTA
-            // 
-            this.openFileDialogIndTA.Filter = "Anmälningslista|*.xml|All files|*.*";
-            this.openFileDialogIndTA.RestoreDirectory = true;
-            // 
-            // openFileDialogISUCalcXML
-            // 
-            this.openFileDialogISUCalcXML.Filter = "ISU Exportfil|*.xml|All files|*.*";
-            this.openFileDialogISUCalcXML.RestoreDirectory = true;
             // 
             // openFileDialogMusicarchive
             // 
@@ -901,8 +889,6 @@
         private System.Windows.Forms.ToolStripMenuItem editCategoriesMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editParticipantsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editEventtoolStripMenuItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialogIndTA;
-        private System.Windows.Forms.OpenFileDialog openFileDialogISUCalcXML;
         private System.Windows.Forms.OpenFileDialog openFileDialogMusicarchive;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
