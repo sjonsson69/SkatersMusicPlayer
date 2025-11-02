@@ -1479,7 +1479,8 @@ namespace SkatersMusicPlayer
 
         private static Dictionary<string, string> GetDataMap(categorySegment catSeg, participant p)
         {
-            string normalize(string s) => new string(s?.Where(c => !Path.GetInvalidFileNameChars().Contains(c) && !char.IsWhiteSpace(c)).ToArray() ?? Array.Empty<char>());
+            //string normalize(string s) => new string(s?.Where(c => !Path.GetInvalidFileNameChars().Contains(c) && !char.IsWhiteSpace(c)).ToArray() ?? Array.Empty<char>());
+            string normalize(string s) => new string(s?.Where(c => !Path.GetInvalidFileNameChars().Contains(c)).ToArray() ?? Array.Empty<char>());
             string normalizeDate(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyy-MM-dd") : string.Empty;
             string normalizeDateYYYYMMDD(DateTime? dt) => dt.HasValue ? dt.Value.ToString("yyyyMMdd") : string.Empty;
 
@@ -1491,10 +1492,14 @@ namespace SkatersMusicPlayer
                 { "{SegmentNoSpace}", normalize(catSeg.segment.Replace(" ","")) },
                 { "{SegmentSWE}", translateSegmentToSWE(catSeg.segment, catSeg.category) },
                 { "{FirstName}", normalize(p.firstName.Trim()) },
+                { "{FirstNameNoSpace}", normalize(p.firstName.Trim().Replace(" ","")) },
                 { "{FirstNameDash}", normalize(p.firstName?.Trim().Replace(" ","-")) },
                 { "{LastName}", normalize(p.lastName?.Trim()) },
+                { "{LastNameNoSpace}", normalize(p.lastName?.Trim().Replace(" ","")) },
                 { "{LastNameDash}", normalize(p.lastName?.Trim().Replace(" ","-")) },
                 { "{Club}", normalize(p.club?.Trim()) },
+                { "{ClubNoSpace}", normalize(p.club?.Trim().Replace(" ", "")) },
+                { "{ClubDash}", normalize(p.club?.Trim().Replace(" ", "-")) },
                 { "{Birthdate}", normalizeDate(p.birthDate) },
                 { "{BirthdateYYYYMMDD}", normalizeDateYYYYMMDD(p.birthDate) },
                 { "{ID}", normalize(p.id) }
