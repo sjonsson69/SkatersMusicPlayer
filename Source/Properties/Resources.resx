@@ -252,10 +252,15 @@ FROM category c
 		  on cr.Entry_Id=e.Id
 		  and cr.Segment_Id=s.Id
 		inner join competitor co
-		  on co.Id=si.Competitor_Id_Pk
+		  on co.Id=e.Competitor_Id
 		left outer join music m
-		  on (m.Id=co.ShortMusik_Id and s.SegmentType=0)
-		  or (m.Id=co.FreeMusik_Id and s.SegmentType=1)
+		  on m.Competitor_Id=e.Competitor_Id
+		  and m.MusicProgramType=s.SegmentType
+		  and m.MusicGroup=CASE c.type
+		  							WHEN 0 THEN 1 -- Singel
+		  							WHEN 5 THEN 4 -- Solo Ice Dance
+		  							ELSE c.type
+		  						END
 
 UNION
 
@@ -307,8 +312,13 @@ FROM category c
 		left outer join competitor co
 		  on co.Id=cp.Competitor_Id_Pk
 		left outer join music m
-		  on (m.Id=co.ShortMusik_Id and s.SegmentType=0)
-		  or (m.Id=co.FreeMusik_Id and s.SegmentType=1)
+		  on m.Competitor_Id=e.Competitor_Id
+		  and m.MusicProgramType=s.SegmentType
+		  and m.MusicGroup=CASE c.type
+		  							WHEN 0 THEN 1 -- Singel
+		  							WHEN 5 THEN 4 -- Solo Ice Dance
+		  							ELSE c.type
+		  						END
 
 UNION
 
@@ -356,10 +366,16 @@ FROM category c
 		inner join competitor co
 		  on co.Id=st.Competitor_Id_Pk
 		left outer join music m
-		  on (m.Id=co.ShortMusik_Id and s.SegmentType=0)
-		  or (m.Id=co.FreeMusik_Id and s.SegmentType=1)
+		  on m.Competitor_Id=e.Competitor_Id
+		  and m.MusicProgramType=s.SegmentType
+		  and m.MusicGroup=CASE c.type
+		  							WHEN 0 THEN 1 -- Singel
+		  							WHEN 4 THEN 5 -- Syncro
+		  							WHEN 5 THEN 4 -- Solo Ice Dance
+		  							ELSE c.type
+		  						END
 		  
-ORDER BY CompetitionName, Category, SortOrder</value>
+ORDER BY CompetitionName, Discipline, Category, SortOrder</value>
   </data>
   <data name="XMLTAG_CATEGORY" xml:space="preserve">
     <value>Category</value>
