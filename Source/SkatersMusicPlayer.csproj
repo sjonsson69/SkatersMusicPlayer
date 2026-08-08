@@ -87,7 +87,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=6.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.6.0.6\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.6.1.4\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NLog.Targets.Loggly, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.Targets.Loggly.4.8.63\lib\net45\NLog.Targets.Loggly.dll</HintPath>
@@ -265,7 +265,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\NLog.Schema.6.0.6\build\NLog.Schema.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NLog.Schema.6.0.6\build\NLog.Schema.targets'))" />
+    <Error Condition="!Exists('..\packages\NLog.Schema.6.1.4\build\NLog.Schema.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NLog.Schema.6.1.4\build\NLog.Schema.targets'))" />
   </Target>
-  <Import Project="..\packages\NLog.Schema.6.0.6\build\NLog.Schema.targets" Condition="Exists('..\packages\NLog.Schema.6.0.6\build\NLog.Schema.targets')" />
+  <Import Project="..\packages\NLog.Schema.6.1.4\build\NLog.Schema.targets" Condition="Exists('..\packages\NLog.Schema.6.1.4\build\NLog.Schema.targets')" />
 </Project>
