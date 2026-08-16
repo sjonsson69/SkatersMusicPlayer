@@ -158,12 +158,9 @@ namespace SkatersMusicPlayer
                             {
                                 p.id = (string)dataGridViewParticipants[4, r].Value;
                             }
-                            if (dataGridViewParticipants[4, r].Value != null)
+                            if (dataGridViewParticipants[5, r].Value != null)
                             {
-                                if (DateTime.TryParse((string)dataGridViewParticipants[5, r].Value, out DateTime tempBD))
-                                {
-                                    p.birthDate = tempBD;
-                                }
+                                p.birthDate = (DateTime)dataGridViewParticipants[5, r].Value;
                             }
                             p.music = new competitionMusic
                             {
