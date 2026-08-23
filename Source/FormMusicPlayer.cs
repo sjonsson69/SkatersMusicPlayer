@@ -55,7 +55,7 @@ namespace SkatersMusicPlayer
                     client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
 
                     //Try to load versioninfo
-                    string tempresult = client.GetStringAsync("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player/").Result;
+                    string tempresult = client.GetStringAsync("https://www.skatesweden.se/tavling/att-arrangera-tavling/programvaror/skaters-music-player/").Result;
                     //Find Body (we don't want to find version in Meta data)
                     int i = tempresult.IndexOf("<body");
                     tempresult = tempresult.Substring(i);
@@ -1004,7 +1004,7 @@ namespace SkatersMusicPlayer
         private void uppdateringFinnsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             logger.Trace("UppdateringFinnsToolStripMenuItem_Click");
-            System.Diagnostics.Process.Start("https://www.skatesweden.se/tavla/att-arrangera-tavling/programvaror/skaters-music-player");
+            System.Diagnostics.Process.Start("https://www.skatesweden.se/tavling/att-arrangera-tavling/programvaror/skaters-music-player");
         }
     }
 }
